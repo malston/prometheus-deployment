@@ -478,18 +478,18 @@ grafana:
   ##
   ## `path` must be /var/lib/grafana/dashboards/<provider_name>
   ##
-  dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-      - name: 'default'
-        orgId: 1
-        folder: ''
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/default
+  dashboardProviders: {}
+    # dashboardproviders.yaml:
+    #   apiVersion: 1
+    #   providers:
+    #   - name: 'default'
+    #     orgId: 1
+    #     folder: ''
+    #     type: file
+    #     disableDeletion: false
+    #     editable: true
+    #     options:
+    #       path: /var/lib/grafana/dashboards/default
 
   ## Configure grafana dashboard to import
   ## NOTE: To use dashboards you must also enable/configure dashboardProviders
@@ -497,23 +497,23 @@ grafana:
   ##
   ## dashboards per provider, use provider name as key.
   ##
-  dashboards:
-    default:
-      etcd-dashboard:
-        file: dashboards/etcd.json
-        datasource: Prometheus
-      k8s-cluster-rsrc-use-dashboard:
-        file: dashboards/k8s-cluster-rsrc-use.json
-        datasource: Prometheus
-      k8s-coredns-dashboard:
-        file: dashboards/k8s-coredns.json
-        datasource: Prometheus
-      k8s-node-rsrc-use-dashboard:
-        file: dashboards/k8s-node-rsrc-use.json
-        datasource: Prometheus
-      k8s-resources-cluster-dashboard:
-        file: dashboards/k8s-resources-cluster.json
-        datasource: Prometheus
+  dashboards: {}
+    # default:
+    #   etcd-dashboard:
+    #     file: dashboards/etcd.json
+    #     datasource: Prometheus
+    #   k8s-cluster-rsrc-use-dashboard:
+    #     file: dashboards/k8s-cluster-rsrc-use.json
+    #     datasource: Prometheus
+    #   k8s-coredns-dashboard:
+    #     file: dashboards/k8s-coredns.json
+    #     datasource: Prometheus
+    #   k8s-node-rsrc-use-dashboard:
+    #     file: dashboards/k8s-node-rsrc-use.json
+    #     datasource: Prometheus
+    #   k8s-resources-cluster-dashboard:
+    #     file: dashboards/k8s-resources-cluster.json
+    #     datasource: Prometheus
       # k8s-resources-namespace-dashboard:
       #   file: dashboards/k8s-resources-namespace.json
       #   datasource: Prometheus
