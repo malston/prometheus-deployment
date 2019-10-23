@@ -21,6 +21,7 @@ helm template helm/prometheus-operator \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set defaultDashboardsEnabled=true \
+    --set sidecar.dashboards.enabled=false \
     | kubectl apply -f -
 
 kubectl expose deployment "$(kubectl get deployments -o jsonpath="{.items[0].metadata.name}")" --name=prometheus-grafana-lb --port=80 --target-port=3000 --type=LoadBalancer --namespace="${namespace}"
