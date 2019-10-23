@@ -514,30 +514,30 @@ grafana:
       k8s-resources-cluster-dashboard:
         file: dashboards/k8s-resources-cluster.json
         datasource: Prometheus
-      k8s-resources-namespace-dashboard:
-        file: dashboards/k8s-resources-namespace.json
-        datasource: Prometheus
-      k8s-resources-pod-dashboard:
-        file: dashboards/k8s-resources-pod.json
-        datasource: Prometheus
-      k8s-resources-workload-dashboard:
-        file: dashboards/k8s-resources-workload.json
-        datasource: Prometheus
-      k8s-resources-workloads-namespace-dashboard:
-        file: dashboards/k8s-resources-workloads-namespace.json
-        datasource: Prometheus
-      nodes-dashboard:
-        file: dashboards/nodes.json
-        datasource: Prometheus
-      persistentvolumesusage-dashboard:
-        file: dashboards/persistentvolumesusage.json
-        datasource: Prometheus
-      pods-dashboard:
-        file: dashboards/pods.json
-        datasource: Prometheus
-      statefulset-dashboard:
-        file: dashboards/statefulset.json
-        datasource: Prometheus
+      # k8s-resources-namespace-dashboard:
+      #   file: dashboards/k8s-resources-namespace.json
+      #   datasource: Prometheus
+      # k8s-resources-pod-dashboard:
+      #   file: dashboards/k8s-resources-pod.json
+      #   datasource: Prometheus
+      # k8s-resources-workload-dashboard:
+      #   file: dashboards/k8s-resources-workload.json
+      #   datasource: Prometheus
+      # k8s-resources-workloads-namespace-dashboard:
+      #   file: dashboards/k8s-resources-workloads-namespace.json
+      #   datasource: Prometheus
+      # nodes-dashboard:
+      #   file: dashboards/nodes.json
+      #   datasource: Prometheus
+      # persistentvolumesusage-dashboard:
+      #   file: dashboards/persistentvolumesusage.json
+      #   datasource: Prometheus
+      # pods-dashboard:
+      #   file: dashboards/pods.json
+      #   datasource: Prometheus
+      # statefulset-dashboard:
+      #   file: dashboards/statefulset.json
+      #   datasource: Prometheus
       #  prometheus-stats:
       #     gnetId: 2
       #     revision: 2
