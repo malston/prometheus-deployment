@@ -16,3 +16,14 @@ home: https://github.com/coreos/prometheus-operator
 keywords:
 - operator
 - prometheus
+dependencies:
+  - name: kube-state-metrics
+    version: 2.4.*
+    repository: https://kubernetes-charts.storage.googleapis.com/
+  - name: prometheus-node-exporter
+    version: 1.7.*
+    repository: https://kubernetes-charts.storage.googleapis.com/
+  - name: grafana
+    version: 3.12.*
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: grafana.enabled
