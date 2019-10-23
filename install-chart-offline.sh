@@ -20,7 +20,7 @@ helm template helm/prometheus-operator \
     --set grafana.initChownData.enabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
-    --set defaultDashboardsEnabled=true \
+    --set defaultDashboardsEnabled=false \
     --set sidecar.dashboards.enabled=false \
     | kubectl apply -f -
 
