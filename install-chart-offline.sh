@@ -11,7 +11,7 @@ kubectl apply -f helm/prometheus-operator/crds/
 
 # Install operator
 helm template helm/prometheus-operator \
-    -f helm/prometheus-operator/values-offline.yaml \
+    -f helm/prometheus-operator/offline-values.yaml \
     --name=prometheus \
     --namespace "${namespace}" \
     --set prometheusOperator.createCustomResource=false \
