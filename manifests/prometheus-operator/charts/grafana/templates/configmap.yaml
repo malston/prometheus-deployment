@@ -23,3 +23,20 @@ data:
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
     provisioning = /etc/grafana/provisioning
+  dashboardproviders.yaml: |
+    apiVersion: 1
+    providers:
+    - disableDeletion: true
+      editable: true
+      folder: ""
+      name: kubeapislo
+      options:
+        path: /var/lib/grafana/dashboards/kubeapislo
+      orgId: 1
+      type: file
+      updateIntervalSeconds: 10
+    
+  download_dashboards.sh: |
+    #!/usr/bin/env sh
+    set -euf
+    mkdir -p /var/lib/grafana/dashboards/kubeapislo
