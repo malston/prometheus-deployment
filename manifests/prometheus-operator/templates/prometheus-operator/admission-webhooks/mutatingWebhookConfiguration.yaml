@@ -4,12 +4,12 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name:  prom-operator-prometheus-o-admission
+  name:  prometheus-prometheus-oper-admission
   namespace: monitoring
   labels:
     app: prometheus-operator-admission    
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 webhooks:
   - name: prometheusrulemutate.monitoring.coreos.com
@@ -27,5 +27,5 @@ webhooks:
     clientConfig:
       service:
         namespace: monitoring
-        name: prom-operator-prometheus-o-operator
+        name: prometheus-prometheus-oper-operator
         path: /admission-prometheusrules/mutate

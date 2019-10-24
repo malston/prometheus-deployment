@@ -4,20 +4,20 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prom-operator-prometheus-o-kube-proxy
+  name: prometheus-prometheus-oper-kube-proxy
   namespace: monitoring
   labels:
     app: prometheus-operator-kube-proxy
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 spec:
   jobLabel: jobLabel
   selector:
     matchLabels:
       app: prometheus-operator-kube-proxy
-      release: "prom-operator"
+      release: "prometheus"
   namespaceSelector:
     matchNames:
       - "kube-system"

@@ -4,13 +4,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prom-operator-prometheus-o-kube-state-metrics
+  name: prometheus-prometheus-oper-kube-state-metrics
   namespace: monitoring
   labels:
     app: prometheus-operator-kube-state-metrics
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 spec:
   jobLabel: app.kubernetes.io/name
@@ -20,4 +20,4 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: kube-state-metrics
-      app.kubernetes.io/instance: "prom-operator"
+      app.kubernetes.io/instance: "prometheus"

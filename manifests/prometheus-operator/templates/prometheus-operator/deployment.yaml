@@ -4,27 +4,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prom-operator-prometheus-o-operator
+  name: prometheus-prometheus-oper-operator
   namespace: monitoring
   labels:
     app: prometheus-operator-operator
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: prometheus-operator-operator
-      release: "prom-operator"
+      release: "prometheus"
   template:
     metadata:
       labels:
         app: prometheus-operator-operator
         
         chart: prometheus-operator-6.20.3
-        release: "prom-operator"
+        release: "prometheus"
         heritage: "Tiller"
     spec:
       containers:
@@ -32,7 +32,7 @@ spec:
           image: "quay.io/coreos/prometheus-operator:v0.32.0"
           imagePullPolicy: "IfNotPresent"
           args:
-            - --kubelet-service=kube-system/prom-operator-prometheus-o-kubelet
+            - --kubelet-service=kube-system/prometheus-prometheus-oper-kubelet
             - --logtostderr=true
             - --crd-apigroup=monitoring.coreos.com
             - --localhost=127.0.0.1
@@ -53,4 +53,4 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         
-      serviceAccountName: prom-operator-prometheus-o-operator
+      serviceAccountName: prometheus-prometheus-oper-operator

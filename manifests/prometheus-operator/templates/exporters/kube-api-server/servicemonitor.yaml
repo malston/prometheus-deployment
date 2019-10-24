@@ -4,13 +4,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prom-operator-prometheus-o-apiserver
+  name: prometheus-prometheus-oper-apiserver
   namespace: monitoring
   labels:
     app: prometheus-operator-apiserver
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 spec:
   endpoints:

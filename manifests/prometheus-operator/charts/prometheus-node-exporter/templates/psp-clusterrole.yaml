@@ -7,14 +7,14 @@ metadata:
   labels:     
     app: prometheus-node-exporter
     heritage: Tiller
-    release: prom-operator
+    release: prometheus
     chart: prometheus-node-exporter-1.7.0
     jobLabel: node-exporter
     
-  name: psp-prom-operator-prometheus-node-exporter
+  name: psp-prometheus-prometheus-node-exporter
 rules:
 - apiGroups: ['extensions']
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
-  - prom-operator-prometheus-node-exporter
+  - prometheus-prometheus-node-exporter

@@ -4,14 +4,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: prom-operator-prometheus-o-prometheus
+  name: prometheus-prometheus-oper-prometheus
   namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     self-monitor: "true"
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 spec:
   ports:
@@ -20,5 +20,5 @@ spec:
     targetPort: 9090
   selector:
     app: prometheus
-    prometheus: prom-operator-prometheus-o-prometheus
+    prometheus: prometheus-prometheus-oper-prometheus
   type: "ClusterIP"

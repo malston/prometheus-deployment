@@ -4,34 +4,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prom-operator-grafana
+  name: prometheus-grafana
   namespace: monitoring
   labels:
     app: grafana
     chart: grafana-3.12.1
-    release: prom-operator
+    release: prometheus
     heritage: Tiller
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: grafana
-      release: prom-operator
+      release: prometheus
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
         app: grafana
-        release: prom-operator
+        release: prometheus
       annotations:
-        checksum/config: 2a9f738fb14c4f2b32ebaf52b38564576a825a547ce39baaab173dcccbd897c1
+        checksum/config: 982092ff985a768f6ae5e29030ebea960138a56a5d0919ff473ef20fcc6b87da
         checksum/dashboards-json-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
-        checksum/sc-dashboard-provider-config: 65656039ed1ae5a4c5460f104fadb4d23919c5c6caf70e61449c0f7ac538322d
-        checksum/secret: 33e851f2ea6954b30b91a467f6956eb471277fb722fdb02e7b50e17a3053cc7d
+        checksum/sc-dashboard-provider-config: d9ee5b5588c124af9198e1cc9a2348c09bc5d9066c884227917d523b62cf575b
+        checksum/secret: 3532d366a9a07acc1c35143e49ff796b7a2e4776169878eecd8437e5174bce46
     spec:
       
-      serviceAccountName: prom-operator-grafana
+      serviceAccountName: prometheus-grafana
       securityContext:
         fsGroup: 472
         runAsUser: 472
@@ -99,12 +99,12 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: prom-operator-grafana
+                  name: prometheus-grafana
                   key: admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: prom-operator-grafana
+                  name: prometheus-grafana
                   key: admin-password
           livenessProbe:
             failureThreshold: 10
@@ -125,13 +125,13 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: prom-operator-grafana
+            name: prometheus-grafana
         - name: storage
           emptyDir: {}
         - name: sc-dashboard-volume
           emptyDir: {}
         - name: sc-dashboard-provider
           configMap:
-            name: prom-operator-grafana-config-dashboards
+            name: prometheus-grafana-config-dashboards
         - name: sc-datasources-volume
           emptyDir: {}

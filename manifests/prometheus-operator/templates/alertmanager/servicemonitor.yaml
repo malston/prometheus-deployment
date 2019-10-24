@@ -4,19 +4,19 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prom-operator-prometheus-o-alertmanager
+  name: prometheus-prometheus-oper-alertmanager
   namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 spec:
   selector:
     matchLabels:
       app: prometheus-operator-alertmanager
-      release: "prom-operator"
+      release: "prometheus"
   namespaceSelector:
     matchNames:
       - "monitoring"

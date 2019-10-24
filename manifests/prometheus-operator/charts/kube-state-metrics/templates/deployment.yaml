@@ -3,11 +3,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prom-operator-kube-state-metrics
+  name: prometheus-kube-state-metrics
   labels:
     app.kubernetes.io/name: kube-state-metrics
     helm.sh/chart: "kube-state-metrics-2.4.1"
-    app.kubernetes.io/instance: "prom-operator"
+    app.kubernetes.io/instance: "prometheus"
     app.kubernetes.io/managed-by: "Tiller"
 spec:
   selector:
@@ -18,10 +18,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: kube-state-metrics
-        app.kubernetes.io/instance: "prom-operator"
+        app.kubernetes.io/instance: "prometheus"
     spec:
       hostNetwork: false
-      serviceAccountName: prom-operator-kube-state-metrics
+      serviceAccountName: prometheus-kube-state-metrics
       securityContext:
         fsGroup: 65534
         runAsUser: 65534

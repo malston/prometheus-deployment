@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-namespace="${1:?"First argument must be a namespace"}"
+namespace="${1:-"monitoring"}"
 
 kubectl create namespace "${namespace}"
 

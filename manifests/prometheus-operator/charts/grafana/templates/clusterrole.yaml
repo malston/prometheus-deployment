@@ -7,9 +7,9 @@ metadata:
   labels:
     app: grafana
     chart: grafana-3.12.1
-    release: prom-operator
+    release: prometheus
     heritage: Tiller
-  name: prom-operator-grafana-clusterrole
+  name: prometheus-grafana-clusterrole
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps", "secrets"]

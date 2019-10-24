@@ -7,9 +7,9 @@ metadata:
   labels:
     app: grafana
     chart: grafana-3.12.1
-    release: prom-operator
+    release: prometheus
     heritage: Tiller
-  name: prom-operator-grafana-config-dashboards
+  name: prometheus-grafana-config-dashboards
   namespace: monitoring
 data:
   provider.yaml: |-

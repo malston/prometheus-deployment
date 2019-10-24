@@ -4,20 +4,20 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: prom-operator-prometheus-o-prometheus
+  name: prometheus-prometheus-oper-prometheus
   namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: prom-operator-prometheus-o-prometheus
+  name: prometheus-prometheus-oper-prometheus
 subjects:
   - kind: ServiceAccount
-    name: prom-operator-prometheus-o-prometheus
+    name: prometheus-prometheus-oper-prometheus
     namespace: monitoring
 

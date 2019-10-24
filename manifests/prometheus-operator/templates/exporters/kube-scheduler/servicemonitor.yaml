@@ -4,20 +4,20 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prom-operator-prometheus-o-kube-scheduler
+  name: prometheus-prometheus-oper-kube-scheduler
   namespace: monitoring
   labels:
     app: prometheus-operator-kube-scheduler
     
     chart: prometheus-operator-6.20.3
-    release: "prom-operator"
+    release: "prometheus"
     heritage: "Tiller"
 spec:
   jobLabel: jobLabel
   selector:
     matchLabels:
       app: prometheus-operator-kube-scheduler
-      release: "prom-operator"
+      release: "prometheus"
   namespaceSelector:
     matchNames:
       - "kube-system"
