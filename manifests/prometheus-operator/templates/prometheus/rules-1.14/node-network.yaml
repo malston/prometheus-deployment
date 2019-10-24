@@ -3,3 +3,24 @@
 # Generated from 'node-network' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
 # Do not change in-place! In order to change this file first read following link:
 # https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus-prometheus-oper-node-network
+  labels:
+    app: prometheus-operator
+    
+    chart: prometheus-operator-6.20.3
+    release: "prometheus"
+    heritage: "Tiller"
+spec:
+  groups:
+  - name: node-network
+    rules:
+    - alert: NodeNetworkInterfaceFlapping
+      annotations:
+        message: Network interface "{{ $labels.device }}" changing it's up status often on node-exporter {{ $labels.namespace }}/{{ $labels.pod }}"
+      expr: changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) > 2
+      for: 2m
+      labels:
+        severity: warning
