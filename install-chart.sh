@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 
-namespace="${1:?"First argument must be a namespace"}"
+namespace="${1:-"monitoring"}"
 
 kubectl create namespace "${namespace}"
 
 kubectl config set-context --current --namespace="${namespace}"
 
 # Create CRDs
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/podmonitor.crd.yaml
+kubectl apply -f charts/prometheus-operator/crds/
 
 # Install operator
 helm3 install prometheus stable/prometheus-operator \
