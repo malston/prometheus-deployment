@@ -1,0 +1,23 @@
+---
+# Source: prometheus-operator/charts/grafana/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+    chart: grafana-3.12.1
+    release: prometheus
+    heritage: Tiller
+spec:
+  type: ClusterIP
+  ports:
+    - name: service
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+
+  selector:
+    app: grafana
+    release: prometheus

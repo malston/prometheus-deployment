@@ -1,0 +1,22 @@
+---
+# Source: prometheus-operator/templates/exporters/node-exporter/servicemonitor.yaml
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-prometheus-oper-node-exporter
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-node-exporter
+    
+    chart: prometheus-operator-6.20.3
+    release: "prometheus"
+    heritage: "Tiller"
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: prometheus-node-exporter
+      release: prometheus
+  endpoints:
+  - port: metrics

@@ -1,0 +1,26 @@
+---
+# Source: prometheus-operator/templates/exporters/core-dns/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-prometheus-oper-coredns
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-coredns
+    jobLabel: coredns
+    
+    chart: prometheus-operator-6.20.3
+    release: "prometheus"
+    heritage: "Tiller"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 9153
+      protocol: TCP
+      targetPort: 9153
+  selector:
+    
+    k8s-app: kube-dns

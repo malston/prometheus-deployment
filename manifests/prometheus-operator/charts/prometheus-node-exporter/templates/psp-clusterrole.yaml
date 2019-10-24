@@ -1,0 +1,20 @@
+---
+# Source: prometheus-operator/charts/prometheus-node-exporter/templates/psp-clusterrole.yaml
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:     
+    app: prometheus-node-exporter
+    heritage: Tiller
+    release: prometheus
+    chart: prometheus-node-exporter-1.7.0
+    jobLabel: node-exporter
+    
+  name: psp-prometheus-prometheus-node-exporter
+rules:
+- apiGroups: ['extensions']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - prometheus-prometheus-node-exporter

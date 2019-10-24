@@ -1,0 +1,24 @@
+---
+# Source: prometheus-operator/templates/alertmanager/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-prometheus-oper-alertmanager
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-alertmanager
+    
+    chart: prometheus-operator-6.20.3
+    release: "prometheus"
+    heritage: "Tiller"
+spec:
+  ports:
+    - name: web
+      port: 9093
+      targetPort: 9093
+      protocol: TCP
+  selector:
+    app: alertmanager
+    alertmanager: prometheus-prometheus-oper-alertmanager
+  type: "ClusterIP"
