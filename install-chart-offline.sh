@@ -16,16 +16,17 @@ mkdir -p manifests/
 helm template \
     --name prometheus \
     --namespace "${namespace}" \
-    --values ./values/prometheus-operator.yaml \
+    --values ./values/prometheus-offline-operator.yaml \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set prometheusOperator.tlsProxy.enabled=false \
     --set prometheusOperator.admissionWebhooks.patch.enabled=false \
+    --set grafana.enabled=true \
     --set grafana.initChownData.enabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
-    --set defaultDashboardsEnabled=true \
-    --set sidecar.dashboards.enabled=true \
+    --set grafana.defaultDashboardsEnabled=true \
+    --set grafana.sidecar.dashboards.enabled=true \
     --output-dir ./manifests \
     ./charts/prometheus-operator
 

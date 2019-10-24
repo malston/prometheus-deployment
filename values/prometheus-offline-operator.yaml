@@ -482,14 +482,22 @@ grafana:
     # dashboardproviders.yaml:
     #   apiVersion: 1
     #   providers:
-    #   - name: 'default'
+    #   - name: 'etcd'
     #     orgId: 1
     #     folder: ''
     #     type: file
     #     disableDeletion: false
     #     editable: true
     #     options:
-    #       path: /var/lib/grafana/dashboards/default
+    #       path: /var/lib/grafana/dashboards/etcd
+    #   - name: 'k8s-cluster-rsrc-use'
+    #     orgId: 1
+    #     folder: ''
+    #     type: file
+    #     disableDeletion: false
+    #     editable: true
+    #     options:
+    #       path: /var/lib/grafana/dashboards/k8s-cluster-rsrc-use
 
   ## Configure grafana dashboard to import
   ## NOTE: To use dashboards you must also enable/configure dashboardProviders
@@ -498,11 +506,12 @@ grafana:
   ## dashboards per provider, use provider name as key.
   ##
   dashboards: {}
-    # default:
-    #   etcd-dashboard:
+    # etcd:
+    #   etcd:
     #     file: dashboards/etcd.json
     #     datasource: Prometheus
-    #   k8s-cluster-rsrc-use-dashboard:
+    # k8s-cluster-rsrc-use:
+    #   k8s-cluster-rsrc-use:
     #     file: dashboards/k8s-cluster-rsrc-use.json
     #     datasource: Prometheus
     #   k8s-coredns-dashboard:
