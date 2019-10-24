@@ -16,7 +16,8 @@ mkdir -p manifests/
 helm template \
     --name prometheus \
     --namespace "${namespace}" \
-    --values ./values/prometheus-offline-operator.yaml \
+    --values ./values/prometheus-operator.yaml \
+    --values ./values/offline-overrides.yaml \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set prometheusOperator.tlsProxy.enabled=false \

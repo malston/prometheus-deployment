@@ -1,0 +1,84 @@
+
+  ## Configure grafana dashboard providers
+  ## ref: http://docs.grafana.org/administration/provisioning/#dashboards
+  ##
+  ## `path` must be /var/lib/grafana/dashboards/<provider_name>
+  ##
+  dashboardProviders: {}
+    # dashboardproviders.yaml:
+    #   apiVersion: 1
+    #   providers:
+    #   - name: 'etcd'
+    #     orgId: 1
+    #     folder: ''
+    #     type: file
+    #     disableDeletion: false
+    #     editable: true
+    #     options:
+    #       path: /var/lib/grafana/dashboards/etcd
+    #   - name: 'k8s-cluster-rsrc-use'
+    #     orgId: 1
+    #     folder: ''
+    #     type: file
+    #     disableDeletion: false
+    #     editable: true
+    #     options:
+    #       path: /var/lib/grafana/dashboards/k8s-cluster-rsrc-use
+
+  ## Configure grafana dashboard to import
+  ## NOTE: To use dashboards you must also enable/configure dashboardProviders
+  ## ref: https://grafana.com/dashboards
+  ##
+  ## dashboards per provider, use provider name as key.
+  ##
+  dashboards: {}
+    # etcd:
+    #   etcd:
+    #     file: dashboards/etcd.json
+    #     datasource: Prometheus
+    # k8s-cluster-rsrc-use:
+    #   k8s-cluster-rsrc-use:
+    #     file: dashboards/k8s-cluster-rsrc-use.json
+    #     datasource: Prometheus
+    #   k8s-coredns-dashboard:
+    #     file: dashboards/k8s-coredns.json
+    #     datasource: Prometheus
+    #   k8s-node-rsrc-use-dashboard:
+    #     file: dashboards/k8s-node-rsrc-use.json
+    #     datasource: Prometheus
+    #   k8s-resources-cluster-dashboard:
+    #     file: dashboards/k8s-resources-cluster.json
+    #     datasource: Prometheus
+      # k8s-resources-namespace-dashboard:
+      #   file: dashboards/k8s-resources-namespace.json
+      #   datasource: Prometheus
+      # k8s-resources-pod-dashboard:
+      #   file: dashboards/k8s-resources-pod.json
+      #   datasource: Prometheus
+      # k8s-resources-workload-dashboard:
+      #   file: dashboards/k8s-resources-workload.json
+      #   datasource: Prometheus
+      # k8s-resources-workloads-namespace-dashboard:
+      #   file: dashboards/k8s-resources-workloads-namespace.json
+      #   datasource: Prometheus
+      # nodes-dashboard:
+      #   file: dashboards/nodes.json
+      #   datasource: Prometheus
+      # persistentvolumesusage-dashboard:
+      #   file: dashboards/persistentvolumesusage.json
+      #   datasource: Prometheus
+      # pods-dashboard:
+      #   file: dashboards/pods.json
+      #   datasource: Prometheus
+      # statefulset-dashboard:
+      #   file: dashboards/statefulset.json
+      #   datasource: Prometheus
+      #  prometheus-stats:
+      #     gnetId: 2
+      #     revision: 2
+      #     datasource: Prometheus
+      #   local-dashboard:
+      #     url: https://example.com/repository/test.json
+      #   local-dashboard-base64:
+      #     url: https://example.com/repository/test-b64.json
+      #     b64content: true
