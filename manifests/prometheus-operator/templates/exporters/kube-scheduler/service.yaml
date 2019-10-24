@@ -1,0 +1,27 @@
+---
+# Source: prometheus-operator/templates/exporters/kube-scheduler/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prom-operator-prometheus-o-kube-scheduler
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-kube-scheduler
+    jobLabel: kube-scheduler
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 10251
+      protocol: TCP
+      targetPort: 10251
+  selector:
+      
+    component: kube-scheduler
+  type: ClusterIP

@@ -1,0 +1,54 @@
+---
+# Source: prometheus-operator/templates/prometheus/prometheus.yaml
+
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prom-operator-prometheus-o-prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-prometheus
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+spec:
+  alerting:
+    alertmanagers:
+      - namespace: monitoring
+        name: prom-operator-prometheus-o-alertmanager
+        port: web
+        pathPrefix: "/"
+  baseImage: quay.io/prometheus/prometheus
+  version: v2.12.0
+  externalUrl: http://prom-operator-prometheus-o-prometheus.monitoring:9090
+  paused: false
+  replicas: 1
+  logLevel:  info
+  logFormat:  logfmt
+  listenLocal: false
+  enableAdminAPI: false
+  retention: "10d"
+  routePrefix: "/"
+  serviceAccountName: prom-operator-prometheus-o-prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      release: "prom-operator"
+
+  serviceMonitorNamespaceSelector: {}
+  podMonitorSelector:
+    matchLabels:
+      release: "prom-operator"
+
+  podMonitorNamespaceSelector: {}
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+    
+  ruleNamespaceSelector: {}
+  ruleSelector:
+    matchLabels:
+      app: prometheus-operator
+      release: "prom-operator"
+

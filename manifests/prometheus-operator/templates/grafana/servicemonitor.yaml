@@ -1,0 +1,25 @@
+---
+# Source: prometheus-operator/templates/grafana/servicemonitor.yaml
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prom-operator-prometheus-o-grafana
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-grafana
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+      release: "prom-operator"
+  namespaceSelector:
+    matchNames:
+      - "monitoring"
+  endpoints:
+  - port: service
+    path: "/metrics"

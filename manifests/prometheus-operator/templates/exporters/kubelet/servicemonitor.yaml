@@ -1,0 +1,38 @@
+---
+# Source: prometheus-operator/templates/exporters/kubelet/servicemonitor.yaml
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prom-operator-prometheus-o-kubelet
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-kubelet
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+spec:
+  endpoints:
+  - port: https-metrics
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
+  - port: https-metrics
+    scheme: https
+    path: /metrics/cadvisor
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      k8s-app: kubelet

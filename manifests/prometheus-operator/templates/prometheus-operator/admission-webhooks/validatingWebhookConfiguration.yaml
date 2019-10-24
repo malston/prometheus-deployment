@@ -1,0 +1,31 @@
+---
+# Source: prometheus-operator/templates/prometheus-operator/admission-webhooks/validatingWebhookConfiguration.yaml
+
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name:  prom-operator-prometheus-o-admission
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-admission    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+webhooks:
+  - name: prometheusrulemutate.monitoring.coreos.com
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - monitoring.coreos.com
+        apiVersions:
+          - "*"
+        resources:
+          - prometheusrules
+        operations:
+          - CREATE
+          - UPDATE
+    clientConfig:
+      service:
+        namespace: monitoring
+        name: prom-operator-prometheus-o-operator
+        path: /admission-prometheusrules/validate

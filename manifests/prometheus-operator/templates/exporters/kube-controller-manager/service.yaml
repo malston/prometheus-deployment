@@ -1,0 +1,27 @@
+---
+# Source: prometheus-operator/templates/exporters/kube-controller-manager/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prom-operator-prometheus-o-kube-controller-manager
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-kube-controller-manager
+    jobLabel: kube-controller-manager
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 10252
+      protocol: TCP
+      targetPort: 10252
+  selector:
+    
+    component: kube-controller-manager
+  type: ClusterIP

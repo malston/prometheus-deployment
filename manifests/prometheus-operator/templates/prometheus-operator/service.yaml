@@ -1,0 +1,23 @@
+---
+# Source: prometheus-operator/templates/prometheus-operator/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prom-operator-prometheus-o-operator
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-operator
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+  selector:
+    app: prometheus-operator-operator
+    release: "prom-operator"
+  type: "ClusterIP"

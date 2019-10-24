@@ -1,0 +1,137 @@
+---
+# Source: prometheus-operator/charts/grafana/templates/deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prom-operator-grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+    chart: grafana-3.12.1
+    release: prom-operator
+    heritage: Tiller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+      release: prom-operator
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: grafana
+        release: prom-operator
+      annotations:
+        checksum/config: 2a9f738fb14c4f2b32ebaf52b38564576a825a547ce39baaab173dcccbd897c1
+        checksum/dashboards-json-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/sc-dashboard-provider-config: 65656039ed1ae5a4c5460f104fadb4d23919c5c6caf70e61449c0f7ac538322d
+        checksum/secret: 33e851f2ea6954b30b91a467f6956eb471277fb722fdb02e7b50e17a3053cc7d
+    spec:
+      
+      serviceAccountName: prom-operator-grafana
+      securityContext:
+        fsGroup: 472
+        runAsUser: 472
+        
+      initContainers:
+        - name: grafana-sc-datasources
+          image: "kiwigrid/k8s-sidecar:0.1.20"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: METHOD
+              value: LIST
+            - name: LABEL
+              value: "grafana_datasource"
+            - name: FOLDER
+              value: "/etc/grafana/provisioning/datasources"
+            - name: RESOURCE
+              value: "both"
+          resources:
+            {}
+            
+          volumeMounts:
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+      containers:
+        - name: grafana-sc-dashboard
+          image: "kiwigrid/k8s-sidecar:0.1.20"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: LABEL
+              value: "grafana_dashboard"
+            - name: FOLDER
+              value: "/tmp/dashboards"
+            - name: RESOURCE
+              value: "both"
+          resources:
+            {}
+            
+          volumeMounts:
+            - name: sc-dashboard-volume
+              mountPath: "/tmp/dashboards"
+        - name: grafana
+          image: "grafana/grafana:6.4.2"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/grafana/grafana.ini"
+              subPath: grafana.ini
+            - name: storage
+              mountPath: "/var/lib/grafana"
+            - name: sc-dashboard-volume
+              mountPath: "/tmp/dashboards"
+            - name: sc-dashboard-provider
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: provider.yaml
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+          ports:
+            - name: service
+              containerPort: 80
+              protocol: TCP
+            - name: grafana
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: prom-operator-grafana
+                  key: admin-user
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: prom-operator-grafana
+                  key: admin-password
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+            
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            
+          resources:
+            {}
+            
+      volumes:
+        - name: config
+          configMap:
+            name: prom-operator-grafana
+        - name: storage
+          emptyDir: {}
+        - name: sc-dashboard-volume
+          emptyDir: {}
+        - name: sc-dashboard-provider
+          configMap:
+            name: prom-operator-grafana-config-dashboards
+        - name: sc-datasources-volume
+          emptyDir: {}

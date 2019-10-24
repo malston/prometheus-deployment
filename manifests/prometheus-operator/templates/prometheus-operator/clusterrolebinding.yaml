@@ -1,0 +1,22 @@
+---
+# Source: prometheus-operator/templates/prometheus-operator/clusterrolebinding.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prom-operator-prometheus-o-operator
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-operator
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prom-operator-prometheus-o-operator
+subjects:
+- kind: ServiceAccount
+  name: prom-operator-prometheus-o-operator
+  namespace: monitoring

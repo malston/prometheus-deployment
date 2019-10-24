@@ -1,0 +1,17 @@
+---
+# Source: prometheus-operator/charts/grafana/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: prom-operator-grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+    chart: grafana-3.12.1
+    heritage: Tiller
+    release: prom-operator
+rules:
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [prom-operator-grafana]

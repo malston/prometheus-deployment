@@ -1,0 +1,24 @@
+---
+# Source: prometheus-operator/templates/prometheus/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prom-operator-prometheus-o-prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-prometheus
+    self-monitor: "true"
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+spec:
+  ports:
+  - name: web
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: prometheus
+    prometheus: prom-operator-prometheus-o-prometheus
+  type: "ClusterIP"

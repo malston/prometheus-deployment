@@ -1,0 +1,24 @@
+---
+# Source: prometheus-operator/templates/grafana/configmaps-datasources.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prom-operator-prometheus-o-grafana-datasource
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+    app: prometheus-operator-grafana
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+data:
+  datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prom-operator-prometheus-o-prometheus:9090/
+      access: proxy
+      isDefault: true

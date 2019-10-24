@@ -1,0 +1,5 @@
+---
+# Source: prometheus-operator/templates/prometheus/rules/node-network.yaml
+# Generated from 'node-network' group from https://raw.githubusercontent.com/coreos/kube-prometheus/release-0.1/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack

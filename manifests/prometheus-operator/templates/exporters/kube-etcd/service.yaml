@@ -1,0 +1,27 @@
+---
+# Source: prometheus-operator/templates/exporters/kube-etcd/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prom-operator-prometheus-o-kube-etcd
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-kube-etcd
+    jobLabel: kube-etcd
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 2379
+      protocol: TCP
+      targetPort: 2379
+  selector:
+      
+    component: etcd
+  type: ClusterIP

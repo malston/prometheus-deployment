@@ -1,0 +1,17 @@
+---
+# Source: prometheus-operator/charts/kube-state-metrics/templates/psp-clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: kube-state-metrics
+    helm.sh/chart: kube-state-metrics-2.4.1
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/instance: prom-operator
+  name: psp-prom-operator-kube-state-metrics
+rules:
+- apiGroups: ['extensions']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - prom-operator-kube-state-metrics

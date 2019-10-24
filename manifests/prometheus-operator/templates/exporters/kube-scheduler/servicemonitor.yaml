@@ -1,0 +1,26 @@
+---
+# Source: prometheus-operator/templates/exporters/kube-scheduler/servicemonitor.yaml
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prom-operator-prometheus-o-kube-scheduler
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-kube-scheduler
+    
+    chart: prometheus-operator-6.20.3
+    release: "prom-operator"
+    heritage: "Tiller"
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: prometheus-operator-kube-scheduler
+      release: "prom-operator"
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
