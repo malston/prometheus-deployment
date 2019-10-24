@@ -7,7 +7,7 @@ kubectl create namespace "${namespace}"
 kubectl config set-context --current --namespace="${namespace}"
 
 # Create CRDs
-kubectl apply -f charts/prometheus-operator/crds/
+kubectl create -f charts/prometheus-operator/crds/
 
 rm -rf manifests/
 mkdir -p manifests/

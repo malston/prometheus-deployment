@@ -17,7 +17,8 @@ items:
         heritage: "Tiller"
     spec:
       groups:
-        - name: kubeapi_rules
+        - interval: 15s
+          name: kubeapi_rules
           rules:
           - expr: histogram_quantile ( 0.90, sum by (le, verb)( rate(apiserver_request_latencies_bucket[5m])
               ) ) / 1e3 > 0
