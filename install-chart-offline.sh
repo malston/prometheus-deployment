@@ -42,29 +42,3 @@ helm template \
     ./charts/prometheus-operator
 
 kubectl apply --recursive --filename ./manifests/prometheus-operator
-
-# kubectl expose deployment "$(kubectl get deployments -o jsonpath="{.items[0].metadata.name}")" \
-#     --name=prometheus-grafana-lb \
-#     --port=80 \
-#     --target-port=3000 \
-#     --type=LoadBalancer \
-#     --namespace="${namespace}"
-
-# kubectl expose deployment "$(kubectl get deployments -o jsonpath="{.items[0].metadata.name}")" \
-#     --name=prometheus-alertmanager-lb \
-#     --port=80 \
-#     --target-port=9093 \
-#     --type=LoadBalancer \
-#     --namespace="${namespace}"
-
-# kubectl expose deployment "$(kubectl get deployments -o jsonpath="{.items[0].metadata.name}")" \
-#     --name=prometheus-prometheus-lb \
-#     --port=80 \
-#     --target-port=9090 \
-#     --type=LoadBalancer \
-#     --namespace="${namespace}"
-
-# Port forward services
-# kubectl --namespace "${namespace}" port-forward svc/prometheus-grafana 3000:80
-# kubectl --namespace "${namespace}" port-forward svc/alertmanager-operated 9093
-# kubectl --namespace "${namespace}" port-forward svc/prometheus-prometheus-oper-prometheus 9090
