@@ -27,8 +27,8 @@ helm template \
     --values ./values/with-external-etcd.yaml \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
-    --set prometheusOperator.tlsProxy.enabled=false \
-    --set prometheusOperator.admissionWebhooks.patch.enabled=false \
+    --set prometheusOperator.tlsProxy.enabled=true \
+    --set prometheusOperator.admissionWebhooks.patch.enabled=true \
     --set grafana.enabled=true \
     --set grafana.initChownData.enabled=false \
     --set grafana.adminPassword=admin \
@@ -47,6 +47,20 @@ kubectl apply --recursive --filename ./manifests/prometheus-operator
 #     --name=prometheus-grafana-lb \
 #     --port=80 \
 #     --target-port=3000 \
+#     --type=LoadBalancer \
+#     --namespace="${namespace}"
+
+# kubectl expose deployment "$(kubectl get deployments -o jsonpath="{.items[0].metadata.name}")" \
+#     --name=prometheus-alertmanager-lb \
+#     --port=80 \
+#     --target-port=9093 \
+#     --type=LoadBalancer \
+#     --namespace="${namespace}"
+
+# kubectl expose deployment "$(kubectl get deployments -o jsonpath="{.items[0].metadata.name}")" \
+#     --name=prometheus-prometheus-lb \
+#     --port=80 \
+#     --target-port=9090 \
 #     --type=LoadBalancer \
 #     --namespace="${namespace}"
 

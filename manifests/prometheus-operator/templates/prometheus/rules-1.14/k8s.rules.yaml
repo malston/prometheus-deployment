@@ -13,6 +13,8 @@ metadata:
     chart: prometheus-operator-6.20.3
     release: "prometheus"
     heritage: "Tiller"
+    role: alert-rules
+    
 spec:
   groups:
   - name: k8s.rules

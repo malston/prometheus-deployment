@@ -49,6 +49,34 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+        - name: tls-proxy
+          image: squareup/ghostunnel:v1.4.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - server
+            - --listen=:8443
+            - --target=127.0.0.1:8080
+            - --key=cert/key
+            - --cert=cert/cert
+            - --disable-authentication
+          resources:
+            {}
+            
+          volumeMounts:
+          - name: tls-proxy-secret
+            mountPath: /cert
+            readOnly: true
+          ports:
+            - containerPort: 8443
+              name: https
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+      volumes:
+        - name: tls-proxy-secret
+          secret:
+            defaultMode: 420
+            secretName: prometheus-prometheus-oper-admission
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

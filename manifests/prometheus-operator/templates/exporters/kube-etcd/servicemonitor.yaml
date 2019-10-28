@@ -8,7 +8,7 @@ metadata:
   namespace: monitoring
   labels:
     app: prometheus-operator-kube-etcd
-
+    
     chart: prometheus-operator-6.20.3
     release: "prometheus"
     heritage: "Tiller"

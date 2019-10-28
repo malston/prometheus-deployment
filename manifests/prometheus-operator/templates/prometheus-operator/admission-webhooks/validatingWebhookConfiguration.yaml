@@ -13,7 +13,7 @@ metadata:
     heritage: "Tiller"
 webhooks:
   - name: prometheusrulemutate.monitoring.coreos.com
-    failurePolicy: Fail
+    failurePolicy: Ignore
     rules:
       - apiGroups:
           - monitoring.coreos.com
