@@ -21,7 +21,4 @@ spec:
       port: 2379
       protocol: TCP
       targetPort: 2379
-  selector:
-      
-    component: etcd
   type: ClusterIP

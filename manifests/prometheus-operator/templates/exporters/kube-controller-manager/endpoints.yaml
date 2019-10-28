@@ -1,0 +1,25 @@
+---
+# Source: prometheus-operator/templates/exporters/kube-controller-manager/endpoints.yaml
+
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: prometheus-prometheus-oper-kube-controller-manager
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-kube-controller-manager
+    k8s-app: kube-controller-manager
+    
+    chart: prometheus-operator-6.20.3
+    release: "prometheus"
+    heritage: "Tiller"
+  namespace: kube-system
+subsets:
+  - addresses:
+      - ip: 172.28.1.2
+      - ip: 172.28.1.3
+      - ip: 172.28.1.4
+    ports:
+      - name: http-metrics
+        port: 10252
+        protocol: TCP

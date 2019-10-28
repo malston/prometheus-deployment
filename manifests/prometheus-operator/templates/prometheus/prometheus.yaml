@@ -30,6 +30,9 @@ spec:
   enableAdminAPI: false
   retention: "10d"
   routePrefix: "/"
+  secrets:
+    - etcd-client
+    
   serviceAccountName: prometheus-prometheus-oper-prometheus
   serviceMonitorSelector:
     matchLabels:
