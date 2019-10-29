@@ -10,7 +10,7 @@ kubectl config set-context --current --namespace="${namespace}"
 kubectl create -f charts/prometheus-operator/crds/
 
 # Create secrets for etcd client cert
-kubectl create secret -n monitoring generic etcd-client \
+kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-ca.crt \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
