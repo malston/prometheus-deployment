@@ -53,6 +53,6 @@ spec:
   ruleSelector:
     matchLabels:
       app: prometheus-operator
-      release: prometheus
+      release: monitoring
       role: alert-rules
     

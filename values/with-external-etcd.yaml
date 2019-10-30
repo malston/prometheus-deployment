@@ -7,7 +7,7 @@ prometheus:
       matchLabels:
         role: alert-rules
         app: prometheus-operator
-        release: prometheus
+        release: monitoring
 
 kubelet:
   serviceMonitor:
