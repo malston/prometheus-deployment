@@ -4,14 +4,14 @@
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: prometheus-prometheus-oper-kube-scheduler
+  name: monitoring-prometheus-oper-kube-scheduler
   namespace: monitoring
   labels:
     app: prometheus-operator-kube-scheduler
     k8s-app: kube-scheduler
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
   namespace: kube-system
 subsets:

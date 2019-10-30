@@ -6,13 +6,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus-prometheus-oper-prometheus-remote-write
+  name: monitoring-prometheus-oper-prometheus-remote-write
   labels:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 data:
   prometheus-remote-write.json: |-

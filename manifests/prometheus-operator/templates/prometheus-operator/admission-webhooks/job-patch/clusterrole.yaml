@@ -4,7 +4,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name:  prometheus-prometheus-oper-admission
+  name:  monitoring-prometheus-oper-admission
   namespace: monitoring
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
@@ -12,7 +12,7 @@ metadata:
   labels:
     app: prometheus-operator-admission    
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 rules:
   - apiGroups:

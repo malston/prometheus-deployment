@@ -3,11 +3,11 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: prometheus-prometheus-node-exporter
+  name: monitoring-prometheus-node-exporter
   labels:     
     app: prometheus-node-exporter
     heritage: Tiller
-    release: prometheus
+    release: monitoring
     chart: prometheus-node-exporter-1.7.0
     jobLabel: node-exporter
     
@@ -15,7 +15,7 @@ spec:
   selector:
     matchLabels:
       app: prometheus-node-exporter
-      release: prometheus
+      release: monitoring
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
@@ -25,12 +25,12 @@ spec:
       labels:         
         app: prometheus-node-exporter
         heritage: Tiller
-        release: prometheus
+        release: monitoring
         chart: prometheus-node-exporter-1.7.0
         jobLabel: node-exporter
         
     spec:
-      serviceAccountName: prometheus-prometheus-node-exporter
+      serviceAccountName: monitoring-prometheus-node-exporter
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

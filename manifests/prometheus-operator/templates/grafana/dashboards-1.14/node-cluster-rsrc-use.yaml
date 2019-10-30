@@ -6,13 +6,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus-prometheus-oper-node-cluster-rsrc-use
+  name: monitoring-prometheus-oper-node-cluster-rsrc-use
   labels:
     grafana_dashboard: "1"
     app: prometheus-operator-grafana
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 data:
   node-cluster-rsrc-use.json: |-

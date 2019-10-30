@@ -6,12 +6,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: prometheus-prometheus-oper-kube-scheduler.rules
+  name: monitoring-prometheus-oper-kube-scheduler.rules
   labels:
     app: prometheus-operator
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
     role: alert-rules
     

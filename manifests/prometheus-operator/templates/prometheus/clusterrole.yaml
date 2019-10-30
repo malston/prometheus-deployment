@@ -4,13 +4,13 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: prometheus-prometheus-oper-prometheus
+  name: monitoring-prometheus-oper-prometheus
   namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 rules:
 - apiGroups:

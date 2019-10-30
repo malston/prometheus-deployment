@@ -3,18 +3,18 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: prometheus-grafana
+  name: monitoring-grafana
   namespace: monitoring
   labels:
     app: grafana
     chart: grafana-3.12.1
     heritage: Tiller
-    release: prometheus
+    release: monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: prometheus-grafana
+  name: monitoring-grafana
 subjects:
 - kind: ServiceAccount
-  name: prometheus-grafana
+  name: monitoring-grafana
   namespace: monitoring

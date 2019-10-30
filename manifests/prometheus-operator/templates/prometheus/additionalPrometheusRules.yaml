@@ -13,7 +13,7 @@ items:
         app: prometheus-operator
         
         chart: prometheus-operator-6.20.3
-        release: "prometheus"
+        release: "monitoring"
         heritage: "Tiller"
     spec:
       groups:

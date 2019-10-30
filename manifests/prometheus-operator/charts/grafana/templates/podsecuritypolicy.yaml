@@ -4,13 +4,13 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: prometheus-grafana
+  name: monitoring-grafana
   namespace: monitoring
   labels:
     app: grafana
     chart: grafana-3.12.1
     heritage: Tiller
-    release: prometheus
+    release: monitoring
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'docker/default'

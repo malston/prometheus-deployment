@@ -7,11 +7,11 @@ metadata:
   labels:     
     app: prometheus-node-exporter
     heritage: Tiller
-    release: prometheus
+    release: monitoring
     chart: prometheus-node-exporter-1.7.0
     jobLabel: node-exporter
     
-  name: prometheus-prometheus-node-exporter
+  name: monitoring-prometheus-node-exporter
 spec:
   privileged: false
   # Required to prevent escalations to root.

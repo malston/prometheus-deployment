@@ -4,34 +4,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prometheus-grafana
+  name: monitoring-grafana
   namespace: monitoring
   labels:
     app: grafana
     chart: grafana-3.12.1
-    release: prometheus
+    release: monitoring
     heritage: Tiller
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: grafana
-      release: prometheus
+      release: monitoring
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
         app: grafana
-        release: prometheus
+        release: monitoring
       annotations:
-        checksum/config: 0c01f22be0115bc4aa7af5791093aaa3abb5faa69597b2d07e11115bffba6373
-        checksum/dashboards-json-config: 283cc16b4b3dc051f3712a7651a0a7fe71a66d2ce8d137249e89facee616d27a
-        checksum/sc-dashboard-provider-config: d9ee5b5588c124af9198e1cc9a2348c09bc5d9066c884227917d523b62cf575b
-        checksum/secret: 3532d366a9a07acc1c35143e49ff796b7a2e4776169878eecd8437e5174bce46
+        checksum/config: fc3c5909558b55ea795dfced634d68259f3ee4960761135d1f35784c905388a8
+        checksum/dashboards-json-config: 1b0b93c9bb1a6705b701121ec2539e68ede31019fc03ae1e2f203559685121aa
+        checksum/sc-dashboard-provider-config: f2a836be0668a39e1dfac021dc51104ea3dd0057e8537426ec6da88651fad8b8
+        checksum/secret: 6e2250c670b53ccdf81c28e1578bd7003962bac7dd0ae1be162c2d7aa708931c
     spec:
       
-      serviceAccountName: prometheus-grafana
+      serviceAccountName: monitoring-grafana
       securityContext:
         fsGroup: 472
         runAsUser: 472
@@ -117,12 +117,12 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-grafana
+                  name: monitoring-grafana
                   key: admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-grafana
+                  name: monitoring-grafana
                   key: admin-password
           livenessProbe:
             failureThreshold: 10
@@ -143,16 +143,16 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: prometheus-grafana
+            name: monitoring-grafana
         - name: dashboards-kubeapislo
           configMap:
-            name: prometheus-grafana-dashboards-kubeapislo
+            name: monitoring-grafana-dashboards-kubeapislo
         - name: storage
           emptyDir: {}
         - name: sc-dashboard-volume
           emptyDir: {}
         - name: sc-dashboard-provider
           configMap:
-            name: prometheus-grafana-config-dashboards
+            name: monitoring-grafana-config-dashboards
         - name: sc-datasources-volume
           emptyDir: {}

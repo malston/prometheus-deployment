@@ -7,9 +7,9 @@ metadata:
   labels:
     app: grafana
     chart: grafana-3.12.1
-    release: prometheus
+    release: monitoring
     heritage: Tiller
-  name: prometheus-grafana-config-dashboards
+  name: monitoring-grafana-config-dashboards
   namespace: monitoring
 data:
   provider.yaml: |-

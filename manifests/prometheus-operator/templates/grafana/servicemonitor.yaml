@@ -4,19 +4,19 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prometheus-prometheus-oper-grafana
+  name: monitoring-prometheus-oper-grafana
   namespace: monitoring
   labels:
     app: prometheus-operator-grafana
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 spec:
   selector:
     matchLabels:
       app: grafana
-      release: "prometheus"
+      release: "monitoring"
   namespaceSelector:
     matchNames:
       - "monitoring"

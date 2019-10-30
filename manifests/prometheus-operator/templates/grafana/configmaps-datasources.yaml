@@ -4,14 +4,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus-prometheus-oper-grafana-datasource
+  name: monitoring-prometheus-oper-grafana-datasource
   namespace: monitoring
   labels:
     grafana_datasource: "1"
     app: prometheus-operator-grafana
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 data:
   datasource.yaml: |-
@@ -19,6 +19,6 @@ data:
     datasources:
     - name: Prometheus
       type: prometheus
-      url: http://prometheus-prometheus-oper-prometheus:9090/
+      url: http://monitoring-prometheus-oper-prometheus:9090/
       access: proxy
       isDefault: true

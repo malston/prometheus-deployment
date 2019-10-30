@@ -4,12 +4,12 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: prometheus-kube-state-metrics
+  name: monitoring-kube-state-metrics
   labels:
     app.kubernetes.io/name: kube-state-metrics
     helm.sh/chart: kube-state-metrics-2.4.1
     app.kubernetes.io/managed-by: Tiller
-    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/instance: monitoring
 spec:
   privileged: false
   volumes:

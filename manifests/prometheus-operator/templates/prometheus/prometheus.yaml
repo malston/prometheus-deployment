@@ -4,24 +4,24 @@
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
-  name: prometheus-prometheus-oper-prometheus
+  name: monitoring-prometheus-oper-prometheus
   namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 spec:
   alerting:
     alertmanagers:
       - namespace: monitoring
-        name: prometheus-prometheus-oper-alertmanager
+        name: monitoring-prometheus-oper-alertmanager
         port: web
         pathPrefix: "/"
   baseImage: quay.io/prometheus/prometheus
   version: v2.12.0
-  externalUrl: http://prometheus-prometheus-oper-prometheus.monitoring:9090
+  externalUrl: http://monitoring-prometheus-oper-prometheus.monitoring:9090
   paused: false
   replicas: 1
   logLevel:  info
@@ -33,15 +33,15 @@ spec:
   secrets:
     - etcd-client
     
-  serviceAccountName: prometheus-prometheus-oper-prometheus
+  serviceAccountName: monitoring-prometheus-oper-prometheus
   serviceMonitorSelector:
     matchLabels:
-      release: "prometheus"
+      release: "monitoring"
 
   serviceMonitorNamespaceSelector: {}
   podMonitorSelector:
     matchLabels:
-      release: "prometheus"
+      release: "monitoring"
 
   podMonitorNamespaceSelector: {}
   securityContext:

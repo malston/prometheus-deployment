@@ -4,7 +4,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name:  prometheus-prometheus-oper-admission-patch
+  name:  monitoring-prometheus-oper-admission-patch
   namespace: monitoring
   annotations:
     "helm.sh/hook": post-install,post-upgrade
@@ -12,16 +12,16 @@ metadata:
   labels:
     app: prometheus-operator-admission-patch    
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 spec:
   template:
     metadata:
-      name:  prometheus-prometheus-oper-admission-patch
+      name:  monitoring-prometheus-oper-admission-patch
       labels:
         app: prometheus-operator-admission-patch        
         chart: prometheus-operator-6.20.3
-        release: "prometheus"
+        release: "monitoring"
         heritage: "Tiller"
     spec:
       containers:
@@ -30,12 +30,12 @@ spec:
           imagePullPolicy: 
           args:
             - patch
-            - --webhook-name=prometheus-prometheus-oper-admission
+            - --webhook-name=monitoring-prometheus-oper-admission
             - --namespace=monitoring
-            - --secret-name=prometheus-prometheus-oper-admission
+            - --secret-name=monitoring-prometheus-oper-admission
             - --patch-failure-policy=Fail
       restartPolicy: OnFailure
-      serviceAccountName: prometheus-prometheus-oper-admission
+      serviceAccountName: monitoring-prometheus-oper-admission
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000

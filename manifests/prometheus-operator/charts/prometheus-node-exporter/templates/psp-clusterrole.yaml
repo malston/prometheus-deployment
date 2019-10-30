@@ -7,14 +7,14 @@ metadata:
   labels:     
     app: prometheus-node-exporter
     heritage: Tiller
-    release: prometheus
+    release: monitoring
     chart: prometheus-node-exporter-1.7.0
     jobLabel: node-exporter
     
-  name: psp-prometheus-prometheus-node-exporter
+  name: psp-monitoring-prometheus-node-exporter
 rules:
 - apiGroups: ['extensions']
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
-  - prometheus-prometheus-node-exporter
+  - monitoring-prometheus-node-exporter

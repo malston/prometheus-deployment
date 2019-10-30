@@ -4,17 +4,17 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: prometheus-grafana-clusterrolebinding
+  name: monitoring-grafana-clusterrolebinding
   labels:
     app: grafana
     chart: grafana-3.12.1
-    release: prometheus
+    release: monitoring
     heritage: Tiller
 subjects:
   - kind: ServiceAccount
-    name: prometheus-grafana
+    name: monitoring-grafana
     namespace: monitoring
 roleRef:
   kind: ClusterRole
-  name: prometheus-grafana-clusterrole
+  name: monitoring-grafana-clusterrole
   apiGroup: rbac.authorization.k8s.io

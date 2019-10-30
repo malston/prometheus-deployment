@@ -5,12 +5,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus-grafana-dashboards-kubeapislo
+  name: monitoring-grafana-dashboards-kubeapislo
   namespace: monitoring
   labels:
     app: grafana
     chart: grafana-3.12.1
-    release: prometheus
+    release: monitoring
     heritage: Tiller
     dashboard-provider: kubeapislo
 data:

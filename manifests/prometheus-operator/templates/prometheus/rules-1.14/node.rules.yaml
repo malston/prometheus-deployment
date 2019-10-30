@@ -6,12 +6,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: prometheus-prometheus-oper-node.rules
+  name: monitoring-prometheus-oper-node.rules
   labels:
     app: prometheus-operator
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
     role: alert-rules
     

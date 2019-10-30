@@ -4,27 +4,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prometheus-prometheus-oper-operator
+  name: monitoring-prometheus-oper-operator
   namespace: monitoring
   labels:
     app: prometheus-operator-operator
     
     chart: prometheus-operator-6.20.3
-    release: "prometheus"
+    release: "monitoring"
     heritage: "Tiller"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: prometheus-operator-operator
-      release: "prometheus"
+      release: "monitoring"
   template:
     metadata:
       labels:
         app: prometheus-operator-operator
         
         chart: prometheus-operator-6.20.3
-        release: "prometheus"
+        release: "monitoring"
         heritage: "Tiller"
     spec:
       containers:
@@ -32,7 +32,7 @@ spec:
           image: "quay.io/coreos/prometheus-operator:v0.32.0"
           imagePullPolicy: "IfNotPresent"
           args:
-            - --kubelet-service=kube-system/prometheus-prometheus-oper-kubelet
+            - --kubelet-service=kube-system/monitoring-prometheus-oper-kubelet
             - --logtostderr=true
             - --crd-apigroup=monitoring.coreos.com
             - --localhost=127.0.0.1
@@ -76,9 +76,9 @@ spec:
         - name: tls-proxy-secret
           secret:
             defaultMode: 420
-            secretName: prometheus-prometheus-oper-admission
+            secretName: monitoring-prometheus-oper-admission
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
         
-      serviceAccountName: prometheus-prometheus-oper-operator
+      serviceAccountName: monitoring-prometheus-oper-operator
