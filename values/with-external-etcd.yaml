@@ -12,10 +12,6 @@ prometheus:
         app: prometheus-operator
         release: monitoring
 
-# kubelet:
-#   serviceMonitor:
-#     https: true
-
 kubeApiServer:
   serviceMonitor:
     interval: 30s
