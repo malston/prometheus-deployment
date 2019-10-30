@@ -1,3 +1,6 @@
+defaultRules:
+  labels:
+    role: alert-rules
 
 prometheus:
   prometheusSpec:
@@ -9,24 +12,48 @@ prometheus:
         app: prometheus-operator
         release: monitoring
 
-kubelet:
+# kubelet:
+#   serviceMonitor:
+#     https: true
+
+kubeApiServer:
   serviceMonitor:
-    https: true
+    interval: 30s
+    metricRelabelings:
+    - action: drop
+      regex: etcd_(debugging|disk|request|server).*
+      sourceLabels:
+      - __name__
+    - action: drop
+      regex: apiserver_admission_controller_admission_latencies_seconds_.*
+      sourceLabels:
+      - __name__
+    - action: drop
+      regex: apiserver_admission_step_admission_latencies_seconds_.*
+      sourceLabels:
+      - __name__
 
 kubeControllerManager:
   endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
+  serviceMonitor:
+    interval: 30s
+    insecureSkipVerify: true
+    metricRelabelings:
+    - action: drop
+      regex: etcd_(debugging|disk|request|server).*
+      sourceLabels:
+      - __name__
 
 kubeScheduler:
   endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
-
-defaultRules:
-  labels:
-    role: alert-rules
+  serviceMonitor:
+    interval: 30s
+    insecureSkipVerify: true
 
 kubeEtcd:
   endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
   serviceMonitor:
-    insecureSkipVerify: true
+    interval: 30s
     scheme: https
     caFile: "/etc/prometheus/secrets/kube-etcd-client-certs/etcd-client-ca.crt"
     certFile: "/etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.crt"
