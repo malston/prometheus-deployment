@@ -23,6 +23,7 @@ spec:
       - "kube-system"
   endpoints:
   - port: http-metrics
+    interval: 30s
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     scheme: https
     tlsConfig:
@@ -30,4 +31,4 @@ spec:
       caFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client-ca.crt
       certFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.crt
       keyFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.key
-      insecureSkipVerify: true
+      insecureSkipVerify: false
