@@ -1,0 +1,3 @@
+[submodule "exporters"]
+	path = exporters/bosh-exporter
+	url = https://github.com/bosh-prometheus/bosh_exporter.git
