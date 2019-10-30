@@ -11,7 +11,7 @@ kubectl create -f charts/prometheus-operator/crds/
 
 # Create secrets for etcd client cert
 kubectl create secret -n "${namespace}" generic etcd-client \
-    --from-file=etcd-ca.crt \
+    --from-file=etcd-client-ca.crt \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
 
@@ -20,7 +20,7 @@ mkdir -p manifests/
 
 # Install operator
 helm template \
-    --name prometheus \
+    --name monitoring \
     --namespace "${namespace}" \
     --values ./values/prometheus-operator.yaml \
     --values ./values/offline-overrides.yaml \
