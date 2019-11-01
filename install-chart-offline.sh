@@ -33,10 +33,6 @@ helm template \
     --set grafana.initChownData.enabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
-    --set grafana.defaultDashboardsEnabled=true \
-    --set grafana.sidecar.dashboards.enabled=true \
-    --set grafana.sidecar.datasources.enabled=true \
-    --set grafana.sidecar.datasources.defaultDatasourceEnabled=true \
     --set kubeTargetVersionOverride="1.14.5" \
     --output-dir ./manifests \
     ./charts/prometheus-operator
