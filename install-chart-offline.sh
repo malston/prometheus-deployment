@@ -22,7 +22,6 @@ mkdir -p manifests/
 helm template \
     --name monitoring \
     --namespace "${namespace}" \
-    --values ./values/prometheus-operator.yaml \
     --values ./values/offline-overrides.yaml \
     --values ./values/with-external-etcd.yaml \
     --set prometheusOperator.createCustomResource=false \
