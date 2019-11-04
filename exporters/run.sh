@@ -10,15 +10,18 @@ export BOSH_EXPORTER_METRICS_ENVIRONMENT=pks
 export BOSH_EXPORTER_METRICS_NAMESPACE=""
 export BOSH_EXPORTER_FILTER_COLLECTORS="Deployments,Jobs,ServiceDiscovery"
 
-LOG_DIR=./log
+LOG_DIR=${PWD}/log
 rm -rf ${LOG_DIR}
 mkdir -p ${LOG_DIR}
 
-killall bosh_exporter
-rm bosh_exporter
-make build
+pushd bosh-exporter > /dev/null
+      killall bosh_exporter
+      rm bosh_exporter
+      make build
+      ./bosh_exporter >> ${LOG_DIR}/bosh_exporter.stdout.log \
+            2>> ${LOG_DIR}/bosh_exporter.stderr.log &
+popd > /dev/null
 
-./bosh_exporter >> ${LOG_DIR}/bosh_exporter.stdout.log \
-      2>> ${LOG_DIR}/bosh_exporter.stderr.log &
+sleep 3
 
-# curl -k -v http://127.0.0.1:9190/metrics
+curl -k -v http://127.0.0.1:9190/metrics
