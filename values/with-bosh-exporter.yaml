@@ -1,0 +1,23 @@
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+    - job_name: "bosh-exporter"
+      static_configs:
+      - targets:
+        - "10.197.74.201:30123"
+      # file_sd_configs:
+      # - files:
+      #   - /etc/bosh-exporter/bosh_target_groups.json
+      # relabel_configs:
+      # - source_labels: [__meta_consul_tag]
+      #   regex:  '.*,specialsecret,.*'
+      #   action: keep
+      # - replacement: my_job
+      #   target_label: job
+      # - source_labels: [__meta_bosh_job_process_name]
+      #   regex: bosh-exporter
+      #   action: keep
+      # - source_labels: [__address__]
+      #   regex: "(.*)"
+      #   target_label: __address__
+      #   replacement: "${1}:9100"
