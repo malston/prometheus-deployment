@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bosh-exporter
+  namespace: monitoring
+  labels:
+    app: bosh-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bosh-exporter
+  template:
+    metadata:
+      name: bosh-exporter
+      namespace: monitoring
+      labels:
+        app: bosh-exporter
+    spec:
+      containers:
+      - image: "harbor.haas-440.pez.pivotal.io/library/bosh-exporter:master"
+        name: bosh-exporter
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: LOG_DIR
+          value: "/bin"
+        - name: BOSH_EXPORTER_WEB_LISTEN_ADDRESS
+          value: ":9190"
+        - name: BOSH_EXPORTER_BOSH_LOG_LEVEL
+          value: "DEBUG"
+        - name: BOSH_EXPORTER_BOSH_URL
+          value: "172.16.1.11"
+        - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_ID
+          value: "ops_manager"
+        - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_SECRET
+          value: "EdyCNlv4r3bArQY1__HgucBwQj6VGStq"
+        - name: BOSH_EXPORTER_BOSH_CA_CERT_FILE
+          value: "/etc/bosh-exporter/certs/bosh-ca.crt"
+        - name: BOSH_EXPORTER_METRICS_ENVIRONMENT
+          value: pks
+        - name: BOSH_EXPORTER_FILTER_COLLECTORS
+          value: "Deployments,Jobs,ServiceDiscovery"
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/bosh-exporter/certs/
+          readOnly: true
+        ports:
+        - containerPort: 9190
+          name: http
+          protocol: TCP
+      volumes:
+      - name: certs
+        secret:
+          secretName: bosh-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+  name: bosh-exporter
+  namespace: monitoring
+  labels:
+    app: bosh-exporter
+    jobLabel: bosh-exporter
+spec:
+  type: NodePort
+  ports:
+  - name: http-metrics
+    port: 9190
+    targetPort: http
+    nodePort: 30123
+  selector:
+    app: bosh-exporter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bosh-exporter
+  labels:
+    app: bosh-exporter
+spec:
+  selector:
+    matchLabels:
+      app: bosh-exporter
+  endpoints:
+  - port: http-metrics
+    interval: 15s
