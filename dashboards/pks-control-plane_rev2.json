@@ -107,7 +107,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(system_healthy{exported_job=\"master\"})\n",
+          "expr": "sum(bosh_job_healthy{bosh_job_name=\"master\"})\n",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -168,10 +168,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(system_healthy)\n\n",
+          "expr": "(bosh_job_healthy)\n\n",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{exported_job}} {{instance}}",
+          "legendFormat": "{{bosh_job_name}} {{instance}}",
           "refId": "A"
         },
         {
@@ -283,7 +283,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(system_healthy{exported_job=\"worker\"})",
+          "expr": "sum(bosh_job_healthy{bosh_job_name=\"worker\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -367,7 +367,7 @@
       "pluginVersion": "6.2.5",
       "targets": [
         {
-          "expr": "system_mem_percent{exported_job=\"master\"}",
+          "expr": "bosh_job_mem_percent{bosh_job_name=\"master\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "",
@@ -428,7 +428,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "system_disk_ephemeral_percent{exported_job=\"master\"}",
+          "expr": "bosh_job_mem_percent{bosh_job_name=\"master\"}",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -534,14 +534,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "system_cpu_user{exported_job=\"pivotal-container-service\"}",
+          "expr": "bosh_job_cpu_user{bosh_job_name=\"pivotal-container-service\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "CPU %",
           "refId": "A"
         },
         {
-          "expr": "system_mem_percent{exported_job=\"pivotal-container-service\"}\n",
+          "expr": "bosh_job_mem_percent{bosh_job_name=\"pivotal-container-service\"}\n",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Memory %",
