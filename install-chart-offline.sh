@@ -15,6 +15,9 @@ kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
 
+# Copy custom dashboards
+cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
+
 rm -rf manifests/
 mkdir -p manifests/
 
@@ -36,3 +39,5 @@ helm template \
     ./charts/prometheus-operator
 
 kubectl apply --recursive --filename ./manifests/prometheus-operator
+
+rm charts/prometheus-operator/charts/grafana/dashboards/*.json

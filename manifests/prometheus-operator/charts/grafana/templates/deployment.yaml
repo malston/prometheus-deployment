@@ -26,7 +26,7 @@ spec:
         release: monitoring
       annotations:
         checksum/config: fc3c5909558b55ea795dfced634d68259f3ee4960761135d1f35784c905388a8
-        checksum/dashboards-json-config: 1b0b93c9bb1a6705b701121ec2539e68ede31019fc03ae1e2f203559685121aa
+        checksum/dashboards-json-config: f89874c28129dd79a3d68e299de0d6ea100871f77f10092c84b603aa80e27e20
         checksum/sc-dashboard-provider-config: f2a836be0668a39e1dfac021dc51104ea3dd0057e8537426ec6da88651fad8b8
         checksum/secret: 6e2250c670b53ccdf81c28e1578bd7003962bac7dd0ae1be162c2d7aa708931c
     spec:
