@@ -24,7 +24,6 @@ helm template \
     --namespace "${namespace}" \
     --values ./values/offline-overrides.yaml \
     --values ./values/with-external-etcd.yaml \
-    --values ./values/with-bosh-exporter.yaml \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set prometheusOperator.tlsProxy.enabled=true \

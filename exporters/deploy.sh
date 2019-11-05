@@ -7,7 +7,7 @@ kubectl config set-context --current --namespace="${namespace}"
 kubectl delete secret -n "${namespace}" bosh-ca --ignore-not-found
 
 kubectl create secret -n "${namespace}" generic bosh-ca \
-    --from-file=bosh-ca.crt
+    --from-file=./bosh-exporter/bosh-ca.crt
 
 kubectl delete -f bosh-exporter.yaml --ignore-not-found
 
