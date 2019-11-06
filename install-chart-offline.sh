@@ -29,9 +29,6 @@ helm template \
     --values ./values/with-external-etcd.yaml \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
-    --set prometheusOperator.tlsProxy.enabled=true \
-    --set prometheusOperator.admissionWebhooks.patch.enabled=true \
-    --set grafana.initChownData.enabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="1.14.5" \
