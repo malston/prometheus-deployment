@@ -7,7 +7,7 @@ kubectl create namespace "${namespace}"
 kubectl config set-context --current --namespace="${namespace}"
 
 # Create CRDs
-kubectl create -f charts/prometheus-operator/crds/
+kubectl create -f crds/
 
 # Create secrets for etcd client cert
 kubectl create secret -n "${namespace}" generic etcd-client \

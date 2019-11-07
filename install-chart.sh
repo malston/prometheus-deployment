@@ -7,7 +7,7 @@ kubectl create namespace "${namespace}"
 kubectl config set-context --current --namespace="${namespace}"
 
 # Create CRDs
-kubectl apply -f charts/prometheus-operator/crds/
+kubectl apply -f crds/
 
 # Install operator
 helm3 install monitoring stable/prometheus-operator \
