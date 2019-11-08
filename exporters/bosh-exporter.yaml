@@ -18,16 +18,10 @@ spec:
         app: bosh-exporter
     spec:
       containers:
-      - image: "harbor.haas-440.pez.pivotal.io/library/bosh-exporter:master"
+      - image: "harbor.haas-440.pez.pivotal.io/prometheus/boshprometheus/bosh-exporter:3.3.0"
         name: bosh-exporter
         imagePullPolicy: IfNotPresent
         env:
-        - name: LOG_DIR
-          value: "/bin"
-        - name: BOSH_EXPORTER_WEB_LISTEN_ADDRESS
-          value: ":9190"
-        - name: BOSH_EXPORTER_BOSH_LOG_LEVEL
-          value: "DEBUG"
         - name: BOSH_EXPORTER_BOSH_URL
           value: "172.16.1.11"
         - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_ID
