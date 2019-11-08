@@ -25,8 +25,8 @@ spec:
         app: grafana
         release: monitoring
       annotations:
-        checksum/config: fc3c5909558b55ea795dfced634d68259f3ee4960761135d1f35784c905388a8
-        checksum/dashboards-json-config: f89874c28129dd79a3d68e299de0d6ea100871f77f10092c84b603aa80e27e20
+        checksum/config: f0262f12ca878bb505b84c9d82382902a39f84edeb05fa6e8d11363521529ef1
+        checksum/dashboards-json-config: bd04c5d3c0aed725f8e8d1216bbf8d4d77bb2cd64fb3b74926f192f6ba3344db
         checksum/sc-dashboard-provider-config: f2a836be0668a39e1dfac021dc51104ea3dd0057e8537426ec6da88651fad8b8
         checksum/secret: 6e2250c670b53ccdf81c28e1578bd7003962bac7dd0ae1be162c2d7aa708931c
     spec:
@@ -96,6 +96,9 @@ spec:
             - name: dashboards-kubeapislo
               mountPath: "/var/lib/grafana/dashboards/kubeapislo/kubeapi-slo.json"
               subPath: "kubeapi-slo.json"
+            - name: dashboards-pkscontrolplane
+              mountPath: "/var/lib/grafana/dashboards/pkscontrolplane/pks-control-plane.json"
+              subPath: "pks-control-plane.json"
             - name: config
               mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
               subPath: dashboardproviders.yaml
@@ -147,6 +150,9 @@ spec:
         - name: dashboards-kubeapislo
           configMap:
             name: monitoring-grafana-dashboards-kubeapislo
+        - name: dashboards-pkscontrolplane
+          configMap:
+            name: monitoring-grafana-dashboards-pkscontrolplane
         - name: storage
           emptyDir: {}
         - name: sc-dashboard-volume

@@ -28,11 +28,16 @@ data:
     providers:
     - disableDeletion: true
       editable: true
-      folder: ""
       name: kubeapislo
       options:
         path: /var/lib/grafana/dashboards/kubeapislo
-      orgId: 1
+      type: file
+      updateIntervalSeconds: 10
+    - disableDeletion: true
+      editable: true
+      name: pkscontrolplane
+      options:
+        path: /var/lib/grafana/dashboards/pkscontrolplane
       type: file
       updateIntervalSeconds: 10
     
@@ -40,3 +45,4 @@ data:
     #!/usr/bin/env sh
     set -euf
     mkdir -p /var/lib/grafana/dashboards/kubeapislo
+    mkdir -p /var/lib/grafana/dashboards/pkscontrolplane
