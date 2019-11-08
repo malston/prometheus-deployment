@@ -10,13 +10,13 @@ Deploys [Prometheus Operator](https://github.com/coreos/prometheus-operator) usi
 ./push-image.sh
 ```
 
-1. Deploy the [bosh-exporter](https://github.com/bosh-prometheus/bosh_exporter)
+2. Deploy the [bosh-exporter](https://github.com/bosh-prometheus/bosh_exporter)
 
 ```bash
 ./deploy-bosh-exporter.sh monitoring opsman-hostname opsman-username opsman-password
 ```
 
-1. Run Helm
+3. Run Helm
 
 ```bash
 ./install-chart-offline.sh
