@@ -55,17 +55,27 @@ grafana:
       apiVersion: 1
       providers:
       - name: 'kubeapislo'
-        orgId: 1
-        folder: ''
         type: file
         updateIntervalSeconds: 10
         disableDeletion: true
         editable: true
         options:
           path: /var/lib/grafana/dashboards/kubeapislo
+      providers:
+      - name: 'pkscontrolplane'
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/pkscontrolplane
 
   dashboards:
     kubeapislo:
       kubeapi-slo:
         file: dashboards/kubeapi-slo.json
+        datasource: Prometheus
+    pkscontrolplane:
+      pks-control-plane:
+        file: dashboards/pks-control-plane.json
         datasource: Prometheus
