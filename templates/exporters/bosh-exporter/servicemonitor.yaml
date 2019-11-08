@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bosh-exporter
+  labels:
+    app: bosh-exporter
+    release: "monitoring"
+spec:
+  selector:
+    matchLabels:
+      app: bosh-exporter
+      release: monitoring
+  endpoints:
+  - port: http-metrics
+    interval: 15s

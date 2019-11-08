@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+  name: bosh-exporter
+  namespace: monitoring
+  labels:
+    app: bosh-exporter
+    release: monitoring
+    jobLabel: bosh-exporter
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9190
+      targetPort: 9190
+      protocol: TCP
+      name: http-metrics
+  selector:
+    app: bosh-exporter
