@@ -5,14 +5,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: monitoring-grafana-dashboards-kubeapislo
+  name: monitoring-grafana-dashboards-default
   namespace: monitoring
   labels:
     app: grafana
     chart: grafana-3.12.1
     release: monitoring
     heritage: Tiller
-    dashboard-provider: kubeapislo
+    dashboard-provider: default
 data:
   kubeapi-slo.json:
     |
@@ -918,18 +918,6 @@ data:
       "version": 0
       }
     
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: monitoring-grafana-dashboards-pkscontrolplane
-  namespace: monitoring
-  labels:
-    app: grafana
-    chart: grafana-3.12.1
-    release: monitoring
-    heritage: Tiller
-    dashboard-provider: pkscontrolplane
-data:
   pks-control-plane.json:
     |-
       {

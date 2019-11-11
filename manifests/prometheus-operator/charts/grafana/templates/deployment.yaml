@@ -25,8 +25,8 @@ spec:
         app: grafana
         release: monitoring
       annotations:
-        checksum/config: f0262f12ca878bb505b84c9d82382902a39f84edeb05fa6e8d11363521529ef1
-        checksum/dashboards-json-config: bd04c5d3c0aed725f8e8d1216bbf8d4d77bb2cd64fb3b74926f192f6ba3344db
+        checksum/config: e8b18527eae873624d33823d4e833b2cf93e265f7a5b35d26fbc647c6753578e
+        checksum/dashboards-json-config: d057468d130f26133090cf38cf80c2716dbdfc13b16b69c0e1e8b46c787518e9
         checksum/sc-dashboard-provider-config: f2a836be0668a39e1dfac021dc51104ea3dd0057e8537426ec6da88651fad8b8
         checksum/secret: 6e2250c670b53ccdf81c28e1578bd7003962bac7dd0ae1be162c2d7aa708931c
     spec:
@@ -93,11 +93,11 @@ spec:
               subPath: grafana.ini
             - name: storage
               mountPath: "/var/lib/grafana"
-            - name: dashboards-kubeapislo
-              mountPath: "/var/lib/grafana/dashboards/kubeapislo/kubeapi-slo.json"
+            - name: dashboards-default
+              mountPath: "/var/lib/grafana/dashboards/default/kubeapi-slo.json"
               subPath: "kubeapi-slo.json"
-            - name: dashboards-pkscontrolplane
-              mountPath: "/var/lib/grafana/dashboards/pkscontrolplane/pks-control-plane.json"
+            - name: dashboards-default
+              mountPath: "/var/lib/grafana/dashboards/default/pks-control-plane.json"
               subPath: "pks-control-plane.json"
             - name: config
               mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
@@ -147,12 +147,9 @@ spec:
         - name: config
           configMap:
             name: monitoring-grafana
-        - name: dashboards-kubeapislo
+        - name: dashboards-default
           configMap:
-            name: monitoring-grafana-dashboards-kubeapislo
-        - name: dashboards-pkscontrolplane
-          configMap:
-            name: monitoring-grafana-dashboards-pkscontrolplane
+            name: monitoring-grafana-dashboards-default
         - name: storage
           emptyDir: {}
         - name: sc-dashboard-volume

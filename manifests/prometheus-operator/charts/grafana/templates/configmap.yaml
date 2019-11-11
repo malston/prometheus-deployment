@@ -28,21 +28,13 @@ data:
     providers:
     - disableDeletion: true
       editable: true
-      name: kubeapislo
+      name: default
       options:
-        path: /var/lib/grafana/dashboards/kubeapislo
-      type: file
-      updateIntervalSeconds: 10
-    - disableDeletion: true
-      editable: true
-      name: pkscontrolplane
-      options:
-        path: /var/lib/grafana/dashboards/pkscontrolplane
+        path: /var/lib/grafana/dashboards/default
       type: file
       updateIntervalSeconds: 10
     
   download_dashboards.sh: |
     #!/usr/bin/env sh
     set -euf
-    mkdir -p /var/lib/grafana/dashboards/kubeapislo
-    mkdir -p /var/lib/grafana/dashboards/pkscontrolplane
+    mkdir -p /var/lib/grafana/dashboards/default

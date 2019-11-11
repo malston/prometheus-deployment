@@ -54,25 +54,16 @@ grafana:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
-      - name: 'kubeapislo'
+      - name: default
         type: file
         updateIntervalSeconds: 10
         disableDeletion: true
         editable: true
         options:
-          path: /var/lib/grafana/dashboards/kubeapislo
-      - name: 'pkscontrolplane'
-        type: file
-        updateIntervalSeconds: 10
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/pkscontrolplane
-
+          path: /var/lib/grafana/dashboards/default
   dashboards:
-    kubeapislo:
+    default:
       kubeapi-slo:
         file: dashboards/kubeapi-slo.json
-    pkscontrolplane:
       pks-control-plane:
         file: dashboards/pks-control-plane.json
