@@ -2,8 +2,8 @@
 
 namespace="${1:-"monitoring"}"
 
-kubectl delete secret -n "${namespace}" etcd-client
+kubectl delete secret -n "${namespace}" etcd-client --ignore-not-found
 
-kubectl delete --recursive --filename ./manifests/prometheus-operator
+kubectl delete --recursive --filename ./manifests/prometheus-operator --ignore-not-found
 
-kubectl delete --recursive --filename ./templates
+kubectl delete --recursive --filename ./templates --ignore-not-found
