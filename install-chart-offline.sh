@@ -19,12 +19,6 @@ kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
 
-# Create secrets for additional scrape configs
-kubectl delete secret -n "${namespace}" additional-scrape-configs --ignore-not-found
-kubectl create secret -n "${namespace}" generic additional-scrape-configs \
-    --from-file=values/prometheus-additional.yaml \
-    --dry-run -oyaml > manifests/additional-scrape-configs.yaml
-
 # Copy dashboards to grafana chart location
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
