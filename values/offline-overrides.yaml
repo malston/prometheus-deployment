@@ -1,7 +1,3 @@
-additionalScrapeConfigs:
-  name: additional-scrape-configs
-  key: prometheus-additional.yaml
-
 additionalPrometheusRules:
   - name: kube-api-rules-file
     groups:

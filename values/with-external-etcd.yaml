@@ -12,6 +12,10 @@ prometheus:
         app: prometheus-operator
         release: monitoring
 
+    additionalScrapeConfigs:
+      name: additional-scrape-configs
+      key: prometheus-additional.yaml
+
 kubeApiServer:
   serviceMonitor:
     interval: 30s

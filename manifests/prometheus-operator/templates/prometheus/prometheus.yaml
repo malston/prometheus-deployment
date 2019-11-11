@@ -56,3 +56,6 @@ spec:
       release: monitoring
       role: alert-rules
     
+  additionalScrapeConfigs:
+    name: monitoring-prometheus-oper-prometheus-scrape-confg
+    key: additional-scrape-configs.yaml

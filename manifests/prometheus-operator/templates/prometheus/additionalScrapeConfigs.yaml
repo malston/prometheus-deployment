@@ -1,0 +1,16 @@
+---
+# Source: prometheus-operator/templates/prometheus/additionalScrapeConfigs.yaml
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-prometheus-oper-prometheus-scrape-confg
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-prometheus-scrape-confg
+    
+    chart: prometheus-operator-6.20.3
+    release: "monitoring"
+    heritage: "Tiller"
+data:
+  additional-scrape-configs.yaml: "a2V5OiBwcm9tZXRoZXVzLWFkZGl0aW9uYWwueWFtbApuYW1lOiBhZGRpdGlvbmFsLXNjcmFwZS1jb25maWdzCg=="
