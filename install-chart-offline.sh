@@ -6,20 +6,27 @@ kubectl create namespace "${namespace}"
 
 kubectl config set-context --current --namespace="${namespace}"
 
+rm -rf manifests/
+mkdir -p manifests/
+
 # Create CRDs
-kubectl create -f crds/
+kubectl apply -f crds/
 
 # Create secrets for etcd client cert
+kubectl delete secret -n "${namespace}" etcd-client --ignore-not-found
 kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-client-ca.crt \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
 
-# Copy custom dashboards
-cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
+# Create secrets for additional scrape configs
+kubectl delete secret -n "${namespace}" additional-scrape-configs --ignore-not-found
+kubectl create secret -n "${namespace}" generic additional-scrape-configs \
+    --from-file=values/prometheus-additional.yaml \
+    --dry-run -oyaml > manifests/additional-scrape-configs.yaml
 
-rm -rf manifests/
-mkdir -p manifests/
+# Copy dashboards to grafana chart location
+cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
 # Install operator
 helm template \
@@ -35,6 +42,11 @@ helm template \
     --output-dir ./manifests \
     ./charts/prometheus-operator
 
-kubectl apply --recursive --filename ./manifests/prometheus-operator
+# Apply all objects under manifests directory
+kubectl apply --recursive --filename ./manifests
 
+# Create services
+kubectl apply -f services/
+
+# Remove copied dashboards
 rm charts/prometheus-operator/charts/grafana/dashboards/*.json

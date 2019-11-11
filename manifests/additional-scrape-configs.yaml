@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  prometheus-additional.yaml: LSBqb2JfbmFtZTogcHJvbWV0aGV1cy1jbHVzdGVyMDIKICBzY2hlbWU6IGh0dHAKICBob25vcl9sYWJlbHM6IHRydWUKICBtZXRyaWNzX3BhdGg6ICcvZmVkZXJhdGUnCiAgc2NyYXBlX2ludGVydmFsOiAzMHMKICBwYXJhbXM6CiAgICAnbWF0Y2hbXSc6CiAgICAgIC0gJ3tfX25hbWVfXz1+Ii4rIn0nCiAgc3RhdGljX2NvbmZpZ3M6CiAgICAtIHRhcmdldHM6CiAgICAgIC0gJ3Byb21ldGhldXMtMDIuaGFhcy00NDAucGV6LnBpdm90YWwuaW8nCg==
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: additional-scrape-configs
+  namespace: monitoring
