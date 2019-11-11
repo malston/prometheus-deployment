@@ -1,7 +1,7 @@
 prometheus:
   prometheusSpec:
     additionalScrapeConfigs:
-    - job_name: "prometheus-cluster02"
+    - job_name: "prometheus-cluster"
       scheme: http
       honor_labels: true
       metrics_path: "/federate"
@@ -10,4 +10,6 @@ prometheus:
         'match[]':
         - '{__name__=~"job:.*"}'
       static_configs:
-      - targets: ["prometheus-02.haas-440.pez.pivotal.io"]
+      - targets: 
+        - "prometheus-01.haas-440.pez.pivotal.io"
+        - "prometheus-02.haas-440.pez.pivotal.io"
