@@ -13,4 +13,4 @@ metadata:
     release: "monitoring"
     heritage: "Tiller"
 data:
-  additional-scrape-configs.yaml: "a2V5OiBwcm9tZXRoZXVzLWFkZGl0aW9uYWwueWFtbApuYW1lOiBhZGRpdGlvbmFsLXNjcmFwZS1jb25maWdzCg=="
+  additional-scrape-configs.yaml: "LSBrZXk6IHByb21ldGhldXMtYWRkaXRpb25hbC55YW1sCiAgbmFtZTogYWRkaXRpb25hbC1zY3JhcGUtY29uZmlncwo="

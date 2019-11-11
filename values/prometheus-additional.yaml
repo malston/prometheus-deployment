@@ -1,11 +1,10 @@
-- job_name: prometheus-cluster02
+- job_name: "prometheus-cluster02"
   scheme: http
   honor_labels: true
-  metrics_path: '/federate'
+  metrics_path: "/federate"
   scrape_interval: 30s
   params:
     'match[]':
-      - '{__name__=~".+"}'
+     - '{__name__=~".+"}'
   static_configs:
-    - targets:
-      - 'prometheus-02.haas-440.pez.pivotal.io'
+  - targets: ["prometheus-02.haas-440.pez.pivotal.io"]

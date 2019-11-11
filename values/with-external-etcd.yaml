@@ -4,6 +4,9 @@ defaultRules:
 
 prometheus:
   prometheusSpec:
+    additionalScrapeConfigs:
+      - name: additional-scrape-configs
+        key: prometheus-additional.yaml
     secrets:
       - etcd-client
     ruleSelector:
@@ -11,10 +14,6 @@ prometheus:
         role: alert-rules
         app: prometheus-operator
         release: monitoring
-
-    additionalScrapeConfigs:
-      name: additional-scrape-configs
-      key: prometheus-additional.yaml
 
 kubeApiServer:
   serviceMonitor:
