@@ -33,6 +33,9 @@ spec:
   secrets:
     - etcd-client
     
+  configMaps:
+    - bosh-target-groups
+    
   serviceAccountName: monitoring-prometheus-oper-prometheus
   serviceMonitorSelector:
     matchLabels:

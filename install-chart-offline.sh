@@ -19,6 +19,11 @@ kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
 
+# Create configMaps for file service discovery
+kubectl delete configmap -n "${namespace}" bosh-target-groups --ignore-not-found
+kubectl create configmap -n "${namespace}" bosh-target-groups \
+    --from-file=bosh_target_groups.json
+
 # Copy dashboards to grafana chart location
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 

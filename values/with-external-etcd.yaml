@@ -6,6 +6,8 @@ prometheus:
   prometheusSpec:
     secrets:
       - etcd-client
+    configMaps:
+      - bosh-target-groups
     ruleSelector:
       matchLabels:
         role: alert-rules
@@ -46,12 +48,12 @@ kubeScheduler:
     interval: 30s
     insecureSkipVerify: true
 
-kubeEtcd:
-  endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
-  serviceMonitor:
-    interval: 30s
-    scheme: https
-    caFile: "/etc/prometheus/secrets/etcd-client/etcd-client-ca.crt"
-    certFile: "/etc/prometheus/secrets/etcd-client/etcd-client.crt"
-    keyFile: "/etc/prometheus/secrets/etcd-client/etcd-client.key"
-    serverName: "'*.etcd.cfcr.internal'"
+# kubeEtcd:
+#   endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
+#   serviceMonitor:
+#     interval: 30s
+#     scheme: https
+#     caFile: "/etc/prometheus/secrets/etcd-client/etcd-client-ca.crt"
+#     certFile: "/etc/prometheus/secrets/etcd-client/etcd-client.crt"
+#     keyFile: "/etc/prometheus/secrets/etcd-client/etcd-client.key"
+#     serverName: "'*.etcd.cfcr.internal'"

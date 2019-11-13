@@ -34,10 +34,14 @@ spec:
           value: pks
         - name: BOSH_EXPORTER_FILTER_COLLECTORS
           value: "Deployments,Jobs,ServiceDiscovery"
+        # - name: BOSH_EXPORTER_SD_FILENAME
+        #   value: "/etc/bosh-exporter/bosh_target_groups.json"
         volumeMounts:
         - name: certs
-          mountPath: /etc/bosh-exporter/certs/
+          mountPath: /etc/bosh-exporter/certs
           readOnly: true
+        # - name: bosh-targets
+        #   mountPath: /etc/bosh-exporter
         ports:
         - containerPort: 9190
           name: http
