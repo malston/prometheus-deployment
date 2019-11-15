@@ -15,3 +15,5 @@
 # OS turds
 .DS_Store
 
+# Direnv
+.envrc

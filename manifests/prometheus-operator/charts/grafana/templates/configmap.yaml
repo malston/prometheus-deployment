@@ -23,6 +23,21 @@ data:
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
     provisioning = /etc/grafana/provisioning
+    [smtp]
+    enabled = true
+    host = smtp.gmail.com:587
+    password = qacednmcjvzjypdk
+    user = marktalston@gmail.com
+  notifiers.yaml: |
+    notifiers:
+    - is_default: true
+      name: email-notifier
+      org_id: 1
+      settings:
+        addresses: marktalston@gmail.com
+      type: email
+      uid: email1
+    
   dashboardproviders.yaml: |
     apiVersion: 1
     providers:

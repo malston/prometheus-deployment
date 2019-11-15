@@ -1,3 +1,47 @@
+defaultRules:
+  labels:
+    role: alert-rules
+
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'instance']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'email'
+      routes:
+      - match:
+          alertname: Watchdog
+        receiver: 'null'
+      - match:
+          alertname: CPUThrottlingHigh
+        receiver: 'email'
+    receivers:
+    - name: 'null'
+    - name: 'email'
+      email_configs:
+      - to: $GMAIL_ACCOUNT
+        from: $GMAIL_ACCOUNT
+        smarthost: "smtp.gmail.com:587"
+        auth_username: "$GMAIL_ACCOUNT"
+        auth_identity: "$GMAIL_ACCOUNT"
+        auth_password: "$GMAIL_AUTH_TOKEN"
+
+prometheus:
+  prometheusSpec:
+    secrets:
+      - etcd-client
+    configMaps:
+      - bosh-target-groups
+    ruleSelector:
+      matchLabels:
+        role: alert-rules
+        app: prometheus-operator
+        release: monitoring
+
 additionalPrometheusRules:
 - name: kube-api-rules-file
   groups:
@@ -76,3 +120,26 @@ grafana:
     pkscontrolplane:
       pks-control-plane:
         file: dashboards/pks-control-plane.json
+
+  notifiers: 
+    notifiers.yaml:
+      notifiers:
+      - name: email-notifier
+        type: email
+        uid: email1
+        org_id: 1
+        is_default: true
+        settings:
+          addresses: "$GMAIL_ACCOUNT"
+
+  smtp:
+    existingSecret: "smtp-creds"
+    userKey: "user"
+    passwordKey: "password"
+
+  grafana.ini:
+    smtp:
+      enabled: true
+      host: "smtp.gmail.com:587"
+      user: "$GMAIL_ACCOUNT"
+      password: "$GMAIL_AUTH_TOKEN"

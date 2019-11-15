@@ -25,7 +25,7 @@ spec:
         app: grafana
         release: monitoring
       annotations:
-        checksum/config: f0262f12ca878bb505b84c9d82382902a39f84edeb05fa6e8d11363521529ef1
+        checksum/config: 43c4d9cd181168634220b70414ac8d2f4cfb1126453732cd1eae9baf2c2ae5d9
         checksum/dashboards-json-config: 5182fecfdd7e4b85df746b6f52604691b0cbdf7f5ab1ceecead62386e4ea2f46
         checksum/sc-dashboard-provider-config: f2a836be0668a39e1dfac021dc51104ea3dd0057e8537426ec6da88651fad8b8
         checksum/secret: 6e2250c670b53ccdf81c28e1578bd7003962bac7dd0ae1be162c2d7aa708931c
@@ -100,6 +100,9 @@ spec:
               mountPath: "/var/lib/grafana/dashboards/pkscontrolplane/pks-control-plane.json"
               subPath: "pks-control-plane.json"
             - name: config
+              mountPath: "/etc/grafana/provisioning/notifiers/notifiers.yaml"
+              subPath: notifiers.yaml
+            - name: config
               mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
               subPath: dashboardproviders.yaml
             - name: sc-dashboard-volume
@@ -127,6 +130,16 @@ spec:
                 secretKeyRef:
                   name: monitoring-grafana
                   key: admin-password
+            - name: GF_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-creds
+                  key: user
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-creds
+                  key: password
           livenessProbe:
             failureThreshold: 10
             httpGet:
