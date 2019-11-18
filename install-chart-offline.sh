@@ -31,6 +31,7 @@ if [[ -z "${GMAIL_AUTH_TOKEN}" ]]; then
   read -rs GMAIL_AUTH_TOKEN
 fi
 
+kubectl delete configmap -n "${namespace}" "smtp-creds" --ignore-not-found
 kubectl create secret -n "${namespace}" generic "smtp-creds" \
     --from-literal=user="${GMAIL_ACCOUNT}" \
     --from-literal=password="${GMAIL_AUTH_TOKEN}"
