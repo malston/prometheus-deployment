@@ -1,3 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana-03-ingress
+spec:
+  tls:
+  - hosts:
+    - grafana-03.haas-440.pez.pivotal.io
+    secretName: grafana-lb-tls
+  rules:
+  - host: grafana-03.haas-440.pez.pivotal.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: monitoring-grafana-lb
+          servicePort: 80
+---
 apiVersion: v1
 kind: Service
 metadata:

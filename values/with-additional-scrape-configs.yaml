@@ -8,12 +8,12 @@ prometheus:
       scrape_interval: 30s
       params:
         'match[]':
-        - '{__name__=~"job:.*"}'  
+        - '{__name__=~".+"}'
       static_configs:
       - targets: 
         - "prometheus-01.haas-440.pez.pivotal.io"
         - "prometheus-02.haas-440.pez.pivotal.io"
-    - job_name: kube-etcd
+    - job_name: "external-kube-etcd"
       file_sd_configs:
       - files:
         - '/etc/prometheus/configmaps/bosh-target-groups/bosh_target_groups.json'
@@ -28,7 +28,7 @@ prometheus:
         regex: etcd
         action: keep
       - source_labels: [__meta_bosh_deployment]
-        regex: service-instance_48a2843a-768a-48a0-b91d-86281ce7dff0
+        regex: ${SERVICE_INSTANCE_ID}
         action: keep
       - source_labels: [__address__]
         regex:  '(.*)'

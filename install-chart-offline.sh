@@ -44,47 +44,11 @@ kubectl create configmap -n "${namespace}" bosh-target-groups \
 # Copy dashboards to grafana chart location
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
-# # Create SC/PVC for bosh_target_groups file
-# cat <<EOF | kubectl apply -f -
-# apiVersion: storage.k8s.io/v1
-# kind: StorageClass
-# metadata:
-#   name: thin-disk
-# provisioner: kubernetes.io/vsphere-volume
-# parameters:
-#     diskformat: thin
-# EOF
-
-# cat <<EOF | kubectl apply -f -
-# apiVersion: v1
-# kind: PersistentVolume
-# metadata:
-#   name: bosh-target-groups
-# spec:
-#   storageClassName: thin-disk
-#   capacity:
-#     storage: 1Gi
-#   accessModes:
-#     - ReadWriteOnly
-# EOF
-
-# cat <<EOF | kubectl apply -f -
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: bosh-target-groups-claim
-#   namespace: ${namespace}
-#   annotations:
-#     volume.beta.kubernetes.io/storage-class: thin-disk
-# spec:
-#   accessModes:
-#     - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: 1Mi
-# EOF
+export SERVICE_INSTANCE_ID="service-instance_48a2843a-768a-48a0-b91d-86281ce7dff0"
+export CLUSTER_NAME="cluster03"
 
 envsubst < ./values/offline-overrides.yaml > /tmp/offline-overrides.yaml
+envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
 
 # Install operator
 helm template \
@@ -92,7 +56,7 @@ helm template \
     --namespace "${namespace}" \
     --values /tmp/offline-overrides.yaml \
     --values ./values/with-external-etcd.yaml \
-    --values ./values/with-additional-scrape-configs.yaml \
+    --values /tmp/with-additional-scrape-configs.yaml \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
