@@ -22,6 +22,8 @@ spec:
         name: bosh-exporter
         imagePullPolicy: IfNotPresent
         env:
+        - name: BOSH_EXPORTER_BOSH_LOG_LEVEL
+          value: "debug"
         - name: BOSH_EXPORTER_BOSH_URL
           value: "172.16.1.11"
         - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_ID
