@@ -13,7 +13,7 @@ prometheus:
       - targets: 
         - "prometheus-01.haas-440.pez.pivotal.io"
         - "prometheus-02.haas-440.pez.pivotal.io"
-    - job_name: "external-kube-etcd"
+    - job_name: "etcd-${CLUSTER_NAME}"
       file_sd_configs:
       - files:
         - '/etc/prometheus/configmaps/bosh-target-groups/bosh_target_groups.json'
