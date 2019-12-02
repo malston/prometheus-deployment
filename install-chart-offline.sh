@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 
-namespace="${1:-"monitoring"}"
+set -e
+# only exit with zero if all commands of the pipeline exit successfully
+set -o pipefail
+
+deployment="${1}" #: bosh deployment name for service instance of the cluster
+namespace="${2:-"monitoring"}"
+
+if [[ -z "${deployment}" ]]; then
+  service_guid=$(pks show-cluster "$(kubectl config current-context)" --json | jq -r .uuid)
+  deployment="service-instance_${service_guid}"
+fi
+
+bosh -d "${deployment}" scp "master/0:/var/vcap/jobs/kube-apiserver/config/etc*" .
+
+cluster_uuid="$(echo "${deployment}" | cut -d '_' -f2)"
+cluster_name="$(pks clusters | grep "${cluster_uuid}" | awk '{print $2}')"
+
+./get-etcd-certs.sh "${deployment}"
 
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
@@ -31,7 +48,7 @@ if [[ -z "${GMAIL_AUTH_TOKEN}" ]]; then
   read -rs GMAIL_AUTH_TOKEN
 fi
 
-kubectl delete configmap -n "${namespace}" "smtp-creds" --ignore-not-found
+kubectl delete secret -n "${namespace}" "smtp-creds" --ignore-not-found
 kubectl create secret -n "${namespace}" generic "smtp-creds" \
     --from-literal=user="${GMAIL_ACCOUNT}" \
     --from-literal=password="${GMAIL_AUTH_TOKEN}"
@@ -44,8 +61,8 @@ kubectl create configmap -n "${namespace}" bosh-target-groups \
 # Copy dashboards to grafana chart location
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
-export SERVICE_INSTANCE_ID="service-instance_48a2843a-768a-48a0-b91d-86281ce7dff0"
-export CLUSTER_NAME="cluster03"
+export SERVICE_INSTANCE_ID="${deployment}"
+export CLUSTER_NAME="${cluster_name}"
 
 envsubst < ./values/offline-overrides.yaml > /tmp/offline-overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
