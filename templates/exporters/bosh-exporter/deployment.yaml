@@ -36,8 +36,6 @@ spec:
           value: pks
         - name: BOSH_EXPORTER_FILTER_COLLECTORS
           value: "Deployments,Jobs,ServiceDiscovery"
-        # - name: BOSH_EXPORTER_SD_FILENAME
-        #   value: "/etc/bosh-exporter/sd/bosh_target_groups.json"
         volumeMounts:
         - name: certs
           mountPath: /etc/bosh-exporter/certs
@@ -52,6 +50,3 @@ spec:
       - name: certs
         secret:
           secretName: bosh-ca
-      # - name: bosh-target-groups
-      #   persistentVolumeClaim:
-      #     claimName: bosh-target-groups-claim

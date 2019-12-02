@@ -12,4 +12,5 @@ spec:
       release: monitoring
   endpoints:
   - port: http-metrics
-    interval: 15s
+    interval: 2m
+    scrapeTimeout: 1m
