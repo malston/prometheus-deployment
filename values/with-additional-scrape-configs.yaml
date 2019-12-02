@@ -1,18 +1,6 @@
 prometheus:
   prometheusSpec:
     additionalScrapeConfigs:
-    - job_name: "prometheus-cluster"
-      scheme: http
-      honor_labels: true
-      metrics_path: "/federate"
-      scrape_interval: 30s
-      params:
-        'match[]':
-        - '{__name__=~".+"}'
-      static_configs:
-      - targets: 
-        - "prometheus-01.haas-440.pez.pivotal.io"
-        - "prometheus-02.haas-440.pez.pivotal.io"
     - job_name: "etcd-${CLUSTER_NAME}"
       file_sd_configs:
       - files:

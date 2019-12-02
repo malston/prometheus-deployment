@@ -5,17 +5,41 @@ set -e
 set -o pipefail
 
 deployment="${1}" #: bosh deployment name for service instance of the cluster
-namespace="${2:-"monitoring"}"
+namespace="${2}"
+federation="${3}"
+
+function usage() {
+  echo "Usage:"
+  echo "$0 <deployment> <namespace> <federation>"
+  echo ""
+  echo "deployment: bosh deployment name for service instance of the cluster (default: derived from current-context)"
+  echo "namespace: namespace to deploy the prometheus operator (default: monitoring)"
+  echo "federation: if set then adds the federation scrape job (default: '')"
+  exit 1
+}
+
+if [ "${1}" == "-h" ]; then
+    usage
+fi
+
+if [ "$#" -gt 1 ] && [ "$#" -lt 3 ]; then
+    usage
+fi
 
 if [[ -z "${deployment}" ]]; then
-  service_guid=$(pks show-cluster "$(kubectl config current-context)" --json | jq -r .uuid)
+  cluster_name="$(kubectl config current-context)"
+  service_guid=$(pks show-cluster "${cluster_name}" --json | jq -r .uuid)
   deployment="service-instance_${service_guid}"
 fi
 
-bosh -d "${deployment}" scp "master/0:/var/vcap/jobs/kube-apiserver/config/etc*" .
+if [[ -z "${namespace}" ]]; then
+  namespace="monitoring"
+fi
 
-cluster_uuid="$(echo "${deployment}" | cut -d '_' -f2)"
-cluster_name="$(pks clusters | grep "${cluster_uuid}" | awk '{print $2}')"
+if [[ -z "${federation}" ]]; then
+  echo "Add federation scrape job? [Y/N]"
+  read -r federation
+fi
 
 ./get-etcd-certs.sh "${deployment}"
 
@@ -67,6 +91,10 @@ export CLUSTER_NAME="${cluster_name}"
 envsubst < ./values/offline-overrides.yaml > /tmp/offline-overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
 
+if [[ "${federation}" = "Y" ]]; then
+  with_federation="--values ./values/with-federation.yaml"
+fi
+
 # Install operator
 helm template \
     --name monitoring \
@@ -74,6 +102,7 @@ helm template \
     --values /tmp/offline-overrides.yaml \
     --values ./values/with-external-etcd.yaml \
     --values /tmp/with-additional-scrape-configs.yaml \
+    ${with_federation} \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
