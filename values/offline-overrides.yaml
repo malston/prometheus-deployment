@@ -41,6 +41,7 @@ prometheus:
         role: alert-rules
         app: prometheus-operator
         release: monitoring
+    enableAdminAPI: true
 
 additionalPrometheusRules:
 - name: kube-api-rules-file

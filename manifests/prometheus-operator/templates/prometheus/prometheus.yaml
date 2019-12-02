@@ -27,7 +27,7 @@ spec:
   logLevel:  info
   logFormat:  logfmt
   listenLocal: false
-  enableAdminAPI: false
+  enableAdminAPI: true
   retention: "10d"
   routePrefix: "/"
   secrets:
