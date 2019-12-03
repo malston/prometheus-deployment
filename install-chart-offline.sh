@@ -5,41 +5,26 @@ set -e
 set -o pipefail
 
 deployment="${1}" #: bosh deployment name for service instance of the cluster
-namespace="${2}"
-federation="${3}"
+namespace="${2:-monitoring}"
 
 function usage() {
   echo "Usage:"
-  echo "$0 <deployment> <namespace> <federation>"
+  echo "$0 <deployment> <namespace>"
   echo ""
   echo "deployment: bosh deployment name for service instance of the cluster (default: derived from current-context)"
-  echo "namespace: namespace to deploy the prometheus operator (default: monitoring)"
-  echo "federation: if set then adds the federation scrape job (default: '')"
+  echo "namespace:  namespace to deploy the prometheus operator (default: monitoring)"
   exit 1
 }
 
-if [ "${1}" == "-h" ]; then
-    usage
-fi
-
-if [ "$#" -gt 1 ] && [ "$#" -lt 3 ]; then
+if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
     usage
 fi
 
 if [[ -z "${deployment}" ]]; then
-  cluster_name="$(kubectl config current-context)"
-  service_guid=$(pks show-cluster "${cluster_name}" --json | jq -r .uuid)
-  deployment="service-instance_${service_guid}"
+  deployment="service-instance_$(pks show-cluster "$(kubectl config current-context)" --json | jq -r .uuid)"
 fi
 
-if [[ -z "${namespace}" ]]; then
-  namespace="monitoring"
-fi
-
-if [[ -z "${federation}" ]]; then
-  echo "Add federation scrape job? [Y/N]"
-  read -r federation
-fi
+read -rp "Add federation scrape job? [Y/n]" federation
 
 ./get-etcd-certs.sh "${deployment}"
 
@@ -81,7 +66,8 @@ kubectl create secret -n "${namespace}" generic "smtp-creds" \
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
 export SERVICE_INSTANCE_ID="${deployment}"
-export CLUSTER_NAME="${cluster_name}"
+export CLUSTER_NAME
+CLUSTER_NAME="$(kubectl config current-context)"
 
 envsubst < ./values/offline-overrides.yaml > /tmp/offline-overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
