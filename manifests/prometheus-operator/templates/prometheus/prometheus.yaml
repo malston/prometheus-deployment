@@ -33,9 +33,6 @@ spec:
   secrets:
     - etcd-client
     
-  configMaps:
-    - bosh-target-groups
-    
   serviceAccountName: monitoring-prometheus-oper-prometheus
   serviceMonitorSelector:
     matchLabels:
@@ -70,3 +67,44 @@ spec:
   additionalScrapeConfigs:
     name: monitoring-prometheus-oper-prometheus-scrape-confg
     key: additional-scrape-configs.yaml
+  containers:
+    - env:
+      - name: BOSH_EXPORTER_BOSH_LOG_LEVEL
+        value: debug
+      - name: BOSH_EXPORTER_BOSH_URL
+        value: 172.16.1.11
+      - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_ID
+        value: ops_manager
+      - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_SECRET
+        value: EdyCNlv4r3bArQY1__HgucBwQj6VGStq
+      - name: BOSH_EXPORTER_BOSH_CA_CERT_FILE
+        value: /etc/bosh-exporter/certs/bosh-ca.crt
+      - name: BOSH_EXPORTER_METRICS_ENVIRONMENT
+        value: pks
+      - name: BOSH_EXPORTER_FILTER_COLLECTORS
+        value: ServiceDiscovery
+      - name: BOSH_EXPORTER_SD_FILENAME
+        value: /var/vcap/store/bosh-exporter/bosh_target_groups.json
+      image: harbor.haas-440.pez.pivotal.io/prometheus/boshprometheus/bosh-exporter:3.3.0
+      imagePullPolicy: IfNotPresent
+      name: bosh-exporter
+      ports:
+      - containerPort: 9190
+        name: http
+        protocol: TCP
+      volumeMounts:
+      - mountPath: /etc/bosh-exporter/certs
+        name: certs
+        readOnly: true
+      - mountPath: /var/vcap/store/bosh-exporter
+        name: bosh-target-groups
+    
+  volumes:
+    - name: certs
+      secret:
+        secretName: bosh-ca
+    - hostPath:
+        path: /var/vcap/store/bosh-exporter
+        type: DirectoryOrCreate
+      name: bosh-target-groups
+    

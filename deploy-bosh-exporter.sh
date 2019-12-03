@@ -29,8 +29,8 @@ kubectl delete secret -n "${namespace}" bosh-ca --ignore-not-found
 kubectl create secret -n "${namespace}" generic bosh-ca \
     --from-file=./bosh-ca.crt
 
-kubectl apply --recursive --filename ./templates/exporters
+# kubectl apply --recursive --filename ./templates/exporters
 
-sleep 5
+# sleep 5
 
-kubectl logs "$(kubectl get pod -l app=bosh-exporter -o jsonpath='{.items[0].metadata.name}')"
+# kubectl logs "$(kubectl get pod -l app=bosh-exporter -o jsonpath='{.items[0].metadata.name}')"

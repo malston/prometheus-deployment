@@ -7,6 +7,8 @@ metadata:
     app: bosh-exporter
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: bosh-exporter
@@ -55,12 +57,14 @@ spec:
           value: pks
         - name: BOSH_EXPORTER_FILTER_COLLECTORS
           value: "Deployments,Jobs,ServiceDiscovery"
+        - name: BOSH_EXPORTER_SD_FILENAME
+          value: "/var/vcap/store/bosh-exporter/bosh_target_groups.json"
         volumeMounts:
         - name: certs
           mountPath: /etc/bosh-exporter/certs
           readOnly: true
-        # - name: bosh-target-groups
-        #   mountPath: /etc/bosh-exporter/sd
+        - name: bosh-target-groups
+          mountPath: /var/vcap/store/bosh-exporter
         ports:
         - containerPort: 9190
           name: http
@@ -69,3 +73,7 @@ spec:
       - name: certs
         secret:
           secretName: bosh-ca
+      - name: bosh-target-groups
+        hostPath:
+          path: /var/vcap/store/bosh-exporter
+          type: DirectoryOrCreate

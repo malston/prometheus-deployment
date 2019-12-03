@@ -222,4 +222,8 @@ spec:
   thanos:
 {{ toYaml .Values.prometheus.prometheusSpec.thanos | indent 4 }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.volumes }}
+  volumes:
+{{ toYaml .Values.prometheus.prometheusSpec.volumes | indent 4 }}
+{{- end }}
 {{- end }}

@@ -16,7 +16,7 @@ prometheus:
     - job_name: "etcd-${CLUSTER_NAME}"
       file_sd_configs:
       - files:
-        - '/etc/prometheus/configmaps/bosh-target-groups/bosh_target_groups.json'
+        - '/var/vcap/store/bosh-exporter/bosh_target_groups.json'
       scheme: https
       tls_config:
         ca_file: "/etc/prometheus/secrets/etcd-client/etcd-client-ca.crt"
