@@ -32,6 +32,7 @@ alertmanager:
 
 prometheus:
   prometheusSpec:
+    podAntiAffinity: "hard"
     secrets:
       - etcd-client
     configMaps:

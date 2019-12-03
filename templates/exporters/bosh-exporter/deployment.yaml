@@ -17,6 +17,25 @@ spec:
       labels:
         app: bosh-exporter
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - bosh-exporter
+            topologyKey: "kubernetes.io/hostname"
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - prometheus
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - image: "harbor.haas-440.pez.pivotal.io/prometheus/boshprometheus/bosh-exporter:3.3.0"
         name: bosh-exporter
