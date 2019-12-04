@@ -160,12 +160,12 @@ spec:
         - name: config
           configMap:
             name: monitoring-grafana
-        - name: dashboards-kubeapislo
-          configMap:
-            name: monitoring-grafana-dashboards-kubeapislo
         - name: dashboards-pkscontrolplane
           configMap:
             name: monitoring-grafana-dashboards-pkscontrolplane
+        - name: dashboards-kubeapislo
+          configMap:
+            name: monitoring-grafana-dashboards-kubeapislo
         - name: storage
           emptyDir: {}
         - name: sc-dashboard-volume

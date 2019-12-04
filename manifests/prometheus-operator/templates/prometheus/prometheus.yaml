@@ -56,6 +56,19 @@ spec:
       release: monitoring
       role: alert-rules
     
+  storage:
+    volumeClaimTemplate:
+      selector:
+        matchLabels:
+          app: prometheus
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: thin-disk
+    
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -84,7 +97,7 @@ spec:
       - name: BOSH_EXPORTER_FILTER_COLLECTORS
         value: ServiceDiscovery
       - name: BOSH_EXPORTER_SD_FILENAME
-        value: /var/vcap/store/bosh-exporter/bosh_target_groups.json
+        value: /bosh-exporter/bosh_target_groups.json
       image: harbor.haas-440.pez.pivotal.io/prometheus/boshprometheus/bosh-exporter:3.3.0
       imagePullPolicy: IfNotPresent
       name: bosh-exporter
@@ -96,15 +109,12 @@ spec:
       - mountPath: /etc/bosh-exporter/certs
         name: certs
         readOnly: true
-      - mountPath: /var/vcap/store/bosh-exporter
-        name: bosh-target-groups
+      - mountPath: /bosh-exporter
+        name: prometheus-monitoring-prometheus-oper-prometheus-db
+        subPath: bosh-exporter
     
   volumes:
     - name: certs
       secret:
         secretName: bosh-ca
-    - hostPath:
-        path: /var/vcap/store/bosh-exporter
-        type: DirectoryOrCreate
-      name: bosh-target-groups
     

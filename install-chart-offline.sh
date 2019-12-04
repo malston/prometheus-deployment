@@ -24,7 +24,7 @@ if [[ -z "${deployment}" ]]; then
   deployment="service-instance_$(pks show-cluster "$(kubectl config current-context)" --json | jq -r .uuid)"
 fi
 
-read -rp "Add federation scrape job? [Y/n]" federation
+read -rp "Add federation scrape job? [y/n]" federation
 
 ./get-etcd-certs.sh "${deployment}"
 
@@ -39,6 +39,10 @@ mkdir -p manifests/
 
 # Create CRDs
 kubectl apply -f crds/
+
+# Create storage class
+kubectl delete storageclass thin-disk --ignore-not-found
+kubectl create -f storage/storage-class.yaml
 
 # Create secrets for etcd client cert
 kubectl delete secret -n "${namespace}" etcd-client --ignore-not-found

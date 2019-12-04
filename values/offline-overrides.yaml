@@ -59,27 +59,38 @@ prometheus:
       - name: BOSH_EXPORTER_METRICS_ENVIRONMENT
         value: pks
       - name: BOSH_EXPORTER_FILTER_COLLECTORS
-        value: "ServiceDiscovery"
+        value: "Deployments,Jobs,ServiceDiscovery"
       - name: BOSH_EXPORTER_SD_FILENAME
-        value: "/var/vcap/store/bosh-exporter/bosh_target_groups.json"
+        value: "/bosh-exporter/bosh_target_groups.json"
       volumeMounts:
       - name: certs
         mountPath: /etc/bosh-exporter/certs
         readOnly: true
-      - name: bosh-target-groups
-        mountPath: /var/vcap/store/bosh-exporter
+      - name: prometheus-monitoring-prometheus-oper-prometheus-db
+        mountPath: /bosh-exporter
+        subPath: bosh-exporter
       ports:
       - containerPort: 9190
         name: http
         protocol: TCP
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: thin-disk
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+        selector:
+          matchLabels:
+            app: prometheus
     volumes:
     - name: certs
       secret:
         secretName: bosh-ca
-    - name: bosh-target-groups
-      hostPath:
-        path: /var/vcap/store/bosh-exporter
-        type: DirectoryOrCreate
+    # - name: bosh-target-groups
+    #   persistentVolumeClaim:
+    #     claimName: prometheus-monitoring-prometheus-oper-prometheus-db-prometheus-monitoring-prometheus-oper-prometheus-0
 
 additionalPrometheusRules:
 - name: kube-api-rules-file
