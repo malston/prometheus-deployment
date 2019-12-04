@@ -54,7 +54,6 @@ spec:
     matchLabels:
       app: prometheus-operator
       release: monitoring
-      role: alert-rules
     
   storage:
     volumeClaimTemplate:

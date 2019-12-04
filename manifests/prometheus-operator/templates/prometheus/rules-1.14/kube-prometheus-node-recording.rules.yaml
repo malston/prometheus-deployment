@@ -13,8 +13,6 @@ metadata:
     chart: prometheus-operator-6.20.3
     release: "monitoring"
     heritage: "Tiller"
-    role: alert-rules
-    
 spec:
   groups:
   - name: kube-prometheus-node-recording.rules
