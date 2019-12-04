@@ -685,7 +685,7 @@
             "targets": [
                 {
                     "datasource": "$datasource",
-                    "expr": "max by (operation, instance)(\n  etcd_request_latencies_summary{job=\"kubernetes_apiservers\",quantile=\"0.9\"}\n)/ 1e3\n",
+                    "expr": "max by (operation, instance)(\n  apiserver_request_latencies_summary{component=\"apiserver\",quantile=\"0.9\"}\n)/ 1e3\n",
                     "format": "time_series",
                     "intervalFactor": 2,
                     "legendFormat": "{{ instance }} - {{ operation }}",
