@@ -26,7 +26,7 @@ fi
 
 read -rp "Add federation scrape job? [y/n]" federation
 
-./get-etcd-certs.sh "${deployment}"
+./get-certs.sh "${deployment}"
 
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
@@ -50,6 +50,13 @@ kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-client-ca.crt \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
+
+# Create secrets for kubernetes cert
+kubectl delete secret -n "${namespace}" kube-apiserver --ignore-not-found
+kubectl create secret -n "${namespace}" generic kube-apiserver \
+    --from-file=kubernetes-ca.pem \
+    --from-file=kubernetes-key.pem \
+    --from-file=kubernetes.pem
 
 if [[ -z "${GMAIL_ACCOUNT}" ]]; then
   echo "Email account: "
