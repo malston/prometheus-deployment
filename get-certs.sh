@@ -10,4 +10,4 @@ bosh -d "${deployment}" scp "master/0:/var/vcap/jobs/kube-apiserver/config/etc*"
 
 mv etcd-ca.crt etcd-client-ca.crt
 
-chmod 666 etcd*
+bosh -d "${deployment}" scp "master/0:/var/vcap/jobs/kube-apiserver/config/kubernetes*" .
