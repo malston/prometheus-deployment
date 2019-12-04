@@ -1,6 +1,7 @@
 # Cert files
 *.crt
 *.key
+*.pem
 
 # Binaries for programs and plugins
 *.exe
