@@ -76,7 +76,3 @@ spec:
       - name: bosh-target-groups
         persistentVolumeClaim:
           claimName: prometheus-monitoring-prometheus-oper-prometheus-db-prometheus-monitoring-prometheus-oper-prometheus-0
-      # - name: bosh-target-groups
-      #   hostPath:
-      #     path: /var/vcap/store/bosh-exporter
-      #     type: DirectoryOrCreate

@@ -61,9 +61,6 @@ prometheus:
     - name: certs
       secret:
         secretName: bosh-ca
-    # - name: bosh-target-groups
-    #   persistentVolumeClaim:
-    #     claimName: prometheus-monitoring-prometheus-oper-prometheus-db-prometheus-monitoring-prometheus-oper-prometheus-0
 
 additionalPrometheusRules:
 - name: kube-api-rules-file
