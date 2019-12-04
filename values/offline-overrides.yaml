@@ -40,7 +40,6 @@ prometheus:
         role: alert-rules
         app: prometheus-operator
         release: monitoring
-        job: kubernetes_api_slo
     enableAdminAPI: true
     storageSpec:
       volumeClaimTemplate:

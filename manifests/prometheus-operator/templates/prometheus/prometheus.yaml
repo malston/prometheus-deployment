@@ -53,7 +53,6 @@ spec:
   ruleSelector:
     matchLabels:
       app: prometheus-operator
-      job: kubernetes_api_slo
       release: monitoring
       role: alert-rules
     
