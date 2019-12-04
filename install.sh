@@ -80,7 +80,7 @@ export SERVICE_INSTANCE_ID="${deployment}"
 export CLUSTER_NAME
 CLUSTER_NAME="$(kubectl config current-context)"
 
-envsubst < ./values/offline-overrides.yaml > /tmp/offline-overrides.yaml
+envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
 
 if [[ "${federation}" = "Y" ]]; then
@@ -91,7 +91,7 @@ fi
 helm template \
     --name monitoring \
     --namespace "${namespace}" \
-    --values /tmp/offline-overrides.yaml \
+    --values /tmp/overrides.yaml \
     --values ./values/with-external-etcd.yaml \
     --values /tmp/with-additional-scrape-configs.yaml \
     ${with_federation} \
