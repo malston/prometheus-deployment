@@ -51,10 +51,6 @@ prometheus:
               values:
                 - prometheus
                 - bosh-exporter
-    volumes:
-    - name: certs
-      secret:
-        secretName: bosh-ca
 
 additionalPrometheusRules:
 - name: kube-api-rules-file
