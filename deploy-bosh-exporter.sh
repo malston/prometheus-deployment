@@ -29,7 +29,7 @@ kubectl delete secret -n "${namespace}" bosh-ca --ignore-not-found
 kubectl create secret -n "${namespace}" generic bosh-ca \
     --from-file=./bosh-ca.crt
 
-# kubectl apply --recursive --filename ./templates/exporters
+kubectl apply --recursive --filename ./templates/exporters
 
 # sleep 5
 
