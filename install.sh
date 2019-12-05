@@ -83,7 +83,7 @@ CLUSTER_NAME="$(kubectl config current-context)"
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
 
-if [[ "${federation}" = "Y" ]]; then
+if [[ $federation =~ ^[Yy]$ ]]; then
   with_federation="--values ./values/with-federation.yaml"
 fi
 
