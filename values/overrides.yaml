@@ -31,6 +31,8 @@ prometheus:
     podAntiAffinity: "hard"
     secrets:
       - etcd-client
+      - kube-apiserver
+      - kube-controller-manager
     ruleSelector:
       matchLabels:
         app: prometheus-operator

@@ -22,7 +22,7 @@ prometheus:
         regex:  '(.*)'
         target_label: __address__
         replacement: '${1}:2379'
-    # - job_name: "kubeApiServer-${CLUSTER_NAME}"
+    # - job_name: "kubeScheduler-${CLUSTER_NAME}"
     #   file_sd_configs:
     #   - files:
     #     - '/prometheus/bosh_target_groups.json'
@@ -31,23 +31,7 @@ prometheus:
     #     ca_file: "/etc/prometheus/secrets/kube-apiserver/kubernetes-ca.pem"
     #     cert_file: "/etc/prometheus/secrets/kube-apiserver/kubernetes.pem"
     #     key_file:  "/etc/prometheus/secrets/kube-apiserver/kubernetes-key.pem"
-    #     server_name: "master.cfcr.internal"
-    #   relabel_configs:
-    #   - source_labels: [__meta_bosh_job_process_name]
-    #     regex: kube-apiserver
-    #     action: keep
-    #   - source_labels: [__meta_bosh_deployment]
-    #     regex: ${SERVICE_INSTANCE_ID}
-    #     action: keep
-    #   - source_labels: [__address__]
-    #     regex:  '(.*)'
-    #     target_label: __address__
-    #     replacement: '${1}:8443'
-    # - job_name: "kubeScheduler-${CLUSTER_NAME}"
-    #   file_sd_configs:
-    #   - files:
-    #     - '/prometheus/bosh_target_groups.json'
-    #   scheme: http
+    #     server_name: "*.kube-scheduler.cfcr.internal"
     #   relabel_configs:
     #   - source_labels: [__meta_bosh_job_process_name]
     #     regex: kube-scheduler
@@ -58,12 +42,17 @@ prometheus:
     #   - source_labels: [__address__]
     #     regex:  '(.*)'
     #     target_label: __address__
-    #     replacement: '${1}:10251'
+    #     replacement: '${1}:10259'
     # - job_name: "kubeControllerManager-${CLUSTER_NAME}"
     #   file_sd_configs:
     #   - files:
     #     - '/prometheus/bosh_target_groups.json'
-    #   scheme: http
+    #   scheme: https
+    #   tls_config:
+    #     ca_file: "/etc/prometheus/secrets/kube-controller-manager/kube-controller-manager-ca.pem"
+    #     cert_file: "/etc/prometheus/secrets/kube-controller-manager/kube-controller-manager-cert.pem"
+    #     key_file:  "/etc/prometheus/secrets/kube-controller-manager/kube-controller-manager-private-key.pem"
+    #     server_name: "*.kube-controller-manager.cfcr.internal"
     #   relabel_configs:
     #   - source_labels: [__meta_bosh_job_process_name]
     #     regex: kube-controller-manager
@@ -74,4 +63,4 @@ prometheus:
     #   - source_labels: [__address__]
     #     regex:  '(.*)'
     #     target_label: __address__
-    #     replacement: '${1}:10252'
+    #     replacement: '${1}:10257'
