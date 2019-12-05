@@ -16,7 +16,7 @@ kubeApiServer:
       - __name__
 
 kubeControllerManager:
-  endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
+  endpoints: [172.28.0.2, 172.28.0.3, 172.28.0.4]
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
@@ -27,17 +27,7 @@ kubeControllerManager:
       - __name__
 
 kubeScheduler:
-  endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
+  endpoints: [172.28.0.2, 172.28.0.3, 172.28.0.4]
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
-
-# kubeEtcd:
-#   endpoints: [172.28.1.2, 172.28.1.3, 172.28.1.4]
-#   serviceMonitor:
-#     interval: 30s
-#     scheme: https
-#     caFile: "/etc/prometheus/secrets/etcd-client/etcd-client-ca.crt"
-#     certFile: "/etc/prometheus/secrets/etcd-client/etcd-client.crt"
-#     keyFile: "/etc/prometheus/secrets/etcd-client/etcd-client.key"
-#     serverName: "'*.etcd.cfcr.internal'"
