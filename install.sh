@@ -86,6 +86,10 @@ cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 export SERVICE_INSTANCE_ID="${deployment}"
 export CLUSTER_NAME
 CLUSTER_NAME="$(kubectl config current-context)"
+export ENDPOINTS
+ips=$(bosh -d "${SERVICE_INSTANCE_ID}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
+ENDPOINTS="$(echo ${ips[*]})"
+ENDPOINTS="[${ENDPOINTS// /, }]"
 
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml

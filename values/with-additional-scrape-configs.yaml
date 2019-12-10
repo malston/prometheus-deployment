@@ -41,7 +41,7 @@ kubeApiServer:
       - __name__
 
 kubeControllerManager:
-  endpoints: [172.28.0.2, 172.28.0.3, 172.28.0.4]
+  endpoints: ${ENDPOINTS}
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
@@ -52,7 +52,7 @@ kubeControllerManager:
       - __name__
 
 kubeScheduler:
-  endpoints: [172.28.0.2, 172.28.0.3, 172.28.0.4]
+  endpoints: ${ENDPOINTS}
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
