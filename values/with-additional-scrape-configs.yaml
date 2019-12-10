@@ -22,45 +22,37 @@ prometheus:
         regex:  '(.*)'
         target_label: __address__
         replacement: '${1}:2379'
-    # - job_name: "kubeScheduler-${CLUSTER_NAME}"
-    #   file_sd_configs:
-    #   - files:
-    #     - '/prometheus/bosh_target_groups.json'
-    #   scheme: https
-    #   tls_config:
-    #     ca_file: "/etc/prometheus/secrets/kube-apiserver/kubernetes-ca.pem"
-    #     cert_file: "/etc/prometheus/secrets/kube-apiserver/kubernetes.pem"
-    #     key_file:  "/etc/prometheus/secrets/kube-apiserver/kubernetes-key.pem"
-    #     server_name: "*.kube-scheduler.cfcr.internal"
-    #   relabel_configs:
-    #   - source_labels: [__meta_bosh_job_process_name]
-    #     regex: kube-scheduler
-    #     action: keep
-    #   - source_labels: [__meta_bosh_deployment]
-    #     regex: ${SERVICE_INSTANCE_ID}
-    #     action: keep
-    #   - source_labels: [__address__]
-    #     regex:  '(.*)'
-    #     target_label: __address__
-    #     replacement: '${1}:10259'
-    # - job_name: "kubeControllerManager-${CLUSTER_NAME}"
-    #   file_sd_configs:
-    #   - files:
-    #     - '/prometheus/bosh_target_groups.json'
-    #   scheme: https
-    #   tls_config:
-    #     ca_file: "/etc/prometheus/secrets/kube-controller-manager/kube-controller-manager-ca.pem"
-    #     cert_file: "/etc/prometheus/secrets/kube-controller-manager/kube-controller-manager-cert.pem"
-    #     key_file:  "/etc/prometheus/secrets/kube-controller-manager/kube-controller-manager-private-key.pem"
-    #     server_name: "*.kube-controller-manager.cfcr.internal"
-    #   relabel_configs:
-    #   - source_labels: [__meta_bosh_job_process_name]
-    #     regex: kube-controller-manager
-    #     action: keep
-    #   - source_labels: [__meta_bosh_deployment]
-    #     regex: ${SERVICE_INSTANCE_ID}
-    #     action: keep
-    #   - source_labels: [__address__]
-    #     regex:  '(.*)'
-    #     target_label: __address__
-    #     replacement: '${1}:10257'
+
+kubeApiServer:
+  serviceMonitor:
+    interval: 30s
+    metricRelabelings:
+    - action: drop
+      regex: etcd_(debugging|disk|request|server).*
+      sourceLabels:
+      - __name__
+    - action: drop
+      regex: apiserver_admission_controller_admission_latencies_seconds_.*
+      sourceLabels:
+      - __name__
+    - action: drop
+      regex: apiserver_admission_step_admission_latencies_seconds_.*
+      sourceLabels:
+      - __name__
+
+kubeControllerManager:
+  endpoints: [172.28.0.2, 172.28.0.3, 172.28.0.4]
+  serviceMonitor:
+    interval: 30s
+    insecureSkipVerify: true
+    metricRelabelings:
+    - action: drop
+      regex: etcd_(debugging|disk|request|server).*
+      sourceLabels:
+      - __name__
+
+kubeScheduler:
+  endpoints: [172.28.0.2, 172.28.0.3, 172.28.0.4]
+  serviceMonitor:
+    interval: 30s
+    insecureSkipVerify: true

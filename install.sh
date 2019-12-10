@@ -99,7 +99,6 @@ helm template \
     --name monitoring \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
-    --values ./values/with-external-etcd.yaml \
     --values /tmp/with-additional-scrape-configs.yaml \
     ${with_federation} \
     --set prometheusOperator.createCustomResource=false \
