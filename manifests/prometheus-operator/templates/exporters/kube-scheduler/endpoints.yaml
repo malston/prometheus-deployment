@@ -16,9 +16,7 @@ metadata:
   namespace: kube-system
 subsets:
   - addresses:
-      - ip: 172.28.0.2
-      - ip: 172.28.0.3
-      - ip: 172.28.0.4
+      - ip: 172.28.5.2
     ports:
       - name: http-metrics
         port: 10251

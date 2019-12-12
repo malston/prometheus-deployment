@@ -32,8 +32,6 @@ spec:
   routePrefix: "/"
   secrets:
     - etcd-client
-    - kube-apiserver
-    - kube-controller-manager
     
   serviceAccountName: monitoring-prometheus-oper-prometheus
   serviceMonitorSelector:
