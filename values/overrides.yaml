@@ -13,7 +13,7 @@ alertmanager:
           alertname: Watchdog
         receiver: 'null'
       - match:
-          alertname: CPUThrottlingHigh
+          alertname: DiskRunningFull
         receiver: 'email'
     receivers:
     - name: 'null'
