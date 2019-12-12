@@ -72,9 +72,9 @@ grafana:
   grafana.ini:
     smtp:
       enabled: true
+      userKey: "user"
+      passwordKey: "password"
       host: "smtp.gmail.com:587"
-      user: "$GMAIL_ACCOUNT"
-      password: "$GMAIL_AUTH_TOKEN"
 
 kubeApiServer:
   serviceMonitor:
