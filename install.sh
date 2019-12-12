@@ -80,8 +80,9 @@ ENDPOINTS="[${ENDPOINTS// /, }]"
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
 
+scrape_config="--values ./values/with-additional-scrape-configs.yaml"
 if [[ $federation =~ ^[Yy]$ ]]; then
-  with_federation="--values ./values/with-federation.yaml"
+  scrape_config="--values ./values/with-federation.yaml"
 fi
 
 # Install operator
@@ -89,8 +90,7 @@ helm template \
     --name monitoring \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
-    --values /tmp/with-additional-scrape-configs.yaml \
-    ${with_federation} \
+    ${scrape_config} \
     --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \

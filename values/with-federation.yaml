@@ -14,3 +14,103 @@ prometheus:
       - targets: 
         - "prometheus-01.haas-440.pez.pivotal.io"
         - "prometheus-02.haas-440.pez.pivotal.io"
+    - job_name: "kubeEtcd-${CLUSTER_NAME}"
+      file_sd_configs:
+      - files:
+        - '/prometheus/bosh_target_groups.json'
+      scheme: https
+      tls_config:
+        ca_file: "/etc/prometheus/secrets/etcd-client/etcd-client-ca.crt"
+        cert_file: "/etc/prometheus/secrets/etcd-client/etcd-client.crt"
+        key_file:  "/etc/prometheus/secrets/etcd-client/etcd-client.key"
+        server_name: "*.etcd.cfcr.internal"
+      relabel_configs:
+      - source_labels: [__meta_bosh_job_process_name]
+        regex: etcd
+        action: keep
+      - source_labels: [__meta_bosh_deployment]
+        regex: ${SERVICE_INSTANCE_ID}
+        action: keep
+      - source_labels: [__address__]
+        regex:  '(.*)'
+        target_label: __address__
+        replacement: '${1}:2379'
+
+additionalPrometheusRules:
+- name: kube-api-rules-file
+  groups:
+  - name: kubeapi_rules
+    interval: 15s
+    rules:
+    - record: "kubernetes:job_verb:apiserver_latency:pctl90rate5m"
+      expr: "histogram_quantile ( 0.90, sum by (le, verb)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3 > 0"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes:job_verb_instance:apiserver_latency:pctl90rate5m"
+      expr: "histogram_quantile ( 0.90, sum by (le, job, verb, instance)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes::job:probe_success"
+      expr: "sum by()(probe_success{provider=\"kubernetes\", component=\"apiserver\"})"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes::job_verb_code:apiserver_requests:rate5m"
+      expr: "sum without (instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m"
+      expr: "sum by (job, verb, code, instance)(rate(apiserver_request_count[5m]))"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes::job_verb_code:apiserver_requests:ratio_rate5m"
+      expr: "sum without (instance)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m)"
+      labels:
+        job: kubernetes_api_slo
+    - record: "kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m"
+      expr: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m / ignoring(verb, code) group_left sum by (job, instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes:job:apiserver_request_errors:ratio_rate5m"
+      expr: "sum by (job)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{verb=~\"GET|POST|DELETE|PATCH\", code=~\"5..\"})"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes::job:apiserver_latency:pctl90rate5m"
+      expr: "histogram_quantile ( 0.90, sum by (le, job)( rate(apiserver_request_latencies_bucket{verb=~\"GET|POST|DELETE|PATCH\"}[5m]) ) ) / 1e3"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes::job:slo_kube_api_ok"
+      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool 0.01 * kubernetes::job:apiserver_latency:pctl90rate5m < bool 200"
+      labels:
+        job: "kubernetes_api_slo"
+    - record: "kubernetes::job:slo_kube_api_sample"
+      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m < bool Inf"
+      labels:
+        job: "kubernetes_api_slo"
+
+grafana:
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'kubeapislo'
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/kubeapislo
+      - name: 'pkscontrolplane'
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/pkscontrolplane
+
+  dashboards:
+    kubeapislo:
+      kubeapi-slo:
+        file: dashboards/kubeapi-slo.json
+    pkscontrolplane:
+      pks-control-plane:
+        file: dashboards/pks-control-plane.json

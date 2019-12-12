@@ -22,37 +22,3 @@ prometheus:
         regex:  '(.*)'
         target_label: __address__
         replacement: '${1}:2379'
-
-kubeApiServer:
-  serviceMonitor:
-    interval: 30s
-    metricRelabelings:
-    - action: drop
-      regex: etcd_(debugging|disk|request|server).*
-      sourceLabels:
-      - __name__
-    - action: drop
-      regex: apiserver_admission_controller_admission_latencies_seconds_.*
-      sourceLabels:
-      - __name__
-    - action: drop
-      regex: apiserver_admission_step_admission_latencies_seconds_.*
-      sourceLabels:
-      - __name__
-
-kubeControllerManager:
-  endpoints: ${ENDPOINTS}
-  serviceMonitor:
-    interval: 30s
-    insecureSkipVerify: true
-    metricRelabelings:
-    - action: drop
-      regex: etcd_(debugging|disk|request|server).*
-      sourceLabels:
-      - __name__
-
-kubeScheduler:
-  endpoints: ${ENDPOINTS}
-  serviceMonitor:
-    interval: 30s
-    insecureSkipVerify: true
