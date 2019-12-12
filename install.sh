@@ -51,20 +51,6 @@ kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
 
-# Create secrets for kubernetes cert
-kubectl delete secret -n "${namespace}" kube-apiserver --ignore-not-found
-kubectl create secret -n "${namespace}" generic kube-apiserver \
-    --from-file=kubernetes-ca.pem \
-    --from-file=kubernetes-key.pem \
-    --from-file=kubernetes.pem
-
-# Create secrets for kube-controller-manager cert
-kubectl delete secret -n "${namespace}" kube-controller-manager --ignore-not-found
-kubectl create secret -n "${namespace}" generic kube-controller-manager \
-    --from-file=kube-controller-manager-ca.pem \
-    --from-file=kube-controller-manager-private-key.pem \
-    --from-file=kube-controller-manager-cert.pem
-
 if [[ -z "${GMAIL_ACCOUNT}" ]]; then
   echo "Email account: "
   read -r GMAIL_ACCOUNT
