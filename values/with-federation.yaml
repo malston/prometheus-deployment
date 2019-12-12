@@ -9,6 +9,7 @@ prometheus:
       params:
         'match[]':
         - '{job="kubernetes_api_slo"}'
+        # - '{__name__=~"kubernetes:.*"}'
       static_configs:
       - targets: 
         - "prometheus-01.haas-440.pez.pivotal.io"
