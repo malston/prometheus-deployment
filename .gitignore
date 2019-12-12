@@ -21,3 +21,6 @@
 
 # Bosh target groups for reference
 bosh_target_groups.json
+
+# In prep for upgrading to helm3 -- k8s generated manifests from helm template command
+/manifests
