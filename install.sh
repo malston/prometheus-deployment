@@ -79,10 +79,11 @@ ENDPOINTS="[${ENDPOINTS// /, }]"
 
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
+envsubst < ./values/with-federation.yaml > /tmp/with-federation.yaml
 
-scrape_config="--values ./values/with-additional-scrape-configs.yaml"
+scrape_config="--values /tmp/with-additional-scrape-configs.yaml"
 if [[ $federation =~ ^[Yy]$ ]]; then
-  scrape_config="--values ./values/with-federation.yaml"
+  scrape_config="--values /tmp/with-federation.yaml"
 fi
 
 # Install operator
