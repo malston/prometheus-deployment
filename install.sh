@@ -69,6 +69,7 @@ kubectl create secret -n "${namespace}" generic "smtp-creds" \
 # Copy dashboards to grafana chart location
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
+export FOUNDATION="haas-440"
 export SERVICE_INSTANCE_ID="${deployment}"
 export CLUSTER_NAME
 CLUSTER_NAME="$(kubectl config current-context)"

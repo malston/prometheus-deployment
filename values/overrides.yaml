@@ -27,6 +27,11 @@ alertmanager:
         auth_password: "$GMAIL_AUTH_TOKEN"
 
 prometheus:
+  monitor:
+    additionalLabels:
+      cluster: "$CLUSTER_NAME"
+      foundation: "$FOUNDATION"
+
   prometheusSpec:
     podAntiAffinity: "hard"
     secrets:
@@ -75,6 +80,33 @@ grafana:
       userKey: "user"
       passwordKey: "password"
       host: "smtp.gmail.com:587"
+
+additionalAlertRelabelConfigs:
+- source_labels: [__meta_kubernetes_service_label_cluster]
+  separator: ;
+  regex: (.*)
+  target_label: cluster
+  replacement: $1
+  action: replace
+- source_labels: [__meta_kubernetes_service_label_foundation]
+  separator: ;
+  regex: (.*)
+  target_label: foundation
+  replacement: $1
+  action: replace
+
+additionalPrometheusRulesMap:
+  testing:
+    groups:
+    - name: test-alerting.rules
+      rules:
+      - alert: TestAlert
+        annotations:
+          message: The disk {{`{{ $labels.instance }}`}} running on {{`{{ $labels.cluster }}`}} in {{`{{ $labels.foundation }}`}} is running full.
+        expr: vector(1)
+        for: 1m
+        labels:
+          severity: critical
 
 kubeApiServer:
   serviceMonitor:
