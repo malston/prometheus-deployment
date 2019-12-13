@@ -1,3 +1,12 @@
+defaultRules:
+  labels:
+    cluster: "$CLUSTER_NAME"
+    foundation: "$FOUNDATION"
+
+commonLabels:
+  cluster: "$CLUSTER_NAME"
+  foundation: "$FOUNDATION"
+
 alertmanager:
   config:
     global:
@@ -27,11 +36,6 @@ alertmanager:
         auth_password: "$GMAIL_AUTH_TOKEN"
 
 prometheus:
-  monitor:
-    additionalLabels:
-      cluster: "$CLUSTER_NAME"
-      foundation: "$FOUNDATION"
-
   prometheusSpec:
     podAntiAffinity: "hard"
     secrets:
