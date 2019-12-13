@@ -3,7 +3,7 @@
 alerts1='[
   {
     "labels": {
-       "alertname": "DiskRunningFull",
+       "alertname": "TestAlert",
        "dev": "sda1",
        "instance": "example1"
      },
@@ -14,7 +14,7 @@ alerts1='[
   },
   {
     "labels": {
-       "alertname": "DiskRunningFull",
+       "alertname": "TestAlert",
        "dev": "sda2",
        "instance": "example1"
      },
@@ -26,7 +26,7 @@ alerts1='[
   },
   {
     "labels": {
-       "alertname": "DiskRunningFull",
+       "alertname": "TestAlert",
        "dev": "sda1",
        "instance": "example2"
      },
@@ -37,7 +37,7 @@ alerts1='[
   },
   {
     "labels": {
-       "alertname": "DiskRunningFull",
+       "alertname": "TestAlert",
        "dev": "sdb2",
        "instance": "example2"
      },
@@ -48,7 +48,7 @@ alerts1='[
   },
   {
     "labels": {
-       "alertname": "DiskRunningFull",
+       "alertname": "TestAlert",
        "dev": "sda1",
        "instance": "example3",
        "severity": "critical"
@@ -56,7 +56,7 @@ alerts1='[
   },
   {
     "labels": {
-       "alertname": "DiskRunningFull",
+       "alertname": "TestAlert",
        "dev": "sda1",
        "instance": "example3",
        "severity": "warning"

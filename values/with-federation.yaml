@@ -37,9 +37,20 @@ prometheus:
         replacement: '${1}:2379'
 
 additionalPrometheusRules:
-- name: kube-api-rules-file
+- name: testing-alert-rules
   groups:
-  - name: kubeapi_rules
+  - name: test-alerting.rules
+    rules:
+    - alert: TestAlert
+      annotations:
+        message: The disk {{`{{ $labels.instance }}`}} on {{`{{ $labels.dev }}`}} is running full.
+      expr: vector(1)
+      for: 1m
+      labels:
+        severity: critical
+- name: kube-api-rules
+  groups:
+  - name: kubeapi.rules
     interval: 15s
     rules:
     - record: "kubernetes:job_verb:apiserver_latency:pctl90rate5m"
