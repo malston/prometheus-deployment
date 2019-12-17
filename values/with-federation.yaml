@@ -37,17 +37,6 @@ prometheus:
         replacement: '${1}:2379'
 
 additionalPrometheusRules:
-- name: testing-alert-rules
-  groups:
-  - name: test-alerting.rules
-    rules:
-    - alert: TestAlert
-      annotations:
-        message: The disk {{`{{ $labels.instance }}`}} on {{`{{ $labels.dev }}`}} is running full.
-      expr: vector(1)
-      for: 1m
-      labels:
-        severity: critical
 - name: kube-api-rules
   groups:
   - name: kubeapi.rules

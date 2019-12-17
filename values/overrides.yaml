@@ -85,20 +85,6 @@ grafana:
       passwordKey: "password"
       host: "smtp.gmail.com:587"
 
-additionalAlertRelabelConfigs:
-- source_labels: [__meta_kubernetes_service_label_cluster]
-  separator: ;
-  regex: (.*)
-  target_label: cluster
-  replacement: $1
-  action: replace
-- source_labels: [__meta_kubernetes_service_label_foundation]
-  separator: ;
-  regex: (.*)
-  target_label: foundation
-  replacement: $1
-  action: replace
-
 additionalPrometheusRulesMap:
   testing:
     groups:
@@ -115,11 +101,13 @@ additionalPrometheusRulesMap:
 kubeApiServer:
   # Stupid helm chart put this in the wrong place!
   relabelings:
-  - sourceLabels: [__meta_kubernetes_service_label_cluster]
+  - action: replace
+    sourceLabels: [__meta_kubernetes_service_label_cluster]
     regex: '(.*)'
     targetLabel: cluster
     replacement: '${1}'
-  - sourceLabels: [__meta_kubernetes_service_label_foundation]
+  - action: replace
+    sourceLabels: [__meta_kubernetes_service_label_foundation]
     regex: '(.*)'
     targetLabel: foundation
     replacement: '${1}'
