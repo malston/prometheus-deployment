@@ -89,13 +89,13 @@ additionalAlertRelabelConfigs:
 - source_labels: [__meta_kubernetes_service_label_cluster]
   separator: ;
   regex: (.*)
-  target_label: cluster
+  targetLabel: cluster
   replacement: $1
   action: replace
 - source_labels: [__meta_kubernetes_service_label_foundation]
   separator: ;
   regex: (.*)
-  target_label: foundation
+  targetLabel: foundation
   replacement: $1
   action: replace
 
@@ -113,6 +113,16 @@ additionalPrometheusRulesMap:
           severity: critical
 
 kubeApiServer:
+  # Stupid helm chart put this in the wrong place!
+  relabelings:
+  - sourceLabels: [__meta_kubernetes_service_label_cluster]
+    regex: '(.*)'
+    targetLabel: cluster
+    replacement: '${1}'
+  - sourceLabels: [__meta_kubernetes_service_label_foundation]
+    regex: '(.*)'
+    targetLabel: foundation
+    replacement: '${1}'
   serviceMonitor:
     interval: 30s
     metricRelabelings:
@@ -134,6 +144,15 @@ kubeControllerManager:
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_service_label_cluster]
+      regex: '(.*)'
+      targetLabel: cluster
+      replacement: '${1}'
+    - sourceLabels: [__meta_kubernetes_service_label_foundation]
+      regex: '(.*)'
+      targetLabel: foundation
+      replacement: '${1}'
     metricRelabelings:
     - action: drop
       regex: etcd_(debugging|disk|request|server).*
@@ -145,3 +164,12 @@ kubeScheduler:
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_service_label_cluster]
+      regex: '(.*)'
+      targetLabel: cluster
+      replacement: '${1}'
+    - sourceLabels: [__meta_kubernetes_service_label_foundation]
+      regex: '(.*)'
+      targetLabel: foundation
+      replacement: '${1}'
