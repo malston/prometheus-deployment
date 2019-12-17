@@ -89,13 +89,13 @@ additionalAlertRelabelConfigs:
 - source_labels: [__meta_kubernetes_service_label_cluster]
   separator: ;
   regex: (.*)
-  targetLabel: cluster
+  target_label: cluster
   replacement: $1
   action: replace
 - source_labels: [__meta_kubernetes_service_label_foundation]
   separator: ;
   regex: (.*)
-  targetLabel: foundation
+  target_label: foundation
   replacement: $1
   action: replace
 
