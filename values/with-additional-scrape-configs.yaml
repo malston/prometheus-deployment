@@ -1,18 +1,18 @@
 prometheus:
   prometheusSpec:
-    additionalAlertRelabelConfigs:
-    - source_labels: [__meta_kubernetes_service_label_cluster]
-      separator: ;
-      regex: (.*)
-      target_label: cluster
-      replacement: $1
-      action: replace
-    - source_labels: [__meta_kubernetes_service_label_foundation]
-      separator: ;
-      regex: (.*)
-      target_label: foundation
-      replacement: $1
-      action: replace
+    # additionalAlertRelabelConfigs:
+    # - source_labels: [__meta_kubernetes_service_label_cluster]
+    #   separator: ;
+    #   regex: (.*)
+    #   target_label: cluster
+    #   replacement: $1
+    #   action: replace
+    # - source_labels: [__meta_kubernetes_service_label_foundation]
+    #   separator: ;
+    #   regex: (.*)
+    #   target_label: foundation
+    #   replacement: $1
+    #   action: replace
     additionalScrapeConfigs:
     - job_name: "kubeEtcd-${CLUSTER_NAME}"
       file_sd_configs:
