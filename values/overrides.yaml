@@ -1,12 +1,3 @@
-# defaultRules:
-#   labels:
-#     cluster: "$CLUSTER_NAME"
-#     foundation: "$FOUNDATION"
-
-# commonLabels:
-#   cluster: "$CLUSTER_NAME"
-#   foundation: "$FOUNDATION"
-
 alertmanager:
   config:
     global:
@@ -102,18 +93,6 @@ additionalPrometheusRulesMap:
           severity: critical
 
 kubeApiServer:
-  # Stupid helm chart put this in the wrong place!
-  # relabelings:
-  # - action: replace
-  #   sourceLabels: [__meta_kubernetes_service_label_cluster]
-  #   regex: '(.*)'
-  #   targetLabel: cluster
-  #   replacement: '${1}'
-  # - action: replace
-  #   sourceLabels: [__meta_kubernetes_service_label_foundation]
-  #   regex: '(.*)'
-  #   targetLabel: foundation
-  #   replacement: '${1}'
   serviceMonitor:
     interval: 30s
     metricRelabelings:
@@ -135,15 +114,6 @@ kubeControllerManager:
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
-    # relabelings:
-    # - sourceLabels: [__meta_kubernetes_service_label_cluster]
-    #   regex: '(.*)'
-    #   targetLabel: cluster
-    #   replacement: '${1}'
-    # - sourceLabels: [__meta_kubernetes_service_label_foundation]
-    #   regex: '(.*)'
-    #   targetLabel: foundation
-    #   replacement: '${1}'
     metricRelabelings:
     - action: drop
       regex: etcd_(debugging|disk|request|server).*
@@ -155,12 +125,3 @@ kubeScheduler:
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
-    # relabelings:
-    # - sourceLabels: [__meta_kubernetes_service_label_cluster]
-    #   regex: '(.*)'
-    #   targetLabel: cluster
-    #   replacement: '${1}'
-    # - sourceLabels: [__meta_kubernetes_service_label_foundation]
-    #   regex: '(.*)'
-    #   targetLabel: foundation
-    #   replacement: '${1}'
