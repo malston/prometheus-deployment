@@ -6,7 +6,8 @@ set -o pipefail
 
 deployment="${1}" #: bosh deployment name for service instance of the cluster
 namespace="${2:-monitoring}"
-release="${3:-${namespace}}"
+release="${3:-prometheus-operator}"
+version="${4:-8.5.4}"
 
 function usage() {
   echo "Usage:"
@@ -86,7 +87,7 @@ if [[ $federation =~ ^[Yy]$ ]]; then
 fi
 
 # Install operator
-helm install "${release}" \
+helm install --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \

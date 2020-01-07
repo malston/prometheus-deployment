@@ -6,7 +6,7 @@ set -o pipefail
 
 deployment="${1}" #: bosh deployment name for service instance of the cluster
 namespace="${2:-monitoring}"
-release="${3:-${namespace}}"
+release="${3:-prometheus-operator}"
 version="${4:-8.5.4}"
 
 function usage() {
