@@ -75,4 +75,4 @@ spec:
           secretName: bosh-ca
       - name: bosh-target-groups
         persistentVolumeClaim:
-          claimName: prometheus-monitoring-prometheus-oper-prometheus-db-prometheus-monitoring-prometheus-oper-prometheus-0
+          claimName: prometheus-prometheus-operator-prometheus-db-prometheus-prometheus-operator-prometheus-0
