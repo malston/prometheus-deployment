@@ -1,33 +1,57 @@
 alertmanager:
+  alertmanagerSpec:
+    externalUrl: $ALERTMANAGER_URL
+    logLevel: debug
   config:
     global:
       resolve_timeout: 5m
     route:
+      receiver: "am-webhook"
       group_by: ['alertname']
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 12h
-      receiver: 'email'
+      receiver: 'null'
       routes:
       - match:
           alertname: Watchdog
         receiver: 'null'
       - match:
           alertname: TestAlert
-        receiver: 'email'
+        receiver: 'am-webhook'
     receivers:
     - name: 'null'
-    - name: 'email'
-      email_configs:
-      - to: $GMAIL_ACCOUNT
-        from: $GMAIL_ACCOUNT
-        smarthost: "smtp.gmail.com:587"
-        auth_username: "$GMAIL_ACCOUNT"
-        auth_identity: "$GMAIL_ACCOUNT"
-        auth_password: "$GMAIL_AUTH_TOKEN"
+    - name: "am-webhook"
+      webhook_configs:
+      - url: 'http://10.197.74.202:31780/webhook'
+        send_resolved: true
+    # - name: 'email'
+    #   email_configs:
+    #   - to: $GMAIL_ACCOUNT
+    #     from: $GMAIL_ACCOUNT
+    #     smarthost: "smtp.gmail.com:587"
+    #     auth_username: "$GMAIL_ACCOUNT"
+    #     auth_identity: "$GMAIL_ACCOUNT"
+    #     auth_password: "$GMAIL_AUTH_TOKEN"
+  # templateFiles:
+  #   template_1.tmpl: |-
+  #       {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
+
+  #       {{ define "slack.myorg.text" }}
+  #       {{- $root := . -}}
+  #       {{ range .Alerts }}
+  #         *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+  #         *Cluster:*  {{ template "cluster" $root }}
+  #         *Description:* {{ .Annotations.description }}
+  #         *Graph:* <{{ .GeneratorURL }}|:chart_with_upwards_trend:>
+  #         *Runbook:* <{{ .Annotations.runbook }}|:spiral_note_pad:>
+  #         *Details:*
+  #           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+  #           {{ end }}
 
 prometheus:
   prometheusSpec:
+    externalUrl: $PROMETHEUS_URL
     externalLabels:
       cluster: "$CLUSTER_NAME"
       foundation: "$FOUNDATION"

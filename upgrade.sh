@@ -7,6 +7,7 @@ set -o pipefail
 deployment="${1}" #: bosh deployment name for service instance of the cluster
 namespace="${2:-monitoring}"
 release="${3:-${namespace}}"
+version="${4:-8.5.4}"
 
 function usage() {
   echo "Usage:"
@@ -27,42 +28,13 @@ fi
 
 read -rp "Add federation scrape job? [y/n]" federation
 
-./get-certs.sh "${deployment}"
+# ./get-certs.sh "${deployment}"
 
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
 fi
 
 kubectl config set-context --current --namespace="${namespace}"
-
-# Create storage class
-kubectl delete storageclass thin-disk --ignore-not-found
-kubectl create -f storage/storage-class.yaml
-
-# Create secrets for etcd client cert
-kubectl delete secret -n "${namespace}" etcd-client --ignore-not-found
-kubectl create secret -n "${namespace}" generic etcd-client \
-    --from-file=etcd-client-ca.crt \
-    --from-file=etcd-client.crt \
-    --from-file=etcd-client.key
-
-if [[ -z "${GMAIL_ACCOUNT}" ]]; then
-  echo "Email account: "
-  read -r GMAIL_ACCOUNT
-fi
-
-if [[ -z "${GMAIL_AUTH_TOKEN}" ]]; then
-  echo "Email password or auth token: "
-  read -rs GMAIL_AUTH_TOKEN
-fi
-
-kubectl delete secret -n "${namespace}" "smtp-creds" --ignore-not-found
-kubectl create secret -n "${namespace}" generic "smtp-creds" \
-    --from-literal=user="${GMAIL_ACCOUNT}" \
-    --from-literal=password="${GMAIL_AUTH_TOKEN}"
-
-# Copy dashboards to grafana chart location
-cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
 export FOUNDATION="haas-440"
 export SERVICE_INSTANCE_ID="${deployment}"
@@ -86,7 +58,7 @@ if [[ $federation =~ ^[Yy]$ ]]; then
 fi
 
 # Install operator
-helm install "${release}" \
+helm upgrade --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
@@ -96,9 +68,3 @@ helm install "${release}" \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="1.14.5" \
     ./charts/prometheus-operator
-
-# Create services
-kubectl apply -f services/
-
-# Remove copied dashboards
-rm charts/prometheus-operator/charts/grafana/dashboards/*.json

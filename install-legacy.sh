@@ -6,7 +6,6 @@ set -o pipefail
 
 deployment="${1}" #: bosh deployment name for service instance of the cluster
 namespace="${2:-monitoring}"
-release="${3:-${namespace}}"
 
 function usage() {
   echo "Usage:"
@@ -34,6 +33,12 @@ if [[ ! $(kubectl get namespace "${namespace}") ]]; then
 fi
 
 kubectl config set-context --current --namespace="${namespace}"
+
+rm -rf manifests/
+mkdir -p manifests/
+
+# Create CRDs
+kubectl apply -f crds/
 
 # Create storage class
 kubectl delete storageclass thin-disk --ignore-not-found
@@ -73,7 +78,7 @@ ips=$(bosh -d "${SERVICE_INSTANCE_ID}" vms --column=Instance --column=IPs | grep
 ENDPOINTS="$(echo ${ips[*]})"
 ENDPOINTS="[${ENDPOINTS// /, }]"
 
-export PROMETHEUS_URL="http://prometheus-01.haas-440.pez.pivotal.io"
+export PROMETHEUS_URL="http://prometheus-02.haas-440.pez.pivotal.io"
 export ALERTMANAGER_URL="http://alertmanager-01.haas-440.pez.pivotal.io"
 
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
@@ -86,7 +91,8 @@ if [[ $federation =~ ^[Yy]$ ]]; then
 fi
 
 # Install operator
-helm install "${release}" \
+helm template \
+    --name monitoring \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
@@ -95,7 +101,11 @@ helm install "${release}" \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="1.14.5" \
+    --output-dir ./manifests \
     ./charts/prometheus-operator
+
+# Apply all objects under manifests directory
+kubectl apply --recursive --filename ./manifests
 
 # Create services
 kubectl apply -f services/
