@@ -47,7 +47,7 @@ It's important that you make your updates using the `helm upgrade` command inste
 We also maintain a script that allows us to run this easily with only a few parameters:
 
 ```bash
-/upgrade.sh
+./upgrade.sh
 ```
 
 The script will issue a command like this
@@ -63,5 +63,4 @@ where `${version}` is the version of the chart that you want to upgrade to, and 
 
 ## Performing Blue/Green
 
-TBD
-
+<TBD>
