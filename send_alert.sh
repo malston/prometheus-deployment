@@ -63,4 +63,4 @@ alerts1='[
      }
   }
 ]'
-curl -XPOST -d"$alerts1" http://alertmanager-03.haas-440.pez.pivotal.io/api/v1/alerts
+curl -XPOST -d"$alerts1" http://alertmanager-01.haas-440.pez.pivotal.io/api/v1/alerts
