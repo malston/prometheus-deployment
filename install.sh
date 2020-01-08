@@ -95,7 +95,6 @@ helm install --version "${version}" "${release}" \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="1.14.5" \
-    --set prometheusOperator.admissionWebhooks.enabled=false \
     ./charts/prometheus-operator
 
 # Create services
