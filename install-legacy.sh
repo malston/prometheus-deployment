@@ -37,9 +37,6 @@ kubectl config set-context --current --namespace="${namespace}"
 rm -rf manifests/
 mkdir -p manifests/
 
-# Create CRDs
-kubectl apply -f crds/
-
 # Create storage class
 kubectl delete storageclass thin-disk --ignore-not-found
 kubectl create -f storage/storage-class.yaml
@@ -96,7 +93,7 @@ helm template \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
-    --set prometheusOperator.createCustomResource=false \
+    --set prometheusOperator.createCustomResource=true \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \

@@ -91,11 +91,11 @@ helm install --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
-    --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="1.14.5" \
+    --set prometheusOperator.admissionWebhooks.enabled=false \
     ./charts/prometheus-operator
 
 # Create services

@@ -62,7 +62,6 @@ helm upgrade --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
-    --set prometheusOperator.createCustomResource=false \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
