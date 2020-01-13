@@ -1,5 +1,5 @@
 engine: gotpl
 name: prometheus-deployment
-namespace: prometheus-operator
+namespace: monitoring
 version: 1.0.0
 
