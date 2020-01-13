@@ -74,8 +74,9 @@ ips=$(bosh -d "${SERVICE_INSTANCE_ID}" vms --column=Instance --column=IPs | grep
 ENDPOINTS="$(echo ${ips[*]})"
 ENDPOINTS="[${ENDPOINTS// /, }]"
 
-export PROMETHEUS_URL="http://prometheus-01.haas-440.pez.pivotal.io"
-export ALERTMANAGER_URL="http://alertmanager-01.haas-440.pez.pivotal.io"
+CLUSTER_NUM="$(echo "${CLUSTER_NAME}" | cut -c8-9)"
+export PROMETHEUS_URL="https://prometheus-${CLUSTER_NUM}.haas-440.pez.pivotal.io"
+export ALERTMANAGER_URL="https://alertmanager-${CLUSTER_NUM}.haas-440.pez.pivotal.io"
 
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
