@@ -87,14 +87,6 @@ if [[ $federation =~ ^[Yy]$ ]]; then
   scrape_config="--values /tmp/with-federation.yaml"
 fi
 
-# Install prometheus-deployment with bosh-exporter and ingress
-helm install prometheus-deployment ./charts/prometheus-deployment \
-  --set grafana.host=grafana-02.haas-440.pez.pivotal.io \
-  --set prometheus.host=prometheus-02.haas-440.pez.pivotal.io \
-  --set alertmanager.host=alertmanager-02.haas-440.pez.pivotal.io \
-  --set prometheus.release="${release}" \
-  --namespace="${namespace}"
-
 # Install operator
 helm install --version "${version}" "${release}" \
     --namespace "${namespace}" \
@@ -103,8 +95,16 @@ helm install --version "${version}" "${release}" \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
-    --set kubeTargetVersionOverride="1.14.5" \
+    --set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
     ./charts/prometheus-operator
+
+# Install prometheus-deployment with bosh-exporter and ingress
+helm install prometheus-deployment ./charts/prometheus-deployment \
+  --set grafana.host=grafana-02.haas-440.pez.pivotal.io \
+  --set prometheus.host=prometheus-02.haas-440.pez.pivotal.io \
+  --set alertmanager.host=alertmanager-02.haas-440.pez.pivotal.io \
+  --set prometheus.release="${release}" \
+  --namespace="${namespace}"
 
 # Remove copied dashboards
 rm charts/prometheus-operator/charts/grafana/dashboards/*.json
