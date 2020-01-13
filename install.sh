@@ -86,6 +86,14 @@ if [[ $federation =~ ^[Yy]$ ]]; then
   scrape_config="--values /tmp/with-federation.yaml"
 fi
 
+# Install prometheus-deployment with bosh-exporter and ingress
+helm install prometheus-deployment ./charts/prometheus-deployment \
+  --set grafana.host=grafana-02.haas-440.pez.pivotal.io \
+  --set prometheus.host=prometheus-02.haas-440.pez.pivotal.io \
+  --set alertmanager.host=alertmanager-02.haas-440.pez.pivotal.io \
+  --set prometheus.release="${release}" \
+  --namespace="${namespace}"
+
 # Install operator
 helm install --version "${version}" "${release}" \
     --namespace "${namespace}" \
@@ -96,9 +104,6 @@ helm install --version "${version}" "${release}" \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="1.14.5" \
     ./charts/prometheus-operator
-
-# Create services
-kubectl apply -f services/
 
 # Remove copied dashboards
 rm charts/prometheus-operator/charts/grafana/dashboards/*.json

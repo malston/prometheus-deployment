@@ -1,0 +1,32 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.prometheus.release }}-ingress
+  namespace: {{ .Release.Namespace }}
+spec:
+  rules:
+  - host: {{ .Values.alertmanager.host }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.prometheus.release }}-alertmanager
+          servicePort: 9093
+  - host: {{ .Values.grafana.host }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.prometheus.release }}-grafana
+          servicePort: 80
+  - host: {{ .Values.prometheus.host }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.prometheus.release }}-prometheus
+          servicePort: 9090
+  tls:
+  - hosts:
+    - {{ .Values.alertmanager.host }}
+    - {{ .Values.grafana.host }}
+    - {{ .Values.prometheus.host }}
+    # secretName: pks-tls-secret

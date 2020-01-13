@@ -4,12 +4,12 @@ metadata:
   name: bosh-exporter
   labels:
     app: bosh-exporter
-    release: "monitoring"
+    release: {{ .Values.prometheus.release }}
 spec:
   selector:
     matchLabels:
       app: bosh-exporter
-      release: monitoring
+      release: {{ .Values.prometheus.release }}
   endpoints:
   - port: http-metrics
     interval: 1m

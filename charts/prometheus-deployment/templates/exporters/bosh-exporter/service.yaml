@@ -4,10 +4,10 @@ metadata:
   annotations:
     prometheus.io/scrape: "true"
   name: bosh-exporter
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
   labels:
     app: bosh-exporter
-    release: monitoring
+    release: {{ .Values.prometheus.release }}
     jobLabel: bosh-exporter
 spec:
   type: ClusterIP
