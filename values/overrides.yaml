@@ -61,7 +61,7 @@ prometheus:
     ruleSelector:
       matchLabels:
         app: prometheus-operator
-        release: monitoring
+        release: prometheus-operator
     enableAdminAPI: true
     storageSpec:
       volumeClaimTemplate:
