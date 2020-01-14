@@ -4,7 +4,7 @@ Deploys [Prometheus Operator](https://github.com/coreos/prometheus-operator) usi
 
 ## Install
 
-1. Install Prometheus with the BOSH Exporter
+Install Prometheus with the BOSH Exporter
 
 ```bash
 ./install.sh
