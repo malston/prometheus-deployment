@@ -23,7 +23,7 @@ alertmanager:
     - name: 'null'
     - name: "am-webhook"
       webhook_configs:
-      - url: 'http://10.197.74.202:31780/webhook'
+      - url: 'http://alert-webhook:80/webhook'
         send_resolved: true
     # - name: 'email'
     #   email_configs:
