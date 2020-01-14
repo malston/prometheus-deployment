@@ -100,9 +100,9 @@ helm install --version "${version}" "${release}" \
 
 # Install prometheus-deployment with bosh-exporter and ingress
 helm install prometheus-deployment ./charts/prometheus-deployment \
-  --set grafana.host=grafana-02.haas-440.pez.pivotal.io \
-  --set prometheus.host=prometheus-02.haas-440.pez.pivotal.io \
-  --set alertmanager.host=alertmanager-02.haas-440.pez.pivotal.io \
+  --set grafana.host=grafana-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
+  --set prometheus.host=prometheus-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
+  --set alertmanager.host=alertmanager-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
   --set prometheus.release="${release}" \
   --namespace="${namespace}"
 
