@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-version="${version:-8.3.3}"
+version="${1:?"Version is required"}"
 
 helm fetch \
   --repo https://kubernetes-charts.storage.googleapis.com \
