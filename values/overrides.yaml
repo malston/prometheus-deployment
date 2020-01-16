@@ -57,7 +57,6 @@ prometheus:
     externalLabels:
       cluster: "$CLUSTER_NAME"
       foundation: "$FOUNDATION"
-    podAntiAffinity: "hard"
     secrets:
       - etcd-client
     ruleSelector:
