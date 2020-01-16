@@ -44,8 +44,6 @@ spec:
         - name: certs
           mountPath: /etc/bosh-exporter/certs
           readOnly: true
-        - name: bosh-target-groups
-          mountPath: /bosh-exporter
         ports:
         - containerPort: 9190
           name: http
