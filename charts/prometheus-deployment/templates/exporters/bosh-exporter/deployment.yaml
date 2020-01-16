@@ -6,7 +6,6 @@ metadata:
   labels:
     app: bosh-exporter
 spec:
-  replicas: {{ .Values.bosh-exporter.replicas }}
   strategy:
     type: Recreate
   selector:
@@ -19,29 +18,11 @@ spec:
       labels:
         app: bosh-exporter
     spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - bosh-exporter
-            topologyKey: "kubernetes.io/hostname"
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - prometheus
-            topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: prometheus-operator-operator
       containers:
-      - image: "harbor.haas-440.pez.pivotal.io/prometheus/boshprometheus/bosh-exporter:3.3.0"
+      - image: "harbor.haas-440.pez.pivotal.io/prometheus/malston/bosh-exporter:3.3.2"
         name: bosh-exporter
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: BOSH_EXPORTER_BOSH_LOG_LEVEL
           value: "debug"
@@ -73,6 +54,3 @@ spec:
       - name: certs
         secret:
           secretName: bosh-ca
-      - name: bosh-target-groups
-        persistentVolumeClaim:
-          claimName: prometheus-prometheus-operator-prometheus-db-prometheus-prometheus-operator-prometheus-1

@@ -4,7 +4,7 @@ prometheus:
     - job_name: "kubeEtcd-${CLUSTER_NAME}"
       file_sd_configs:
       - files:
-        - '/prometheus/bosh_target_groups.json'
+        - '/etc/prometheus/configmaps/bosh-target-groups/bosh_target_groups.json'
       scheme: https
       tls_config:
         ca_file: "/etc/prometheus/secrets/etcd-client/etcd-client-ca.crt"
