@@ -88,7 +88,7 @@ if [[ $federation =~ ^[Yy]$ ]]; then
 fi
 
 # Install operator
-helm install --version "${version}" "${release}" \
+helm upgrade -i --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
@@ -99,7 +99,7 @@ helm install --version "${version}" "${release}" \
     ./charts/prometheus-operator
 
 # Install prometheus-deployment with bosh-exporter and ingress
-helm install prometheus-deployment ./charts/prometheus-deployment \
+helm upgrade -i prometheus-deployment ./charts/prometheus-deployment \
   --set grafana.host=grafana-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
   --set prometheus.host=prometheus-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
   --set alertmanager.host=alertmanager-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
