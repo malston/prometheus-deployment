@@ -47,6 +47,9 @@ kubectl create secret -n "${namespace}" generic etcd-client \
     --from-file=etcd-client.crt \
     --from-file=etcd-client.key
 
+kubectl delete configmap -n "${namespace}" bosh-target-groups --ignore-not-found
+kubectl create configmap -n "${namespace}" bosh-target-groups --from-literal=bosh_target_groups\.json={}
+
 if [[ -z "${GMAIL_ACCOUNT}" ]]; then
   echo "Email account: "
   read -r GMAIL_ACCOUNT
