@@ -2,6 +2,8 @@
 
 version="${1:?"Version is required"}"
 
+helm repo update
+
 helm fetch \
   --repo https://kubernetes-charts.storage.googleapis.com \
   --untar \
