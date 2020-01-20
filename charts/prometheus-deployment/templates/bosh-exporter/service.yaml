@@ -1,0 +1,47 @@
+{{- if .Values.boshExporter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-deployment.fullname" . }}-bosh-exporter
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+    release: {{ .Values.prometheus.release }}
+    jobLabel: bosh-exporter
+{{ include "prometheus-deployment.labels" . | indent 4 }}
+{{- if .Values.boshExporter.service.labels }}
+{{ toYaml .Values.boshExporter.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.boshExporter.service.annotations }}
+  annotations:
+{{ toYaml .Values.boshExporter.service.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.boshExporter.service.clusterIP }}
+  clusterIP: {{ .Values.boshExporter.service.clusterIP }}
+{{- end }}
+{{- if .Values.boshExporter.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.boshExporter.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.boshExporter.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.boshExporter.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.boshExporter.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.boshExporter.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: http-metrics
+    {{- if eq .Values.boshExporter.service.type "NodePort" }}
+      nodePort: {{ .Values.boshExporter.service.nodePort }}
+    {{- end }}
+      port: {{ .Values.boshExporter.service.port }}
+      targetPort: 9190
+      protocol: TCP
+  selector:
+    app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+  type: "{{ .Values.boshExporter.service.type }}"
+{{- end }}

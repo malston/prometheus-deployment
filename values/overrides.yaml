@@ -1,5 +1,6 @@
 alertmanager:
   alertmanagerSpec:
+    replicas: 1
     externalUrl: $ALERTMANAGER_URL
     logLevel: debug
   config:
@@ -53,6 +54,7 @@ prometheus:
   prometheusSpec:
     configMaps:
       - bosh-target-groups
+    replicas: 1
     externalUrl: $PROMETHEUS_URL
     externalLabels:
       cluster: "$CLUSTER_NAME"
@@ -80,6 +82,9 @@ prometheus:
                 - prometheus
 
 grafana:
+  replicas: 1
+  # ingress:
+  #   enabled: true
   notifiers: 
     notifiers.yaml:
       notifiers:

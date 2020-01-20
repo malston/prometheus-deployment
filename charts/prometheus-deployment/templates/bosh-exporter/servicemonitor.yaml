@@ -1,0 +1,39 @@
+{{- if and .Values.boshExporter.enabled .Values.boshExporter.serviceMonitor.selfMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-deployment.fullname" . }}-bosh-exporter
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+    release: {{ .Values.prometheus.release }}
+{{ include "prometheus-deployment.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+      # release: {{ $.Release.Name | quote }}
+      release: {{ .Values.prometheus.release }}
+  namespaceSelector:
+    matchNames:
+      - {{ $.Release.Namespace | quote }}
+  endpoints:
+  - port: http-metrics
+    {{- if .Values.boshExporter.serviceMonitor.interval }}
+    interval: {{ .Values.boshExporter.serviceMonitor.interval }}
+    {{- end }}
+    {{- if .Values.boshExporter.serviceMonitor.routePath }}
+    path: {{ .Values.boshExporter.serviceMonitor.routePath }}
+    {{- end }}
+    {{- if .Values.boshExporter.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.boshExporter.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+{{- if .Values.boshExporter.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.boshExporter.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.boshExporter.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.boshExporter.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
+{{- end }}

@@ -87,7 +87,7 @@ if [[ $federation =~ ^[Yy]$ ]]; then
   scrape_config="--values /tmp/with-federation.yaml"
 fi
 
-# Install operator
+# Install prometheus-operator
 helm upgrade -i --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \

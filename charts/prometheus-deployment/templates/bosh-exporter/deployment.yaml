@@ -1,0 +1,59 @@
+{{- if .Values.boshExporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-deployment.fullname" . }}-bosh-exporter
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+    # release: {{ $.Release.Name | quote }}
+    release: {{ .Values.prometheus.release }}
+{{ include "prometheus-deployment.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.boshExporter.replicas }}
+{{- with .Values.boshExporter.deploymentStrategy }}
+  strategy:
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+      # release: {{ $.Release.Name | quote }}
+      release: {{ .Values.prometheus.release }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+        # release: {{ $.Release.Name | quote }}
+        release: {{ .Values.prometheus.release }}
+{{ include "prometheus-deployment.labels" . | indent 8 }}
+    spec:
+      {{- if .Values.boshExporter.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.boshExporter.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.boshExporter.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.boshExporter.securityContext.fsGroup }}
+      {{- end }}
+      serviceAccountName: {{ template "prometheus-deployment.boshExporter.serviceAccountName" . }}
+      containers:
+      - image: {{ .Values.boshExporter.image.repository }}:{{ .Values.boshExporter.image.tag }}
+        name: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+        imagePullPolicy: {{ .Values.boshExporter.image.pullPolicy }}
+        env:
+{{- range $key, $value := .Values.boshExporter.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{- end }}
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/bosh-exporter/certs
+          readOnly: true
+        ports:
+        - containerPort: 9190
+          name: http
+          protocol: TCP
+      volumes:
+      - name: certs
+        secret:
+          secretName: bosh-ca
+{{- end }}
