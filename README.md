@@ -53,6 +53,9 @@ where `${version}` is the version of the chart that you want to upgrade to, and 
 
 How are we going to do blue/green deployments?
 
+1. Deploy multiple replicas of Prometheus
+2. Prometheus is deployed into multiple clusters... Do a canary upgrade to each Prometheus across the foundation
+
 ## Open Questions
 
 - Since helm charts do not appear to track releases with a tag or branch in the helm git repository, how should we keep track of changes from one release to the next? After we run our upgrade-chart.sh script, the chart directory is updated with the version of the chart we download from helm repository, so we can diff all the changes in there to see what the differences are but this is a bit too low level and doesn't give us a summary or log of the changes that are going to be applied. I am wondering how other helm chart operators are dealing with this problem.
