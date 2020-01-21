@@ -1,8 +1,7 @@
----
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ .Values.prometheus.release }}-ingress
+  name: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}-ingress
   namespace: {{ .Release.Namespace }}
 spec:
   rules:
@@ -10,19 +9,19 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: {{ .Values.prometheus.release }}-alertmanager
+          serviceName: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}-alertmanager
           servicePort: 9093
   - host: {{ .Values.grafana.host }}
     http:
       paths:
       - backend:
-          serviceName: {{ .Values.prometheus.release }}-grafana
+          serviceName: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}-grafana
           servicePort: 80
   - host: {{ .Values.prometheus.host }}
     http:
       paths:
       - backend:
-          serviceName: {{ .Values.prometheus.release }}-prometheus
+          serviceName: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}-prometheus
           servicePort: 9090
   tls:
   - hosts:

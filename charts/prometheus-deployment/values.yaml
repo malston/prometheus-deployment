@@ -10,6 +10,19 @@ nameOverride: ""
 ##
 fullnameOverride: ""
 
+prometheusOperator:
+  release:
+    name: ""
+
+alertmanager:
+  host: ""
+
+grafana:
+  host: ""
+
+prometheus:
+  host: ""
+
 ##
 global:
   rbac:

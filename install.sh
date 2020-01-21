@@ -69,6 +69,7 @@ kubectl create secret -n "${namespace}" generic "smtp-creds" \
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
 export FOUNDATION="haas-440"
+DOMAIN="${FOUNDATION}.pez.pivotal.io"
 export SERVICE_INSTANCE_ID="${deployment}"
 export CLUSTER_NAME
 CLUSTER_NAME="$(kubectl config current-context)"
@@ -78,8 +79,8 @@ ENDPOINTS="$(echo ${ips[*]})"
 ENDPOINTS="[${ENDPOINTS// /, }]"
 
 CLUSTER_NUM="$(echo "${CLUSTER_NAME}" | cut -c8-9)"
-export PROMETHEUS_URL="https://prometheus-${CLUSTER_NUM}.haas-440.pez.pivotal.io"
-export ALERTMANAGER_URL="https://alertmanager-${CLUSTER_NUM}.haas-440.pez.pivotal.io"
+export PROMETHEUS_URL="https://prometheus-${CLUSTER_NUM}.${DOMAIN}"
+export ALERTMANAGER_URL="https://alertmanager-${CLUSTER_NUM}.${DOMAIN}"
 
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
@@ -103,11 +104,11 @@ helm upgrade -i --version "${version}" "${release}" \
 
 # Install prometheus-deployment with bosh-exporter and ingress
 helm upgrade -i prometheus-deployment ./charts/prometheus-deployment \
-  --set grafana.host=grafana-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
-  --set prometheus.host=prometheus-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
-  --set alertmanager.host=alertmanager-${CLUSTER_NUM}.haas-440.pez.pivotal.io \
-  --set prometheus.release="${release}" \
-  --namespace="${namespace}"
+  --namespace="${namespace}" \
+  --set prometheusOperator.release.name="${release}" \
+  --set grafana.host="grafana-${CLUSTER_NUM}.${DOMAIN}" \
+  --set prometheus.host="prometheus-${CLUSTER_NUM}.${DOMAIN}" \
+  --set alertmanager.host="alertmanager-${CLUSTER_NUM}.${DOMAIN}"
 
 # Remove copied dashboards
 rm charts/prometheus-operator/charts/grafana/dashboards/*.json

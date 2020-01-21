@@ -6,7 +6,7 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
-    release: {{ .Values.prometheus.release }}
+    release: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}
     jobLabel: bosh-exporter
 {{ include "prometheus-deployment.labels" . | indent 4 }}
 {{- if .Values.boshExporter.service.labels }}

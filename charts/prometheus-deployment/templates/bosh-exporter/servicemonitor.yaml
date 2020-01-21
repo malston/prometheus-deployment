@@ -6,14 +6,14 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
-    release: {{ .Values.prometheus.release }}
+    release: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}
 {{ include "prometheus-deployment.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
       # release: {{ $.Release.Name | quote }}
-      release: {{ .Values.prometheus.release }}
+      release: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}
   namespaceSelector:
     matchNames:
       - {{ $.Release.Namespace | quote }}

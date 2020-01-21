@@ -24,10 +24,15 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{- end -}}
 {{- end -}}
 
+{{/* Prometheus Operator Release Name */}}
+{{- define "prometheus-deployment.prometheusOperator.releaseName" -}}
+{{ default "prometheus-operator" .Values.prometheusOperator.release.name }}
+{{- end }}
+
 {{/* Fullname suffixed with bosh-exporter */}}
 {{- define "prometheus-deployment.boshExporter.fullname" -}}
 {{- printf "%s-bosh-exporter" (include "prometheus-deployment.fullname" .) -}}
-{{- end }}vl
+{{- end }}
 
 {{/* Create chart name and version as used by the chart label. */}}
 {{- define "prometheus-deployment.chartref" -}}

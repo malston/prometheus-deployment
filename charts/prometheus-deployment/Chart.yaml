@@ -1,5 +1,4 @@
+apiVersion: v1
 engine: gotpl
 name: prometheus-deployment
-namespace: monitoring
 version: 1.0.0
-
