@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "prometheus-deployment.fullname" . }}-bosh-exporter
+  name: {{ template "bosh-exporter.fullname" . }}-bosh-exporter
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+    app: {{ template "bosh-exporter.name" . }}-bosh-exporter
     # release: {{ $.Release.Name | quote }}
-{{ include "prometheus-deployment.labels" . | indent 4 }}
+{{ include "bosh-exporter.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.boshExporter.replicas }}
 {{- with .Values.boshExporter.deploymentStrategy }}
@@ -16,14 +16,14 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+      app: {{ template "bosh-exporter.name" . }}-bosh-exporter
       # release: {{ $.Release.Name | quote }}
   template:
     metadata:
       labels:
-        app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+        app: {{ template "bosh-exporter.name" . }}-bosh-exporter
         # release: {{ $.Release.Name | quote }}
-{{ include "prometheus-deployment.labels" . | indent 8 }}
+{{ include "bosh-exporter.labels" . | indent 8 }}
     spec:
       {{- if .Values.boshExporter.securityContext.enabled }}
       securityContext:
@@ -31,10 +31,10 @@ spec:
         runAsGroup: {{ .Values.boshExporter.securityContext.runAsGroup }}
         fsGroup: {{ .Values.boshExporter.securityContext.fsGroup }}
       {{- end }}
-      serviceAccountName: {{ template "prometheus-deployment.boshExporter.serviceAccountName" . }}
+      serviceAccountName: {{ template "bosh-exporter.boshExporter.serviceAccountName" . }}
       containers:
       - image: {{ .Values.boshExporter.image.repository }}:{{ .Values.boshExporter.image.tag }}
-        name: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+        name: {{ template "bosh-exporter.name" . }}-bosh-exporter
         imagePullPolicy: {{ .Values.boshExporter.image.pullPolicy }}
         env:
 {{- range $key, $value := .Values.boshExporter.env }}

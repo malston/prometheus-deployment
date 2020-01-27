@@ -1,0 +1,17 @@
+{{- if and .Values.boshExporter.enabled .Values.global.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "bosh-exporter.fullname" . }}-bosh-exporter
+  labels:
+    app: {{ template "bosh-exporter.name" . }}-bosh-exporter
+{{ include "bosh-exporter.labels" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "bosh-exporter.fullname" . }}-bosh-exporter
+subjects:
+- kind: ServiceAccount
+  name: {{ template "bosh-exporter.boshExporter.serviceAccountName" . }}
+  namespace: {{ $.Release.Namespace }}
+{{- end }}

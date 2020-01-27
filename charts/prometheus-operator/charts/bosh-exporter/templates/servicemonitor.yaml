@@ -2,15 +2,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "prometheus-deployment.fullname" . }}-bosh-exporter
+  name: {{ template "bosh-exporter.fullname" . }}-bosh-exporter
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
-{{ include "prometheus-deployment.labels" . | indent 4 }}
+    app: {{ template "bosh-exporter.name" . }}-bosh-exporter
+{{ include "bosh-exporter.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
+      app: {{ template "bosh-exporter.name" . }}-bosh-exporter
   namespaceSelector:
     matchNames:
       - {{ $.Release.Namespace | quote }}
