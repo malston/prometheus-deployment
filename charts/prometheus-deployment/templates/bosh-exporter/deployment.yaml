@@ -7,7 +7,6 @@ metadata:
   labels:
     app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
     # release: {{ $.Release.Name | quote }}
-    release: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}
 {{ include "prometheus-deployment.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.boshExporter.replicas }}
@@ -19,13 +18,11 @@ spec:
     matchLabels:
       app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
       # release: {{ $.Release.Name | quote }}
-      release: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}
   template:
     metadata:
       labels:
         app: {{ template "prometheus-deployment.name" . }}-bosh-exporter
         # release: {{ $.Release.Name | quote }}
-        release: {{ template "prometheus-deployment.prometheusOperator.releaseName" . }}
 {{ include "prometheus-deployment.labels" . | indent 8 }}
     spec:
       {{- if .Values.boshExporter.securityContext.enabled }}

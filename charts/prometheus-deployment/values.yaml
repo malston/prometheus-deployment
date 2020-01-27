@@ -23,6 +23,12 @@ grafana:
 prometheus:
   host: ""
 
+istio:
+  enabled: false
+
+ingress:
+  enabled: true
+
 ##
 global:
   rbac:
