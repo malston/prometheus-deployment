@@ -102,13 +102,5 @@ helm upgrade -i --version "${version}" "${release}" \
     --set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
     ./charts/prometheus-operator
 
-# Install prometheus-deployment with bosh-exporter and ingress
-helm upgrade -i prometheus-deployment ./charts/prometheus-deployment \
-  --namespace="${namespace}" \
-  --set prometheusOperator.release.name="${release}" \
-  --set grafana.host="grafana-${CLUSTER_NUM}.${DOMAIN}" \
-  --set prometheus.host="prometheus-${CLUSTER_NUM}.${DOMAIN}" \
-  --set alertmanager.host="alertmanager-${CLUSTER_NUM}.${DOMAIN}"
-
 # Remove copied dashboards
 rm charts/prometheus-operator/charts/grafana/dashboards/*.json
