@@ -1,0 +1,36 @@
+{{- if and .Values.pksMonitor.enabled .Values.pksMonitor.serviceMonitor.selfMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "pks-monitor.fullname" . }}-pks-monitor
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "pks-monitor.name" . }}-pks-monitor
+{{ include "pks-monitor.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "pks-monitor.name" . }}-pks-monitor
+  namespaceSelector:
+    matchNames:
+      - {{ $.Release.Namespace | quote }}
+  endpoints:
+  - port: http-metrics
+    {{- if .Values.pksMonitor.serviceMonitor.interval }}
+    interval: {{ .Values.pksMonitor.serviceMonitor.interval }}
+    {{- end }}
+    {{- if .Values.pksMonitor.serviceMonitor.routePath }}
+    path: {{ .Values.pksMonitor.serviceMonitor.routePath }}
+    {{- end }}
+    {{- if .Values.pksMonitor.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.pksMonitor.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+{{- if .Values.pksMonitor.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.pksMonitor.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.pksMonitor.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.pksMonitor.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
+{{- end }}

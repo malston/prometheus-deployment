@@ -1,0 +1,46 @@
+{{- if .Values.pksMonitor.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "pks-monitor.fullname" . }}-pks-monitor
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "pks-monitor.name" . }}-pks-monitor
+    jobLabel: pks-monitor
+{{ include "pks-monitor.labels" . | indent 4 }}
+{{- if .Values.pksMonitor.service.labels }}
+{{ toYaml .Values.pksMonitor.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.pksMonitor.service.annotations }}
+  annotations:
+{{ toYaml .Values.pksMonitor.service.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.pksMonitor.service.clusterIP }}
+  clusterIP: {{ .Values.pksMonitor.service.clusterIP }}
+{{- end }}
+{{- if .Values.pksMonitor.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.pksMonitor.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.pksMonitor.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.pksMonitor.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.pksMonitor.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.pksMonitor.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: http-metrics
+    {{- if eq .Values.pksMonitor.service.type "NodePort" }}
+      nodePort: {{ .Values.pksMonitor.service.nodePort }}
+    {{- end }}
+      port: {{ .Values.pksMonitor.service.port }}
+      targetPort: 9190
+      protocol: TCP
+  selector:
+    app: {{ template "pks-monitor.name" . }}-pks-monitor
+  type: "{{ .Values.pksMonitor.service.type }}"
+{{- end }}

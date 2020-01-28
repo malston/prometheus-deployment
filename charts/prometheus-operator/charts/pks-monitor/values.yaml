@@ -1,8 +1,8 @@
-# Default values for bosh-exporter.
+# Default values for pks-monitor.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-## Provide a name in place of bosh-exporter for `app:` labels
+## Provide a name in place of pks-monitor for `app:` labels
 ##
 nameOverride: ""
 
@@ -21,23 +21,23 @@ global:
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
-## Configuration for bosh-exporter
+## Configuration for pks-monitor
 ## ref: https://github.com/bosh-prometheus/bosh_exporter
 ##
-boshExporter:
+pksMonitor:
 
-  ## Deploy bosh-exporter
+  ## Deploy pks-monitor
   ##
   enabled: false
 
-  ## Image of bosh-exporter collector
+  ## Image of pks-monitor collector
   ##
   image:
-    repository: harbor.haas-440.pez.pivotal.io/prometheus/malston/bosh-exporter
-    tag: 3.3.1
+    repository: victorpupim/pks-monitor
+    tag: 1.0.0
     pullPolicy: Always
 
-  ## Number of replicas to create of the bosh-exporter pod
+  ## Number of replicas to create of the pks-monitor pod
   ##
   replicas: 1
 
@@ -46,20 +46,11 @@ boshExporter:
   deploymentStrategy:
     type: RollingUpdate
 
-  ## Environment variables to use for bosh-exporter.
+  ## Environment variables to use for pks-monitor.
   ##
-  env:
-    BOSH_EXPORTER_BOSH_LOG_LEVEL: "debug"
-    BOSH_EXPORTER_BOSH_URL: "172.16.1.11"
-    BOSH_EXPORTER_BOSH_UAA_CLIENT_ID: "ops_manager"
-    BOSH_EXPORTER_BOSH_UAA_CLIENT_SECRET: "EdyCNlv4r3bArQY1__HgucBwQj6VGStq"
-    BOSH_EXPORTER_BOSH_CA_CERT_FILE: "/etc/bosh-exporter/certs/bosh-ca.crt"
-    BOSH_EXPORTER_METRICS_ENVIRONMENT: pks
-    BOSH_EXPORTER_FILTER_COLLECTORS: "Deployments,Jobs,ServiceDiscovery"
-    BOSH_EXPORTER_SD_CONFIGMAP: "bosh-target-groups"
-    BOSH_EXPORTER_SD_CONFIGMAP_NAMESPACE: "monitoring"
+  env: {}
 
-  ## Security context for bosh-exporter to use.
+  ## Security context for pks-monitor to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   ##
   securityContext:
@@ -68,14 +59,16 @@ boshExporter:
     runAsGroup: 3000
     fsGroup: 2000
 
-  ## Service account for bosh-exporter to use.
+  ## Service account for pks-monitor to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
   serviceAccount:
     create: true
     name: ""
+  
+  terminationGracePeriodSeconds: 60
 
-  ## Configuration for bosh-exporter service
+  ## Configuration for pks-monitor service
   ##
   service:
     ## Service type
@@ -100,7 +93,7 @@ boshExporter:
     loadBalancerSourceRanges: []
 
 
-  ## If true, create a serviceMonitor for bosh-exporter
+  ## If true, create a serviceMonitor for pks-monitor
   ##
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.

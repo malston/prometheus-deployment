@@ -1,0 +1,63 @@
+{{- if .Values.pksMonitor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "pks-monitor.fullname" . }}-pks-monitor
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: pks-monitor
+{{ include "pks-monitor.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.pksMonitor.replicas }}
+{{- with .Values.pksMonitor.deploymentStrategy }}
+  strategy:
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "pks-monitor.name" . }}-pks-monitor
+  template:
+    metadata:
+      labels:
+        app: {{ template "pks-monitor.name" . }}-pks-monitor
+{{ include "pks-monitor.labels" . | indent 8 }}
+    spec:
+      volumes:
+        - name: certs
+          secret:
+            secretName: pks-api-cert
+      containers:
+        - image: {{ .Values.pksMonitor.image.repository }}:{{ .Values.pksMonitor.image.tag }}
+          name: {{ template "pks-monitor.name" . }}-pks-monitor
+          imagePullPolicy: {{ .Values.pksMonitor.image.pullPolicy }}
+          env:
+            - name: PKS_API
+              valueFrom:
+                secretKeyRef:
+                  key: pks-api
+                  name: pks-api-monitor
+            - name: UAA_CLI_ID
+              valueFrom:
+                secretKeyRef:
+                  name: pks-api-monitor
+                  key: uaa-cli-id
+            - name: UAA_CLI_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: pks-api-monitor
+                  key: uaa-cli-secret
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/pks-monitor/certs
+              readOnly: true
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          lifecycle:
+            preStop:
+              httpGet:
+                port: 8080
+                path: "/prestop"
+      terminationGracePeriodSeconds: {{ .Values.pksMonitor.terminationGracePeriodSeconds }}
+{{- end }}

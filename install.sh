@@ -96,13 +96,15 @@ helm upgrade -i --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
+    --set bosh-exporter.boshExporter.enabled=true \
+    --set pks-monitor.pksMonitor.enabled=true \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
-    --set grafana.host="grafana-${CLUSTER_NUM}.${DOMAIN}" \
-    --set prometheus.host="prometheus-${CLUSTER_NUM}.${DOMAIN}" \
-    --set alertmanager.host="alertmanager-${CLUSTER_NUM}.${DOMAIN}" \
+    --set istio-ingress-gateway.grafana.host="grafana-${CLUSTER_NUM}.${DOMAIN}" \
+    --set istio-ingress-gateway.prometheus.host="prometheus-${CLUSTER_NUM}.${DOMAIN}" \
+    --set istio-ingress-gateway.alertmanager.host="alertmanager-${CLUSTER_NUM}.${DOMAIN}" \
     ./charts/prometheus-operator
 
 # Remove copied dashboards

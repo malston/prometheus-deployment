@@ -6,7 +6,6 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "bosh-exporter.name" . }}-bosh-exporter
-    # release: {{ $.Release.Name | quote }}
 {{ include "bosh-exporter.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.boshExporter.replicas }}
@@ -17,12 +16,10 @@ spec:
   selector:
     matchLabels:
       app: {{ template "bosh-exporter.name" . }}-bosh-exporter
-      # release: {{ $.Release.Name | quote }}
   template:
     metadata:
       labels:
         app: {{ template "bosh-exporter.name" . }}-bosh-exporter
-        # release: {{ $.Release.Name | quote }}
 {{ include "bosh-exporter.labels" . | indent 8 }}
     spec:
       {{- if .Values.boshExporter.securityContext.enabled }}
