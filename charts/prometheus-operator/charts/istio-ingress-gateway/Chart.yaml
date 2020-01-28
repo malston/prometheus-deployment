@@ -1,4 +1,4 @@
 apiVersion: v1
 engine: gotpl
-name: prometheus-deployment
+name: istio-ingress-gateway
 version: 1.0.0

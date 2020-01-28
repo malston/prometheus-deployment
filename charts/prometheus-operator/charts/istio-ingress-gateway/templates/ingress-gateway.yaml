@@ -87,7 +87,7 @@ spec:
   gateways:
   - istio-gateways/istio-gateway
   hosts:
-  - grafana.{{ template "prometheus-deployment.clusterName" . }}
+  - grafana.{{ template "istio-ingress-gateway.clusterName" . }}
   http:
   - match:
     - uri:

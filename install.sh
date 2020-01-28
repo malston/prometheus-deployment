@@ -100,6 +100,9 @@ helm upgrade -i --version "${version}" "${release}" \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
+    --set grafana.host="grafana-${CLUSTER_NUM}.${DOMAIN}" \
+    --set prometheus.host="prometheus-${CLUSTER_NUM}.${DOMAIN}" \
+    --set alertmanager.host="alertmanager-${CLUSTER_NUM}.${DOMAIN}" \
     ./charts/prometheus-operator
 
 # Remove copied dashboards
