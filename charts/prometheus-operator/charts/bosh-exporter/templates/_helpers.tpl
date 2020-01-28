@@ -37,6 +37,7 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{/* Generate basic labels */}}
 {{- define "bosh-exporter.labels" }}
 chart: {{ template "bosh-exporter.chartref" . }}
+release: {{ .Release.Name | quote }}
 {{- end }}
 
 {{/* Create the name of bosh exporter service account to use */}}
