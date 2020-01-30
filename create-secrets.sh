@@ -33,4 +33,4 @@ om_password="${4}"
 kubectl config set-context --current --namespace="${namespace}"
 
 download_bosh_ca_cert "${om_target}" "${om_username}" "${om_password}"
-create_secret_from_file "${namespace}" "bosh-ca" "./bash-ca.crt"
+create_secret_from_file "${namespace}" "bosh-ca" "./bosh-ca.crt"
