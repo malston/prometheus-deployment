@@ -40,12 +40,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: pks-api-monitor
-                  key: uaa-cli-id
+                  key: uaa-client-id
             - name: UAA_CLI_SECRET
               valueFrom:
                 secretKeyRef:
                   name: pks-api-monitor
-                  key: uaa-cli-secret
+                  key: uaa-client-secret
           volumeMounts:
             - name: certs
               mountPath: /etc/pks-monitor/certs

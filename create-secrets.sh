@@ -15,7 +15,6 @@ function create_secret_from_file() {
     local file="${3}"
 
     kubectl delete secret -n "${namespace}" "${secret_name}" --ignore-not-found
-
     kubectl create secret -n "${namespace}" generic "${secret_name}" \
       --from-file="${file}"
 }
