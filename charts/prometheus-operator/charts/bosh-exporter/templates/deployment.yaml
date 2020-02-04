@@ -34,6 +34,16 @@ spec:
         name: {{ template "bosh-exporter.name" . }}-bosh-exporter
         imagePullPolicy: {{ .Values.boshExporter.image.pullPolicy }}
         env:
+        - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: bosh-exporter
+              key: uaa-client-id
+        - name: BOSH_EXPORTER_BOSH_UAA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bosh-exporter
+              key: uaa-client-secret
 {{- range $key, $value := .Values.boshExporter.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"

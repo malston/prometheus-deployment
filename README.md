@@ -7,6 +7,10 @@ Deploys [Prometheus Operator](https://github.com/coreos/prometheus-operator) usi
 Install Prometheus with the BOSH Exporter
 
 ```bash
+./create-bosh-exporter-secrets.sh
+```
+
+```bash
 ./install.sh
 ```
 
@@ -32,16 +36,16 @@ After installation, you may find yourself needing to make updates to the Prometh
 
 It's important that you make your updates using the `helm upgrade` command instead of using `kubectl` or manually editing chart resources. This is to ensure that all resources are updated appropriately.
 
-We also maintain a script that allows us to run this easily with only a few parameters:
+The install script runs `helm upgrade -i` where the `-i` tells helm to install the chart if it doesn't exist.
 
 ```bash
-./upgrade.sh
+./install.sh
 ```
 
 The script will issue a command like this
 
 ```bash
-helm upgrade --version "${version}" "${release}" \
+helm upgrade -i --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
     ./charts/prometheus-operator
