@@ -29,6 +29,11 @@ function create_uaa_client() {
     uaac target https://${pks_api_hostname}:8443 --ca-cert ./pks-ca.crt
     uaac token client get admin -s "${admin_client_secret}"
 
+    ok=$(uaac client get pks-api-monitor)
+    if [[ $ok != *NotFound* ]]; then
+      uaac client delete pks-api-monitor
+    fi
+
     uaac client add pks-api-monitor \
       --access_token_validity=600 \
       --secret="${pks_api_monitor_secret}" \
@@ -42,33 +47,44 @@ function create_uaa_client() {
     --from-literal=uaa-client-secret="${pks_api_monitor_secret}"
 }
 
-if [ ! $# -eq 4 ]; then
-    echo "must supply the following args <namespace> <om_target> <om_username> <om_password>"
-    exit 1
+namespace="${1:-${MONITORING_NAMESPACE}}"
+om_target="${2:-${OM_TARGET}}"
+om_username="${3:-${OM_USERNAME}}"
+om_password="${4:-${OM_PASSWORD}}"
+pks_api_hostname="${5:-${PKS_API_HOSTNAME}}"
+pks_api_monitor_secret="${6:-${PKS_API_MONITOR_SECRET}}"
+
+if [ -z "${namespace}" ]; then
+  echo "Enter namespace: "
+  read -r namespace
 fi
 
-if [[ -z "${PKS_API_MONITOR_SECRET}" ]]; then
+if [ -z "${om_target}" ]; then
+  echo "Enter ops manager hostname: (e.g., opsman.haas-000.pez.pivotal.io) "
+  read -r om_target
+fi
+
+if [[ -z "${om_username}" ]]; then
+  echo "Enter a username for the opsman administrator account: "
+  read -rs om_username
+fi
+
+if [[ -z "${om_password}" ]]; then
+  echo "Enter a password for the opsman administrator account: "
+  read -rs om_password
+fi
+
+if [ -z "${pks_api_hostname}" ]; then
+  echo "Enter subdomain: (e.g., api.pks.haas-000.pez.pivotal.io)"
+  read -r pks_api_hostname
+fi
+
+if [[ -z "${pks_api_monitor_secret}" ]]; then
   echo "Enter a secret for the pks-monitor uaa client: "
-  read -rs PKS_API_MONITOR_SECRET
+  read -rs pks_api_monitor_secret
 fi
-
-if [ -z "${PKS_DOMAIN_NAME}" ]; then
-  echo "Enter domain: (e.g., pez.pivotal.io)"
-  read -r PKS_DOMAIN_NAME
-fi
-
-if [ -z "${PKS_SUBDOMAIN_NAME}" ]; then
-  echo "Enter subdomain: (e.g., haas-440)"
-  read -r PKS_SUBDOMAIN_NAME
-fi
-
-namespace="${1}"
-om_target="${2}"
-om_username="${3}"
-om_password="${4}"
-pks_api_hostname="api.pks.${PKS_SUBDOMAIN_NAME}.${PKS_DOMAIN_NAME}"
 
 kubectl config set-context --current --namespace="${namespace}"
 
 download_pks_ca_cert "${namespace}" "${om_target}" "${om_username}" "${om_password}"
-create_uaa_client "${namespace}" "${om_target}" "${om_username}" "${om_password}" "${pks_api_hostname}" "${PKS_API_MONITOR_SECRET}"
+create_uaa_client "${namespace}" "${om_target}" "${om_username}" "${om_password}" "${pks_api_hostname}" "${pks_api_monitor_secret}"
