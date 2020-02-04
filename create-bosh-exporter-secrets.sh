@@ -50,7 +50,7 @@ fi
 
 if [[ -z "${om_username}" ]]; then
   echo "Enter a username for the opsman administrator account: "
-  read -rs om_username
+  read -r om_username
 fi
 
 if [[ -z "${om_password}" ]]; then
