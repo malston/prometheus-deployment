@@ -1,36 +1,40 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
 alertmanager:
   alertmanagerSpec:
     replicas: 1
+    portName: http-service
     externalUrl: $ALERTMANAGER_URL
     logLevel: debug
   config:
-    global:
-      resolve_timeout: 5m
     route:
-      receiver: "am-webhook"
-      group_by: ['alertname']
+      group_by: [job, alertname]
+      # How long to wait to buffer alerts of the same group before sending initially
       group_wait: 30s
+      # How long to wait before sending an alert that has been added to a group which contains already fired alerts
       group_interval: 5m
-      repeat_interval: 12h
-      receiver: 'null'
+      # How long to wait before re-sending a given alert that has already been sent
+      repeat_interval: 4h
+      receiver: am-webhook
       routes:
       - match:
           alertname: Watchdog
         receiver: 'null'
       - match:
           alertname: TestAlert
-        receiver: 'am-webhook'
+        receiver: am-webhook
     receivers:
     - name: 'null'
-    - name: "am-webhook"
+    - name: am-webhook
       webhook_configs:
-      - url: 'http://alert-webhook:80/webhook'
+      - url: http://alert-webhook.monitoring/webhook
         send_resolved: true
     # - name: 'email'
     #   email_configs:
     #   - to: $GMAIL_ACCOUNT
     #     from: $GMAIL_ACCOUNT
-    #     smarthost: "smtp.gmail.com:587"
     #     auth_username: "$GMAIL_ACCOUNT"
     #     auth_identity: "$GMAIL_ACCOUNT"
     #     auth_password: "$GMAIL_AUTH_TOKEN"
@@ -108,18 +112,18 @@ grafana:
       passwordKey: "password"
       host: "smtp.gmail.com:587"
 
-additionalPrometheusRulesMap:
-  testing:
-    groups:
-    - name: test-alerting.rules
-      rules:
-      - alert: TestAlert
-        annotations:
-          message: The disk {{`{{ $labels.instance }}`}} running on {{`{{ $labels.cluster }}`}} in {{`{{ $labels.foundation }}`}} is running full.
-        expr: vector(1)
-        for: 1m
-        labels:
-          severity: critical
+# additionalPrometheusRulesMap:
+#   testing:
+#     groups:
+#     - name: test-alerting.rules
+#       rules:
+#       - alert: TestAlert
+#         annotations:
+#           message: The disk {{`{{ $labels.instance }}`}} running on {{`{{ $labels.cluster }}`}} in {{`{{ $labels.foundation }}`}} is running full.
+#         expr: vector(1)
+#         for: 1m
+#         labels:
+#           severity: critical
 
 kubeApiServer:
   serviceMonitor:
