@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: prometheus-operator-ingress
+  name: {{ .Release.Name }}-ingress
   namespace: {{ .Release.Namespace }}
 spec:
   rules:
@@ -10,19 +10,19 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: prometheus-operator-alertmanager
+          serviceName: {{ .Release.Name }}-alertmanager
           servicePort: 9093
   - host: {{ .Values.grafana.host }}
     http:
       paths:
       - backend:
-          serviceName: prometheus-operator-grafana
+          serviceName: {{ .Release.Name }}-grafana
           servicePort: 80
   - host: {{ .Values.prometheus.host }}
     http:
       paths:
       - backend:
-          serviceName: prometheus-operator-prometheus
+          serviceName: {{ .Release.Name }}-prometheus
           servicePort: 9090
   tls:
   - hosts:
