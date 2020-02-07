@@ -26,43 +26,42 @@ function create_federation_targets() {
   clusters=$(pks clusters --json | jq 'sort_by(.name)')
 
   for row in $(echo "${clusters}" | jq -r '.[] | @base64'); do
-      _jq() {
+    _jq() {
       echo "${row}" | base64 --decode | jq -r "${1}"
-      }
-      targets=( "${targets[@]}" "https://prometheus-$(_jq '.name' | cut -c8-9).${DOMAIN}" )
+    }
+    targets=( "${targets[@]}" "prometheus-$(_jq '.name' | cut -c8-9).${DOMAIN}" )
   done
 
-  local current_target=("https://prometheus-$(echo "${cluster_name}" | cut -c8-9).${domain}")
+  local current_target=("prometheus-$(echo "${cluster_name}" | cut -c8-9).${domain}")
   for target in "${current_target[@]}"; do
-    echo "$target"
     for i in "${!targets[@]}"; do
       if [[ "${targets[i]}" = "${target}" ]]; then
         unset "targets[i]"
       fi
     done
   done
-  FEDERATION_TARGETS="$(echo ${targets[*]})"
-  FEDERATION_TARGETS="${FEDERATION_TARGETS// /, }"
-  export FEDERATION_TARGETS
+  fed_targets="$(echo ${targets[*]})"
+  fed_targets="${fed_targets// /, }"
+  echo "${fed_targets}"
 }
 
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
-    usage
+  usage
 fi
-
-if [[ -z "${deployment}" ]]; then
-  deployment="service-instance_$(pks show-cluster "$(kubectl config current-context)" --json | jq -r .uuid)"
-fi
-
-read -rp "Add federation scrape job? [y/n]" federation
-
-./get-certs.sh "${deployment}"
 
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
 fi
 
 kubectl config set-context --current --namespace="${namespace}"
+
+if [[ -z "${deployment}" ]]; then
+  deployment="service-instance_$(pks show-cluster "$(kubectl config current-context)" --json | jq -r .uuid)"
+fi
+
+./get-certs.sh "${deployment}"
+
+read -rp "Add federation scrape job? [y/n]" federation
 
 # Create storage class
 kubectl delete storageclass thin-disk --ignore-not-found
@@ -93,11 +92,12 @@ kubectl create secret -n "${namespace}" generic "smtp-creds" \
     --from-literal=user="${GMAIL_ACCOUNT}" \
     --from-literal=password="${GMAIL_AUTH_TOKEN}"
 
-# Copy dashboards to grafana chart location
-cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
-
-export FOUNDATION="haas-440"
+if [[ -z "${FOUNDATION}" ]]; then
+  echo "Enter foundation name (e.g. haas-000): "
+  read -r FOUNDATION
+fi
 DOMAIN="${FOUNDATION}.pez.pivotal.io"
+
 export SERVICE_INSTANCE_ID="${deployment}"
 export CLUSTER_NAME
 CLUSTER_NAME="$(kubectl config current-context)"
@@ -106,20 +106,25 @@ ips=$(bosh -d "${SERVICE_INSTANCE_ID}" vms --column=Instance --column=IPs | grep
 ENDPOINTS="$(echo ${ips[*]})"
 ENDPOINTS="[${ENDPOINTS// /, }]"
 
-create_federation_targets "${CLUSTER_NAME}" "${DOMAIN}"
-
 CLUSTER_NUM="$(echo "${CLUSTER_NAME}" | cut -c8-9)"
 export PROMETHEUS_URL="https://prometheus-${CLUSTER_NUM}.${DOMAIN}"
 export ALERTMANAGER_URL="https://alertmanager-${CLUSTER_NUM}.${DOMAIN}"
+
+pks_monitor_enabled=false
+scrape_config="--values /tmp/with-additional-scrape-configs.yaml"
+export FEDERATION_TARGETS
+if [[ $federation =~ ^[Yy]$ ]]; then
+  scrape_config="--values /tmp/with-federation.yaml"
+  FEDERATION_TARGETS=$(create_federation_targets "${CLUSTER_NAME}" "${DOMAIN}")
+  pks_monitor_enabled=true
+fi
 
 envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
 envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
 envsubst < ./values/with-federation.yaml > /tmp/with-federation.yaml
 
-scrape_config="--values /tmp/with-additional-scrape-configs.yaml"
-if [[ $federation =~ ^[Yy]$ ]]; then
-  scrape_config="--values /tmp/with-federation.yaml"
-fi
+# Copy dashboards to grafana chart location
+cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
 # Install prometheus-operator
 helm upgrade -i --version "${version}" "${release}" \
@@ -127,7 +132,7 @@ helm upgrade -i --version "${version}" "${release}" \
     --values /tmp/overrides.yaml \
     ${scrape_config} \
     --set bosh-exporter.boshExporter.enabled=true \
-    --set pks-monitor.pksMonitor.enabled=true \
+    --set pks-monitor.pksMonitor.enabled=${pks_monitor_enabled} \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
