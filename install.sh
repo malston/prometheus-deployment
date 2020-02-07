@@ -19,7 +19,6 @@ function usage() {
 }
 
 function create_federation_targets() {
-  set -x
   local cluster_name="${1}"
   local domain="${2}"
   local targets=()
@@ -45,7 +44,6 @@ function create_federation_targets() {
   FEDERATION_TARGETS="$(echo ${targets[*]})"
   FEDERATION_TARGETS="${FEDERATION_TARGETS// /, }"
   export FEDERATION_TARGETS
-  set +x
 }
 
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
