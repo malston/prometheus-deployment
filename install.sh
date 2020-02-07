@@ -18,6 +18,36 @@ function usage() {
   exit 1
 }
 
+function create_federation_targets() {
+  set -x
+  local cluster_name="${1}"
+  local domain="${2}"
+  local targets=()
+  local clusters
+  clusters=$(pks clusters --json | jq 'sort_by(.name)')
+
+  for row in $(echo "${clusters}" | jq -r '.[] | @base64'); do
+      _jq() {
+      echo "${row}" | base64 --decode | jq -r "${1}"
+      }
+      targets=( "${targets[@]}" "https://prometheus-$(_jq '.name' | cut -c8-9).${DOMAIN}" )
+  done
+
+  local current_target=("https://prometheus-$(echo "${cluster_name}" | cut -c8-9).${domain}")
+  for target in "${current_target[@]}"; do
+    echo "$target"
+    for i in "${!targets[@]}"; do
+      if [[ "${targets[i]}" = "${target}" ]]; then
+        unset "targets[i]"
+      fi
+    done
+  done
+  FEDERATION_TARGETS="$(echo ${targets[*]})"
+  FEDERATION_TARGETS="${FEDERATION_TARGETS// /, }"
+  export FEDERATION_TARGETS
+  set +x
+}
+
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
     usage
 fi
@@ -77,26 +107,8 @@ export ENDPOINTS
 ips=$(bosh -d "${SERVICE_INSTANCE_ID}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
 ENDPOINTS="$(echo ${ips[*]})"
 ENDPOINTS="[${ENDPOINTS// /, }]"
-targets=()
-clusters=$(pks clusters --json | jq 'sort_by(.name)')
-for row in $(echo "${clusters}" | jq -r '.[] | @base64'); do
-    _jq() {
-     echo "${row}" | base64 --decode | jq -r "${1}"
-    }
-    targets=( "${targets[@]}" "https://prometheus-$(_jq '.name' | cut -c8-9).${DOMAIN}" )
-done
 
-current_target=("${CLUSTER_NAME}.${DOMAIN}")
-for target in "${current_target[@]}"; do
-  for i in "${!targets[@]}"; do
-    if [[ "${targets[i]}" = "${target}" ]]; then
-      unset "targets[i]"
-    fi
-  done
-done
-FEDERATION_TARGETS="$(echo ${targets[*]})"
-FEDERATION_TARGETS="${FEDERATION_TARGETS// /, }"
-export FEDERATION_TARGETS
+create_federation_targets "${CLUSTER_NAME}" "${DOMAIN}"
 
 CLUSTER_NUM="$(echo "${CLUSTER_NAME}" | cut -c8-9)"
 export PROMETHEUS_URL="https://prometheus-${CLUSTER_NUM}.${DOMAIN}"
