@@ -2,11 +2,19 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
+istio-ingress-gateway:
+  alertmanager:
+    host: ((alertmanager_hostname))
+  grafana:
+    host: ((grafana_hostname))
+  prometheus:
+    host: ((prometheus_hostname))
+
 alertmanager:
   alertmanagerSpec:
     replicas: 1
     portName: http-service
-    externalUrl: $ALERTMANAGER_URL
+    externalUrl: ((alertmanager_url))
     logLevel: debug
   config:
     route:
@@ -59,10 +67,10 @@ prometheus:
     configMaps:
       - bosh-target-groups
     replicas: 1
-    externalUrl: $PROMETHEUS_URL
+    externalUrl: ((prometheus_url))
     externalLabels:
-      cluster: "$CLUSTER_NAME"
-      foundation: "$FOUNDATION"
+      cluster: ((cluster_name))
+      foundation: ((foundation))
     secrets:
       - etcd-client
     ruleSelector:
@@ -98,8 +106,7 @@ grafana:
         org_id: 1
         is_default: true
         settings:
-          addresses: "$GMAIL_ACCOUNT"
-
+          addresses: ((gmail_account))
   smtp:
     existingSecret: "smtp-creds"
     userKey: "user"
@@ -143,7 +150,7 @@ kubeApiServer:
       - __name__
 
 kubeControllerManager:
-  endpoints: ${ENDPOINTS}
+  endpoints: ((endpoints))
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true
@@ -154,7 +161,7 @@ kubeControllerManager:
       - __name__
 
 kubeScheduler:
-  endpoints: ${ENDPOINTS}
+  endpoints: ((endpoints))
   serviceMonitor:
     interval: 30s
     insecureSkipVerify: true

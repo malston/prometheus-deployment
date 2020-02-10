@@ -11,8 +11,8 @@ prometheus:
         - '{job="kubernetes_api_slo"}'
         # - '{__name__=~"kubernetes:.*"}'
       static_configs:
-      - targets: [$FEDERATION_TARGETS]
-    - job_name: "kubeEtcd-${CLUSTER_NAME}"
+      - targets: ((federation_targets))
+    - job_name: "kubeEtcd-((cluster_name))"
       file_sd_configs:
       - files:
         - '/etc/prometheus/configmaps/bosh-target-groups/bosh_target_groups.json'
@@ -27,7 +27,7 @@ prometheus:
         regex: etcd
         action: keep
       - source_labels: [__meta_bosh_deployment]
-        regex: $SERVICE_INSTANCE_ID
+        regex: ((service_instance_id))
         action: keep
       - source_labels: [__address__]
         regex:  '(.*)'

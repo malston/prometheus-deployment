@@ -1,0 +1,11 @@
+alertmanager_url: https://alertmanager.((cluster_name)).((foundation_domain))
+endpoints: ((endpoints))
+gmail_account: marktalston@gmail.com
+prometheus_url: https://prometheus.((cluster_name)).((foundation_domain))
+cluster_name: ((cluster_name))
+foundation: ((foundation))
+federation_targets: ((federation_targets))
+service_instance_id: ((service_instance_id))
+alertmanager_hostname: alertmanager.((cluster_name)).((foundation_domain))
+grafana_hostname: grafana.((cluster_name)).((foundation_domain))
+prometheus_hostname: prometheus.((cluster_name)).((foundation_domain))

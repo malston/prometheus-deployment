@@ -18,33 +18,6 @@ function usage() {
   exit 1
 }
 
-function create_federation_targets() {
-  local cluster_name="${1}"
-  local domain="${2}"
-  local targets=()
-  local clusters
-  clusters=$(pks clusters --json | jq 'sort_by(.name)')
-
-  for row in $(echo "${clusters}" | jq -r '.[] | @base64'); do
-    _jq() {
-      echo "${row}" | base64 --decode | jq -r "${1}"
-    }
-    targets=( "${targets[@]}" "prometheus-$(_jq '.name' | cut -c8-9).${DOMAIN}" )
-  done
-
-  local current_target=("prometheus-$(echo "${cluster_name}" | cut -c8-9).${domain}")
-  for target in "${current_target[@]}"; do
-    for i in "${!targets[@]}"; do
-      if [[ "${targets[i]}" = "${target}" ]]; then
-        unset "targets[i]"
-      fi
-    done
-  done
-  fed_targets="$(echo ${targets[*]})"
-  fed_targets="${fed_targets// /, }"
-  echo "${fed_targets}"
-}
-
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage
 fi
@@ -96,32 +69,13 @@ if [[ -z "${FOUNDATION}" ]]; then
   echo "Enter foundation name (e.g. haas-000): "
   read -r FOUNDATION
 fi
-DOMAIN="${FOUNDATION}.pez.pivotal.io"
 
-export SERVICE_INSTANCE_ID="${deployment}"
-export CLUSTER_NAME
-CLUSTER_NAME="$(kubectl config current-context)"
-export ENDPOINTS
-ips=$(bosh -d "${SERVICE_INSTANCE_ID}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
-ENDPOINTS="$(echo ${ips[*]})"
-ENDPOINTS="[${ENDPOINTS// /, }]"
-
-CLUSTER_NUM="$(echo "${CLUSTER_NAME}" | cut -c8-9)"
-export PROMETHEUS_URL="https://prometheus-${CLUSTER_NUM}.${DOMAIN}"
-export ALERTMANAGER_URL="https://alertmanager-${CLUSTER_NUM}.${DOMAIN}"
+./interpolate.sh "${FOUNDATION}" "${federation}"
 
 pks_monitor_enabled=false
-scrape_config="--values /tmp/with-additional-scrape-configs.yaml"
-export FEDERATION_TARGETS
 if [[ $federation =~ ^[Yy]$ ]]; then
-  scrape_config="--values /tmp/with-federation.yaml"
-  FEDERATION_TARGETS=$(create_federation_targets "${CLUSTER_NAME}" "${DOMAIN}")
   pks_monitor_enabled=true
 fi
-
-envsubst < ./values/overrides.yaml > /tmp/overrides.yaml
-envsubst < ./values/with-additional-scrape-configs.yaml > /tmp/with-additional-scrape-configs.yaml
-envsubst < ./values/with-federation.yaml > /tmp/with-federation.yaml
 
 # Copy dashboards to grafana chart location
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
@@ -130,16 +84,12 @@ cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 helm upgrade -i --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
-    ${scrape_config} \
     --set bosh-exporter.boshExporter.enabled=true \
     --set pks-monitor.pksMonitor.enabled=${pks_monitor_enabled} \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \
     --set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
-    --set istio-ingress-gateway.grafana.host="grafana-${CLUSTER_NUM}.${DOMAIN}" \
-    --set istio-ingress-gateway.prometheus.host="prometheus-${CLUSTER_NUM}.${DOMAIN}" \
-    --set istio-ingress-gateway.alertmanager.host="alertmanager-${CLUSTER_NUM}.${DOMAIN}" \
     ./charts/prometheus-operator
 
 # Remove copied dashboards
