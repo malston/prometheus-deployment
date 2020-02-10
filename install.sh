@@ -49,6 +49,8 @@ if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage
 fi
 
+read -rp "Add federation scrape job? [y/n]" federation
+
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
 fi
@@ -60,12 +62,6 @@ if [[ -z "${deployment}" ]]; then
 fi
 
 ./get-certs.sh "${deployment}"
-
-read -rp "Add federation scrape job? [y/n]" federation
-
-# Create storage class
-kubectl delete storageclass thin-disk --ignore-not-found
-kubectl create -f storage/storage-class.yaml
 
 # Create secrets for etcd client cert
 kubectl delete secret -n "${namespace}" etcd-client --ignore-not-found
@@ -91,6 +87,10 @@ kubectl delete secret -n "${namespace}" "smtp-creds" --ignore-not-found
 kubectl create secret -n "${namespace}" generic "smtp-creds" \
     --from-literal=user="${GMAIL_ACCOUNT}" \
     --from-literal=password="${GMAIL_AUTH_TOKEN}"
+
+# Create storage class
+kubectl delete storageclass thin-disk --ignore-not-found
+kubectl create -f storage/storage-class.yaml
 
 if [[ -z "${FOUNDATION}" ]]; then
   echo "Enter foundation name (e.g. haas-000): "
