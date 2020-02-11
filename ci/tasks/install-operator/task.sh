@@ -75,9 +75,9 @@ if [[ -z "${version}" ]]; then
   exit 1
 fi
 
-cd prometheus-deployment
-
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
+
+cd prometheus-deployment
 
 main "${foundation}" "${namespace}" "${release}" "${version}"
