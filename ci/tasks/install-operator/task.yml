@@ -5,6 +5,7 @@ image_resource:
   type: docker-image
   source:
     repository: harbor.haas-440.pez.pivotal.io/library/malston/pks-control-plane
+    insecure_registries: [harbor.haas-440.pez.pivotal.io]
     tag: 0.0.1
 
 inputs:
