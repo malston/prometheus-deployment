@@ -4,16 +4,16 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
-deployment="${1}" #: bosh deployment name for service instance of the cluster
+foundation="${1:-$FOUNDATION}"
 namespace="${2:-monitoring}"
 release="${3:-prometheus-operator}"
 version="${4:-8.5.4}"
 
 function usage() {
   echo "Usage:"
-  echo "$0 <deployment> <namespace>"
+  echo "$0 <foundation> <namespace>"
   echo ""
-  echo "deployment: bosh deployment name for service instance of the cluster (default: derived from current-context)"
+  echo "foundation: ops manager foundation name"
   echo "namespace:  namespace to deploy the prometheus operator (default: monitoring)"
   exit 1
 }
@@ -22,60 +22,23 @@ if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage
 fi
 
-read -rp "Add federation scrape job? [y/n]" federation
-
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
 fi
 
 kubectl config set-context --current --namespace="${namespace}"
 
-if [[ -z "${deployment}" ]]; then
-  deployment="service-instance_$(pks show-cluster "$(kubectl config current-context)" --json | jq -r .uuid)"
-fi
+cluster=$(kubectl config current-context)
 
-./get-certs.sh "${deployment}"
+./create-secrets.sh "${foundation}" "${cluster}" "${namespace}"
 
-# Create secrets for etcd client cert
-kubectl delete secret -n "${namespace}" etcd-client --ignore-not-found
-kubectl create secret -n "${namespace}" generic etcd-client \
-    --from-file=etcd-client-ca.crt \
-    --from-file=etcd-client.crt \
-    --from-file=etcd-client.key
+./interpolate.sh "${foundation}" "${cluster}"
 
-kubectl delete configmap -n "${namespace}" bosh-target-groups --ignore-not-found
-kubectl create configmap -n "${namespace}" bosh-target-groups --from-literal=bosh_target_groups\.json={}
+# Copy dashboards to grafana chart location
+cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
-if [[ -z "${GMAIL_ACCOUNT}" ]]; then
-  echo "Email account: "
-  read -r GMAIL_ACCOUNT
-fi
-
-if [[ -z "${GMAIL_AUTH_TOKEN}" ]]; then
-  echo "Email password or auth token: "
-  read -rs GMAIL_AUTH_TOKEN
-fi
-
-kubectl delete secret -n "${namespace}" "smtp-creds" --ignore-not-found
-kubectl create secret -n "${namespace}" generic "smtp-creds" \
-    --from-literal=user="${GMAIL_ACCOUNT}" \
-    --from-literal=password="${GMAIL_AUTH_TOKEN}"
-
-# Create storage class
-kubectl delete storageclass thin-disk --ignore-not-found
-kubectl create -f storage/storage-class.yaml
-
-if [[ -z "${FOUNDATION}" ]]; then
-  echo "Enter foundation name (e.g. haas-000): "
-  read -r FOUNDATION
-fi
-
-./interpolate.sh "${FOUNDATION}" "${federation}"
-
-pks_monitor_enabled=false
-if [[ $federation =~ ^[Yy]$ ]]; then
-  pks_monitor_enabled=true
-fi
+bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
+pks_monitor_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/pks_monitor_enabled")"
 
 # Copy dashboards to grafana chart location
 cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
@@ -84,8 +47,8 @@ cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 helm upgrade -i --version "${version}" "${release}" \
     --namespace "${namespace}" \
     --values /tmp/overrides.yaml \
-    --set bosh-exporter.boshExporter.enabled=true \
-    --set pks-monitor.pksMonitor.enabled=${pks_monitor_enabled} \
+    --set bosh-exporter.boshExporter.enabled="${bosh_exporter_enabled}" \
+    --set pks-monitor.pksMonitor.enabled="${pks_monitor_enabled}" \
     --set global.rbac.pspEnabled=false \
     --set grafana.adminPassword=admin \
     --set grafana.testFramework.enabled=false \

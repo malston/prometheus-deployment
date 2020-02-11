@@ -1,5 +1,34 @@
 prometheus:
   prometheusSpec:
+    configMaps:
+      - bosh-target-groups
+    replicas: 1
+    externalUrl: ((prometheus_url))
+    externalLabels:
+      cluster: ((cluster_name))
+      foundation: ((foundation))
+    secrets:
+      - etcd-client
+    ruleSelector:
+      matchLabels:
+        app: prometheus-operator
+        release: prometheus-operator
+    enableAdminAPI: true
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: thin-disk
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+        selector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - prometheus
+
     additionalScrapeConfigs:
     - job_name: "prometheus-cluster"
       scheme: http
