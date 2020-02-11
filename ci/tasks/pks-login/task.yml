@@ -22,4 +22,4 @@ params:
   K8S_CLUSTER_NAME:
 
 run:
-  path: prometheus-deployment/ci/pks-login/task.sh
+  path: prometheus-deployment/ci/tasks/pks-login/task.sh

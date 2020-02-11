@@ -12,7 +12,7 @@ inputs:
   - name: prometheus-deployment
 
 run:
-  path: prometheus-deployment/ci/install-operator/task.sh
+  path: prometheus-deployment/ci/tasks/install-operator/task.sh
 
 params:
   FOUNDATION:
