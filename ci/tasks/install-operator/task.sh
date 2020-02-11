@@ -50,6 +50,12 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
+__DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+[[ -f "${__DIR}/../../scripts/target-bosh.sh" ]] &&  \
+ source "${__DIR}/../../scripts/target-bosh.sh" ||  \
+ echo "target-bosh.sh not found"
+
 foundation="${1:-$FOUNDATION}"
 namespace="${2:-$NAMESPACE}"
 release="${3:-$RELEASE}"

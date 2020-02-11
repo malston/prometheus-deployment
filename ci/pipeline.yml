@@ -22,6 +22,10 @@ jobs:
   - task: install-operator
     file: prometheus-deployment/ci/tasks/install-operator/task.yml
     params:
+      OPSMAN_HOSTNAME: ((opsman_hostname))
+      OPSMAN_USER: ((opsman_user))
+      OPSMAN_PASSWORD: ((opsman_password))
+      OPSMAN_SKIP_SSL_VALIDATION: ((opsman_skip_ssl_validation))
       FOUNDATION: ((foundation))
       NAMESPACE: ((namespace))
       RELEASE: ((release))
