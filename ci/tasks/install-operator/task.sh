@@ -19,9 +19,11 @@ function main() {
     kubectl delete storageclass thin-disk --ignore-not-found
     kubectl create -f ./storage/storage-class.yaml
 
-    ./create-secrets.sh "${foundation}" "${cluster}" "${namespace}"
+    # shellcheck disable=SC1091
+    source ./create-secrets.sh "${foundation}" "${cluster}" "${namespace}"
 
-    ./interpolate.sh "${foundation}" "${cluster}"
+    # shellcheck disable=SC1091
+    source ./interpolate.sh "${foundation}" "${cluster}"
 
     # Copy dashboards to grafana chart location
     cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
