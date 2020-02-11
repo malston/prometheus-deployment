@@ -20,8 +20,11 @@ ENV JQ_VERSION ${jq_version:-1.6}
 ARG credhub_version
 ENV CREDHUB_VERSION ${credhub_version:-2.6.2}
 
-ARG bosh_cli
+ARG bosh_version
 ENV BOSH_VERSION ${bosh_version:-6.2.1}
+
+ARG om_version
+ENV OM_VERSION ${om_version:-4.4.2}
 
 ARG opsman_ssh_key
 
@@ -46,6 +49,9 @@ RUN tar -xvf credhub-linux-${CREDHUB_VERSION}.tgz && rm credhub-linux-${CREDHUB_
 
 ADD https://github.com/cloudfoundry/bosh-cli/releases/download/v${BOSH_VERSION}/bosh-cli-${BOSH_VERSION}-linux-amd64 .
 RUN mv bosh-cli-${BOSH_VERSION}-linux-amd64 bosh && chmod +x bosh && mv bosh /usr/bin/bosh
+
+ADD https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-linux-${OM_VERSION} .
+RUN mv om-linux-${OM_VERSION} om && chmod +x om && mv om /usr/bin/om
 
 RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh
