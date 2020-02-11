@@ -10,11 +10,15 @@ image_resource:
 inputs:
   - name: prometheus-deployment
 
-run:
-  path: prometheus-deployment/ci/install-operator/task.sh
+outputs:
+- name: pks-config
+- name: kube-config
 
 params:
-  FOUNDATION:
-  NAMESPACE:
-  RELEASE:
-  VERSION:
+  PKS_API_URL:
+  PKS_USER:
+  PKS_PASSWORD:
+  K8S_CLUSTER_NAME:
+
+run:
+  path: prometheus-deployment/ci/pks-login/task.sh

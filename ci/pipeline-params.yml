@@ -1,0 +1,5 @@
+k8s_cluster_name: cluster01
+foundation: haas-440
+namespace: monitoring
+release: prometheus-operator
+version: 8.5.4

@@ -1,0 +1,28 @@
+resources:
+- name: prometheus-deployment
+  type: git
+  source:
+    uri: ((config.uri))
+    branch: ((config.branch))
+
+jobs:
+- name: install-prometheus-operator
+  plan:
+  - get: prometheus-deployment
+    trigger: true
+
+  - task: pks-login
+    file: prometheus-deployment/ci/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+
+  - task: install-operator
+    file: prometheus-deployment/ci/tasks/install-operator/task.yml
+    params:
+      FOUNDATION: ((foundation))
+      NAMESPACE: ((namespace))
+      RELEASE: ((release))
+      VERSION: ((version))

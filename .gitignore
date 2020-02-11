@@ -16,6 +16,9 @@
 # OS turds
 .DS_Store
 
+# Secrets
+creds.yml
+
 # Direnv
 .envrc
 

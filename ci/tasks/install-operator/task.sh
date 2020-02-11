@@ -75,6 +75,6 @@ if [[ -z "${version}" ]]; then
   exit 1
 fi
 
-cd pks-operator
+cd prometheus-deployment
 
 main "${foundation}" "${namespace}" "${release}" "${version}"
