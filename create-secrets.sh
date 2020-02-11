@@ -17,20 +17,20 @@ kubectl create secret -n "${namespace}" generic etcd-client \
 kubectl delete configmap -n "${namespace}" bosh-target-groups --ignore-not-found
 kubectl create configmap -n "${namespace}" bosh-target-groups --from-literal=bosh_target_groups\.json={}
 
-if [[ -z "${GMAIL_ACCOUNT}" ]]; then
-  echo "Email account: "
-  read -r GMAIL_ACCOUNT
-fi
+# if [[ -z "${GMAIL_ACCOUNT}" ]]; then
+#   echo "Email account: "
+#   read -r GMAIL_ACCOUNT
+# fi
 
-if [[ -z "${GMAIL_AUTH_TOKEN}" ]]; then
-  echo "Email password or auth token: "
-  read -rs GMAIL_AUTH_TOKEN
-fi
+# if [[ -z "${GMAIL_AUTH_TOKEN}" ]]; then
+#   echo "Email password or auth token: "
+#   read -rs GMAIL_AUTH_TOKEN
+# fi
 
-kubectl delete secret -n "${namespace}" "smtp-creds" --ignore-not-found
-kubectl create secret -n "${namespace}" generic "smtp-creds" \
-    --from-literal=user="${GMAIL_ACCOUNT}" \
-    --from-literal=password="${GMAIL_AUTH_TOKEN}"
+# kubectl delete secret -n "${namespace}" "smtp-creds" --ignore-not-found
+# kubectl create secret -n "${namespace}" generic "smtp-creds" \
+#     --from-literal=user="${GMAIL_ACCOUNT}" \
+#     --from-literal=password="${GMAIL_AUTH_TOKEN}"
 
 bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
 if [[ $bosh_exporter_enabled == true ]]; then
