@@ -20,6 +20,9 @@ ENV JQ_VERSION ${jq_version:-1.6}
 ARG credhub_version
 ENV CREDHUB_VERSION ${credhub_version:-2.6.2}
 
+ARG bosh_cli
+ENV BOSH_VERSION ${bosh_version:-6.2.1}
+
 ARG opsman_ssh_key
 
 WORKDIR /tmp
@@ -40,6 +43,9 @@ RUN chmod +x kubectl-linux-* && mv kubectl* /usr/local/bin/kubectl
 
 ADD https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz .
 RUN tar -xvf credhub-linux-${CREDHUB_VERSION}.tgz && rm credhub-linux-${CREDHUB_VERSION}.tgz && chmod +x credhub && mv credhub /usr/bin/credhub
+
+ADD https://github.com/cloudfoundry/bosh-cli/releases/download/v${BOSH_VERSION}/bosh-cli-${BOSH_VERSION}-linux-amd64 .
+RUN mv bosh-cli-${BOSH_VERSION}-linux-amd64 bosh && chmod +x bosh && mv bosh /usr/bin/bosh
 
 RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh
