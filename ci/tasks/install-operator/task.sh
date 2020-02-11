@@ -77,4 +77,7 @@ fi
 
 cd prometheus-deployment
 
+mkdir -p ~/.kube
+cp kube-config/config ~/.kube/config
+
 main "${foundation}" "${namespace}" "${release}" "${version}"

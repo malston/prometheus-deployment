@@ -10,6 +10,7 @@ image_resource:
 
 inputs:
   - name: prometheus-deployment
+  - name: kube-config
 
 run:
   path: prometheus-deployment/ci/tasks/install-operator/task.sh
