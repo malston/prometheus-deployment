@@ -11,7 +11,7 @@ function create_federation_targets() {
     _jq() {
       echo "${row}" | base64 --decode | jq -r "${1}"
     }
-    targets=( "${targets[@]}" "prometheus.$(_jq '.name').${DOMAIN}" )
+    targets=( "${targets[@]}" "prometheus.$(_jq '.name').${domain}" )
   done
 
   local current_target=("prometheus.$(echo "${cluster_name}").${domain}")
