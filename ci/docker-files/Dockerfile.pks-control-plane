@@ -31,6 +31,9 @@ ENV BOSH_VERSION ${bosh_version:-6.2.1}
 ARG om_version
 ENV OM_VERSION ${om_version:-4.4.2}
 
+ARG helm_version
+ENV HELM_VERSION ${helm_version:-3.1.0-rc.3}
+
 ARG opsman_ssh_key
 
 WORKDIR /tmp
@@ -57,6 +60,9 @@ RUN mv bosh-cli-${BOSH_VERSION}-linux-amd64 bosh && chmod +x bosh && mv bosh /us
 
 ADD https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-linux-${OM_VERSION} .
 RUN mv om-linux-${OM_VERSION} om && chmod +x om && mv om /usr/bin/om
+
+ADD https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz .
+RUN tar -xvf helm-v${HELM_VERSION}-linux-amd64.tar.gz --strip=1 -C /tmp && rm helm-v${HELM_VERSION}-linux-amd64.tar.gz && chmod +x /tmp/helm && mv /tmp/helm /usr/bin/helm
 
 RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh
