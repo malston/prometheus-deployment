@@ -6,6 +6,7 @@ function credhub_login() {
 	local credhub_secret="${3}"
 	local credhub_ca_cert="${4}"
 
+	echo "Logging in to credhub (${credhub_server})..."
 	credhub login \
 		--server="${credhub_server}" \
 		--client-name="${credhub_client}" \

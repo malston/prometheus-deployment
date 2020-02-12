@@ -55,7 +55,7 @@ set -o pipefail
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 [[ -f "${__DIR}/../../scripts/target-bosh.sh" ]] &&  \
- source "${__DIR}/../../scripts/target-bosh.sh" ||  \
+ source "${__DIR}/../../scripts/target-bosh.sh" "/root/.ssh/id_rsa" ||  \
  echo "target-bosh.sh not found"
 
 foundation="${1:-$FOUNDATION}"
