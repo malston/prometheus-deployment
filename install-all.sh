@@ -30,9 +30,7 @@ fi
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1090
-[[ -f "${__DIR}/scripts/target-bosh.sh" ]] &&  \
- source "${__DIR}/scripts/target-bosh.sh" ||  \
- echo "target-bosh.sh not found" && exit 1
+source "${__DIR}/scripts/target-bosh.sh"
 
 clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 for cluster in ${clusters}; do

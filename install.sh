@@ -25,9 +25,7 @@ fi
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1090
-[[ -f "${__DIR}/scripts/target-bosh.sh" ]] &&  \
- source "${__DIR}/scripts/target-bosh.sh" ||  \
- echo "target-bosh.sh not found" && exit 1
+source "${__DIR}/scripts/target-bosh.sh"
 
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
