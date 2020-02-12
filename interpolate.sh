@@ -46,17 +46,40 @@ export VARS_endpoints="[${master_node_ips// /, }]"
 VARS_federation_targets=$(create_federation_targets "${cluster_name}" "${foundation}.pez.pivotal.io")
 export VARS_federation_targets
 
-om interpolate --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path /clusters/cluster_name="${cluster_name}" > /tmp/vars.yml
+# Replace config variables in config.yaml
+om interpolate \
+    --config "environments/${foundation}/config/config.yml" \
+    --vars-file "environments/${foundation}/vars/vars.yml" \
+    --vars-env VARS \
+    --path /clusters/cluster_name="${cluster_name}" \
+    > /tmp/vars.yml
 
 cat /tmp/vars.yml
 
-om interpolate --config "values/overrides.yaml" --vars-file /tmp/vars.yml > /tmp/overrides.yaml
+# Replace config variables in overrides.yaml
+om interpolate \
+    --config "values/overrides.yaml" \
+    --vars-file /tmp/vars.yml \
+    > /tmp/overrides.yaml
 
-is_master=$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster_name}/is_master")
+# Replace config variables in alertmanager.yaml
+om interpolate \
+    --config "values/alertmanager.yaml" \
+    --vars-file /tmp/vars.yml \
+    >> /tmp/overrides.yaml
+
+is_master=$(om interpolate -s \
+    --config "environments/${foundation}/config/config.yml" \
+    --vars-file "environments/${foundation}/vars/vars.yml" \
+    --vars-env VARS \
+    --path "/clusters/cluster_name=${cluster_name}/is_master")
+
 if [[ $is_master == true ]]; then
+  # Replace config variables in master prometheus/grafana.yaml (contains /federate targets)
   om interpolate --config "values/prometheus-federation.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
   om interpolate --config "values/grafana-federation.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
 else
+  # Replace config variables in federated prometheus/grafana.yaml
   om interpolate --config "values/prometheus.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
   om interpolate --config "values/grafana.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
 fi

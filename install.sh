@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-# only exit with zero if all commands of the pipeline exit successfully
-set -o pipefail
-
-foundation="${1:-$FOUNDATION}"
-namespace="${2:-monitoring}"
-release="${3:-prometheus-operator}"
-version="${4:-8.5.4}"
-
 function usage() {
   echo "Usage:"
   echo "$0 <foundation> <namespace>"
@@ -18,8 +9,22 @@ function usage() {
   exit 1
 }
 
+set -e
+# only exit with zero if all commands of the pipeline exit successfully
+set -o pipefail
+
+foundation="${1:-$FOUNDATION}"
+namespace="${2:-monitoring}"
+release="${3:-prometheus-operator}"
+version="${4:-8.5.4}"
+
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage
+fi
+
+if [[ -z "${foundation}" ]]; then
+  echo "Enter foundation name (e.g. haas-000): "
+  read -r foundation
 fi
 
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -27,13 +32,16 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1090
 source "${__DIR}/scripts/target-bosh.sh"
 
+cluster=$(kubectl config current-context)
+
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
 fi
+kubectl config set-context "${cluster}"--namespace="${namespace}"
 
-kubectl config set-context --current --namespace="${namespace}"
-
-cluster=$(kubectl config current-context)
+# Create storage class
+kubectl delete storageclass thin-disk --ignore-not-found
+kubectl create -f storage/storage-class.yaml
 
 ./create-secrets.sh "${foundation}" "${cluster}" "${namespace}"
 
@@ -44,9 +52,6 @@ cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
 bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
 pks_monitor_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/pks_monitor_enabled")"
-
-# Copy dashboards to grafana chart location
-cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
 
 # Install prometheus-operator
 helm upgrade -i --version "${version}" "${release}" \

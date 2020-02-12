@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-# only exit with zero if all commands of the pipeline exit successfully
-set -o pipefail
-
-foundation="${1:-$FOUNDATION}"
-namespace="${2:-monitoring}"
-release="${3:-prometheus-operator}"
-version="${4:-8.5.4}"
-
 function usage() {
   echo "Usage:"
   echo "$0 <foundation> <namespace>"
@@ -17,6 +8,15 @@ function usage() {
   echo "namespace:  namespace to deploy the prometheus operator (default: monitoring)"
   exit 1
 }
+
+set -e
+# only exit with zero if all commands of the pipeline exit successfully
+set -o pipefail
+
+foundation="${1:-$FOUNDATION}"
+namespace="${2:-monitoring}"
+release="${3:-prometheus-operator}"
+version="${4:-8.5.4}"
 
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage

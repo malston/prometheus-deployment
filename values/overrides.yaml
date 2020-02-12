@@ -10,36 +10,6 @@ istio-ingress-gateway:
   prometheus:
     host: ((prometheus_hostname))
 
-alertmanager:
-  alertmanagerSpec:
-    replicas: 1
-    portName: http-service
-    externalUrl: ((alertmanager_url))
-    logLevel: debug
-  config:
-    route:
-      group_by: [job, alertname]
-      # How long to wait to buffer alerts of the same group before sending initially
-      group_wait: 30s
-      # How long to wait before sending an alert that has been added to a group which contains already fired alerts
-      group_interval: 5m
-      # How long to wait before re-sending a given alert that has already been sent
-      repeat_interval: 4h
-      receiver: am-webhook
-      routes:
-      - match:
-          alertname: Watchdog
-        receiver: 'null'
-      - match:
-          alertname: TestAlert
-        receiver: am-webhook
-    receivers:
-    - name: 'null'
-    - name: am-webhook
-      webhook_configs:
-      - url: http://alert-webhook.monitoring/webhook
-        send_resolved: true
-
 kubeApiServer:
   serviceMonitor:
     interval: 30s
