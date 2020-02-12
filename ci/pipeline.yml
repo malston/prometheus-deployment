@@ -22,10 +22,10 @@ jobs:
   - task: install-operator
     file: prometheus-deployment/ci/tasks/install-operator/task.yml
     params:
-      OPSMAN_HOSTNAME: ((opsman_hostname))
-      OPSMAN_USER: ((opsman_user))
-      OPSMAN_PASSWORD: ((opsman_password))
-      OPSMAN_SKIP_SSL_VALIDATION: ((opsman_skip_ssl_validation))
+      OM_TARGET: ((om_target))
+      OM_USERNAME: ((om_username))
+      OM_PASSWORD: ((om_password))
+      OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
       BOSH_UAA_CLIENT_ID: ((bosh_uaa_client_id))
       BOSH_UAA_CLIENT_SECRET: ((bosh_uaa_client_secret))
       PKS_API_HOSTNAME: ((pks_api_hostname))

@@ -22,6 +22,13 @@ if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage
 fi
 
+__DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# shellcheck disable=SC1090
+[[ -f "${__DIR}/scripts/target-bosh.sh" ]] &&  \
+ source "${__DIR}/scripts/target-bosh.sh" ||  \
+ echo "target-bosh.sh not found" && exit 1
+
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
   kubectl create namespace "${namespace}"
 fi

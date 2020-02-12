@@ -17,10 +17,10 @@ run:
   path: prometheus-deployment/ci/tasks/install-operator/task.sh
 
 params:
-  OPSMAN_HOSTNAME:
-  OPSMAN_USER:
-  OPSMAN_PASSWORD:
-  OPSMAN_SKIP_SSL_VALIDATION:
+  OM_TARGET:
+  OM_USERNAME:
+  OM_PASSWORD:
+  OM_SKIP_SSL_VALIDATION:
   FOUNDATION:
   NAMESPACE:
   RELEASE:
