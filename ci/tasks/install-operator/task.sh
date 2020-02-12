@@ -55,9 +55,7 @@ set -o pipefail
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1090
-[[ -f "${__DIR}/../../../scripts/target-bosh.sh" ]] &&  \
- source "${__DIR}/../../../scripts/target-bosh.sh" "/root/.ssh/id_rsa" ||  \
- echo "target-bosh.sh not found" && exit 1
+source "${__DIR}/../../../scripts/target-bosh.sh" "/root/.ssh/id_rsa"
 
 foundation="${1:-$FOUNDATION}"
 namespace="${2:-$NAMESPACE}"
