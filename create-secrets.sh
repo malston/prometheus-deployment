@@ -5,7 +5,9 @@ cluster="${2:?"Cluster name required to create secrets"}"
 namespace="${3:?"Namespace required to create secrets"}"
 
 deployment="service-instance_$(pks show-cluster "${cluster}" --json | jq -r .uuid)"
-./get-etcd-certs.sh "${deployment}"
+
+# shellcheck disable=SC1091
+source ./get-etcd-certs.sh "${deployment}"
 
 # Create secrets for etcd client cert
 kubectl delete secret -n "${namespace}" etcd-client --ignore-not-found
