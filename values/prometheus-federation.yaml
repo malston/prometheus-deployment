@@ -113,31 +113,3 @@ additionalPrometheusRules:
       expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m < bool Inf"
       labels:
         job: "kubernetes_api_slo"
-
-grafana:
-  dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-      - name: 'kubeapislo'
-        type: file
-        updateIntervalSeconds: 10
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/kubeapislo
-      - name: 'pkscontrolplane'
-        type: file
-        updateIntervalSeconds: 10
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/pkscontrolplane
-
-  dashboards:
-    kubeapislo:
-      kubeapi-slo:
-        file: dashboards/kubeapi-slo.json
-    pkscontrolplane:
-      pks-control-plane:
-        file: dashboards/pks-control-plane.json

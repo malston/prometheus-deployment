@@ -1,0 +1,52 @@
+grafana:
+  replicas: 1
+  # ingress:
+  #   enabled: true
+  notifiers: 
+    notifiers.yaml:
+      notifiers:
+      - name: email-notifier
+        type: email
+        uid: email1
+        org_id: 1
+        is_default: true
+        settings:
+          addresses: ((gmail_account))
+  smtp:
+    existingSecret: "smtp-creds"
+    userKey: "user"
+    passwordKey: "password"
+
+  grafana.ini:
+    smtp:
+      enabled: true
+      userKey: "user"
+      passwordKey: "password"
+      host: "smtp.gmail.com:587"
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'kubeapislo'
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/kubeapislo
+      - name: 'pkscontrolplane'
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/pkscontrolplane
+
+  dashboards:
+    kubeapislo:
+      kubeapi-slo:
+        file: dashboards/kubeapi-slo.json
+    pkscontrolplane:
+      pks-control-plane:
+        file: dashboards/pks-control-plane.json

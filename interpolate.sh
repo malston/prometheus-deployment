@@ -54,9 +54,11 @@ om interpolate --config "values/overrides.yaml" --vars-file /tmp/vars.yml > /tmp
 
 is_master=$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster_name}/is_master")
 if [[ $is_master == true ]]; then
-  om interpolate --config "values/with-federation.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
+  om interpolate --config "values/prometheus-federation.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
+  om interpolate --config "values/grafana-federation.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
 else
-  om interpolate --config "values/with-additional-scrape-configs.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
+  om interpolate --config "values/prometheus.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
+  om interpolate --config "values/grafana.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
 fi
 
 cat /tmp/overrides.yaml

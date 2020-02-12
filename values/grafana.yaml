@@ -1,0 +1,25 @@
+grafana:
+  replicas: 1
+  # ingress:
+  #   enabled: true
+  notifiers: 
+    notifiers.yaml:
+      notifiers:
+      - name: email-notifier
+        type: email
+        uid: email1
+        org_id: 1
+        is_default: true
+        settings:
+          addresses: ((gmail_account))
+  smtp:
+    existingSecret: "smtp-creds"
+    userKey: "user"
+    passwordKey: "password"
+
+  grafana.ini:
+    smtp:
+      enabled: true
+      userKey: "user"
+      passwordKey: "password"
+      host: "smtp.gmail.com:587"
