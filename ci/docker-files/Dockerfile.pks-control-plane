@@ -1,8 +1,13 @@
 FROM ubuntu:latest
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ruby && \
+    apt-get install -y --no-install-recommends ruby vim curl && \
     apt-get clean && \
+    \curl -L https://get.rvm.io | bash -s stable && \
+    /bin/bash -l -c "rvm requirements" && \
+    /bin/bash -l -c "rvm install 2.6.3" && \
+    /bin/bash -l -c "gem install bundler" && \
+    /bin/bash -l -c "gem install cf-uaac" && \
     rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG pivnet_token
