@@ -31,12 +31,18 @@ function create_secret() {
       --from-literal="uaa-client-secret=${uaa_client_secret}"
 }
 
-namespace="${1:-${NAMESPACE}}"
-om_target="${2:-${OM_TARGET}}"
-om_username="${3:-${OM_USERNAME}}"
-om_password="${4:-${OM_PASSWORD}}"
-bosh_uaa_client_id="${5:-${BOSH_UAA_CLIENT_ID}}"
-bosh_uaa_client_secret="${6:-${BOSH_UAA_CLIENT_SECRET}}"
+cluster="${1:-${CLUSTER}}"
+namespace="${2:-${NAMESPACE}}"
+om_target="${3:-${OM_TARGET}}"
+om_username="${4:-${OM_USERNAME}}"
+om_password="${5:-${OM_PASSWORD}}"
+bosh_uaa_client_id="${6:-${BOSH_UAA_CLIENT_ID}}"
+bosh_uaa_client_secret="${7:-${BOSH_UAA_CLIENT_SECRET}}"
+
+if [ -z "${cluster}" ]; then
+  echo "Enter cluster name: "
+  read -r cluster
+fi
 
 if [ -z "${namespace}" ]; then
   echo "Enter namespace: "
@@ -68,7 +74,7 @@ if [[ -z "${bosh_uaa_client_secret}" ]]; then
   read -rs bosh_uaa_client_secret
 fi
 
-kubectl config set-context --current --namespace="${namespace}"
+kubectl config set-context "${cluster}" --namespace="${namespace}"
 
 download_bosh_ca_cert "${om_target}" "${om_username}" "${om_password}"
 create_secret_from_file "${namespace}" "bosh-ca" "./bosh-ca.crt"

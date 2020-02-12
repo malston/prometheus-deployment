@@ -47,12 +47,18 @@ function create_uaa_client() {
     --from-literal=uaa-client-secret="${pks_api_monitor_secret}"
 }
 
-namespace="${1:-${NAMESPACE}}"
-om_target="${2:-${OM_TARGET}}"
-om_username="${3:-${OM_USERNAME}}"
-om_password="${4:-${OM_PASSWORD}}"
-pks_api_hostname="${5:-${PKS_API_HOSTNAME}}"
-pks_api_monitor_secret="${6:-${PKS_API_MONITOR_SECRET}}"
+cluster="${1:-${CLUSTER}}"
+namespace="${2:-${NAMESPACE}}"
+om_target="${3:-${OM_TARGET}}"
+om_username="${4:-${OM_USERNAME}}"
+om_password="${5:-${OM_PASSWORD}}"
+pks_api_hostname="${6:-${PKS_API_HOSTNAME}}"
+pks_api_monitor_secret="${7:-${PKS_API_MONITOR_SECRET}}"
+
+if [ -z "${cluster}" ]; then
+  echo "Enter cluster name: "
+  read -r cluster
+fi
 
 if [ -z "${namespace}" ]; then
   echo "Enter namespace: "
@@ -84,7 +90,7 @@ if [[ -z "${pks_api_monitor_secret}" ]]; then
   read -rs pks_api_monitor_secret
 fi
 
-kubectl config set-context --current --namespace="${namespace}"
+kubectl config set-context "${cluster}" --namespace="${namespace}"
 
 download_pks_ca_cert "${namespace}" "${om_target}" "${om_username}" "${om_password}"
 create_uaa_client "${namespace}" "${om_target}" "${om_username}" "${om_password}" "${pks_api_hostname}" "${pks_api_monitor_secret}"

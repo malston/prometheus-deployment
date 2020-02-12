@@ -36,10 +36,10 @@ kubectl create configmap -n "${namespace}" bosh-target-groups --from-literal=bos
 
 bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
 if [[ $bosh_exporter_enabled == true ]]; then
-  ./create-bosh-exporter-secrets.sh
+  ./create-bosh-exporter-secrets.sh "${cluster}"
 fi
 
 pks_monitor_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/pks_monitor_enabled")"
 if [[ $pks_monitor_enabled == true ]]; then
-  ./create-pks-monitor-uaa-client.sh
+  ./create-pks-monitor-uaa-client.sh "${cluster}"
 fi
