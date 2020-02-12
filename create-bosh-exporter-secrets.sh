@@ -31,7 +31,7 @@ function create_secret() {
       --from-literal="uaa-client-secret=${uaa_client_secret}"
 }
 
-namespace="${1:-${MONITORING_NAMESPACE}}"
+namespace="${1:-${NAMESPACE}}"
 om_target="${2:-${OM_TARGET}}"
 om_username="${3:-${OM_USERNAME}}"
 om_password="${4:-${OM_PASSWORD}}"

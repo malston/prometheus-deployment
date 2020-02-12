@@ -47,7 +47,7 @@ function create_uaa_client() {
     --from-literal=uaa-client-secret="${pks_api_monitor_secret}"
 }
 
-namespace="${1:-${MONITORING_NAMESPACE}}"
+namespace="${1:-${NAMESPACE}}"
 om_target="${2:-${OM_TARGET}}"
 om_username="${3:-${OM_USERNAME}}"
 om_password="${4:-${OM_PASSWORD}}"
