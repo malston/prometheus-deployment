@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function create_federation_targets() {
+function create_federated_targets() {
   local cluster_name="${1}"
   local domain="${2}"
   local targets=()
@@ -43,8 +43,8 @@ export VARS_cluster_name="${cluster_name}"
 master_ips=$(bosh -d "${deployment}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
 master_node_ips="$(echo ${master_ips[*]})"
 export VARS_endpoints="[${master_node_ips// /, }]"
-VARS_federation_targets=$(create_federation_targets "${cluster_name}" "${foundation}.pez.pivotal.io")
-export VARS_federation_targets
+VARS_federated_targets=$(create_federated_targets "${cluster_name}" "${foundation}.pez.pivotal.io")
+export VARS_federated_targets
 
 # Replace config variables in config.yaml
 om interpolate \

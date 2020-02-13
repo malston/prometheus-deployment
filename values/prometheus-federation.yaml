@@ -47,7 +47,7 @@ prometheus:
         - '{job="kubernetes_api_slo"}'
         # - '{__name__=~"kubernetes:.*"}'
       static_configs:
-      - targets: ((federation_targets))
+      - targets: ((federated_targets))
     - job_name: "kubeEtcd-((cluster_name))"
       file_sd_configs:
       - files:

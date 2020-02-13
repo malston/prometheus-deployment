@@ -9,7 +9,7 @@ clusters:
     gmail_account: marktalston@gmail.com
     prometheus_url: https://prometheus.cluster01.((foundation_domain))
     foundation: ((foundation))
-    federation_targets: ((federation_targets))
+    federated_targets: ((federated_targets))
     service_instance_id: ((service_instance_id))
     alertmanager_hostname: alertmanager.cluster01.((foundation_domain))
     grafana_hostname: grafana.cluster01.((foundation_domain))
@@ -23,7 +23,7 @@ clusters:
     gmail_account: marktalston@gmail.com
     prometheus_url: https://prometheus.cluster02.((foundation_domain))
     foundation: ((foundation))
-    federation_targets: ((federation_targets))
+    federated_targets: ((federated_targets))
     service_instance_id: ((service_instance_id))
     alertmanager_hostname: alertmanager.cluster02.((foundation_domain))
     grafana_hostname: grafana.cluster02.((foundation_domain))
@@ -37,7 +37,7 @@ clusters:
     gmail_account: marktalston@gmail.com
     prometheus_url: https://prometheus.cluster03.((foundation_domain))
     foundation: ((foundation))
-    federation_targets: ((federation_targets))
+    federated_targets: ((federated_targets))
     service_instance_id: ((service_instance_id))
     alertmanager_hostname: alertmanager.cluster03.((foundation_domain))
     grafana_hostname: grafana.cluster03.((foundation_domain))
