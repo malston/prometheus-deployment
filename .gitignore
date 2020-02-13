@@ -25,3 +25,11 @@ creds.yml
 # Bosh target groups for reference
 bosh_target_groups.json
 
+# Python
+venv
+
+# IDE
+.idea
+
+# Ruby
+.ruby-version

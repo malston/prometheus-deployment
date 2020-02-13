@@ -48,6 +48,8 @@ function main() {
 
     # Remove copied dashboards
     rm charts/prometheus-operator/charts/grafana/dashboards/*.json
+    printf "\nFinished installing Prometheus Operator into %s\n" "${cluster}"
+    printf "============================================================\n\n"
   done
 }
 
