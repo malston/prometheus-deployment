@@ -8,7 +8,7 @@ function main() {
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
   for cluster in ${clusters}; do
-    printf "Installing Prometheus Operator into %s\n" "${cluster}"
+    printf "Installing %s into %s\n" "${release}" "${cluster}"
     pks get-credentials "${cluster}"
 
     kubectl config use-context "${cluster}"
@@ -48,7 +48,7 @@ function main() {
 
     # Remove copied dashboards
     rm charts/prometheus-operator/charts/grafana/dashboards/*.json
-    printf "\nFinished installing Prometheus Operator into %s\n" "${cluster}"
+    printf "\nFinished installing %s into %s\n" "${release}" "${cluster}"
     printf "============================================================\n\n"
   done
 }

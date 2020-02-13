@@ -6,13 +6,12 @@ function main() {
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 
   for cluster in ${clusters}; do
-      printf "Uninstalling Prometheus Operator from %s\n" "${cluster}"
+      printf "Uninstalling %s from %s\n" "${release}" "${cluster}"
       pks get-credentials "${cluster}"
 
       kubectl config use-context "${cluster}"
-      printf "Unstalling Prometheus Operator from %s\n" "${cluster}"
       helm uninstall "${release}"
-      printf "\nFinished uninstalling Prometheus Operator from %s\n" "${cluster}"
+      printf "\nFinished uninstalling %s from %s\n" "${release}" "${cluster}"
       printf "============================================================\n\n"
   done
 }
