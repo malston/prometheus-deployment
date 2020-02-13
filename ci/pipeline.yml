@@ -38,7 +38,6 @@ jobs:
 - name: uninstall-prometheus-operator
   plan:
   - get: prometheus-deployment
-    trigger: true
 
   - task: pks-login
     file: prometheus-deployment/ci/tasks/pks-login/task.yml
