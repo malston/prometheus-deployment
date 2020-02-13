@@ -9,6 +9,8 @@ function main() {
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
   for cluster in ${clusters}; do
     printf "Installing Prometheus Operator into %s\n" "${cluster}"
+    pks get-credentials "${cluster}"
+
     kubectl config use-context "${cluster}"
     
     if [[ ! $(kubectl get namespace "${namespace}") ]]; then
