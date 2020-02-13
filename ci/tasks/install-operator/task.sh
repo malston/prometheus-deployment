@@ -8,12 +8,13 @@ function main() {
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
   for cluster in ${clusters}; do
-    kubectl config set-context "${cluster}"
+    printf "Installing Prometheus Operator into %s\n" "${cluster}"
+    kubectl config use-context "${cluster}"
     
     if [[ ! $(kubectl get namespace "${namespace}") ]]; then
       kubectl create namespace "${namespace}"
     fi
-    kubectl config set-context "${cluster}" --namespace="${namespace}"
+    kubectl config set-context --current --namespace="${namespace}"
 
     # Create storage class
     kubectl delete storageclass thin-disk --ignore-not-found

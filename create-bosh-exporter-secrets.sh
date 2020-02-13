@@ -74,7 +74,7 @@ if [[ -z "${bosh_uaa_client_secret}" ]]; then
   read -rs bosh_uaa_client_secret
 fi
 
-kubectl config set-context "${cluster}" --namespace="${namespace}"
+kubectl config set-context --current --namespace="${namespace}"
 
 download_bosh_ca_cert "${om_target}" "${om_username}" "${om_password}"
 create_secret_from_file "${namespace}" "bosh-ca" "./bosh-ca.crt"

@@ -6,12 +6,12 @@ namespace="${3:?"Namespace is required"}"
 release="${4:?"Release is required"}"
 version="${5:?"Version is required"}"
 
-kubectl config set-context "${cluster}"
+kubectl config use-context "${cluster}"
 
 if [[ ! $(kubectl get namespace "${namespace}") ]]; then
-kubectl create namespace "${namespace}"
+	kubectl create namespace "${namespace}"
 fi
-kubectl config set-context "${cluster}" --namespace="${namespace}"
+kubectl config set-context --current --namespace="${namespace}"
 
 # Create storage class
 kubectl delete storageclass thin-disk --ignore-not-found

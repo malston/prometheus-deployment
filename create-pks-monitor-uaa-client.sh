@@ -90,7 +90,7 @@ if [[ -z "${pks_api_monitor_secret}" ]]; then
   read -rs pks_api_monitor_secret
 fi
 
-kubectl config set-context "${cluster}" --namespace="${namespace}"
+kubectl config set-context --current --namespace="${namespace}"
 
 download_pks_ca_cert "${namespace}" "${om_target}" "${om_username}" "${om_password}"
 create_uaa_client "${namespace}" "${om_target}" "${om_username}" "${om_password}" "${pks_api_hostname}" "${pks_api_monitor_secret}"
