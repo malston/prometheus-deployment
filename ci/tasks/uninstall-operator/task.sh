@@ -44,4 +44,4 @@ cp kube-config/config ~/.kube/config
 
 cd prometheus-deployment
 
-main "${release}"
+main "${release}" "${namespace}"
