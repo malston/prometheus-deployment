@@ -20,7 +20,7 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
-release="${3:-$RELEASE}"
+release="${1:-$RELEASE}"
 
 if [[ -z "${release}" ]]; then
     echo "Release is required"
