@@ -51,3 +51,4 @@ jobs:
     file: prometheus-deployment/ci/tasks/uninstall-operator/task.yml
     params:
       RELEASE: ((release))
+      NAMESPACE: ((namespace))
