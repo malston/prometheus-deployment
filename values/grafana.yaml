@@ -23,3 +23,20 @@ grafana:
       userKey: "user"
       passwordKey: "password"
       host: "smtp.gmail.com:587"
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'kubeapislo'
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/kubeapislo
+
+  dashboards:
+    kubeapislo:
+      kubeapi-slo:
+        file: dashboards/kubeapi-slo.json

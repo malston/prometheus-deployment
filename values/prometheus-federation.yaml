@@ -38,10 +38,12 @@ prometheus:
 
     additionalScrapeConfigs:
     - job_name: "prometheus-cluster"
-      scheme: http
-      honor_labels: true
       metrics_path: "/federate"
+      honor_labels: true
       scrape_interval: 30s
+      scheme: https
+      tls_config:
+        insecure_skip_verify: true
       params:
         'match[]':
         - '{job="kubernetes_api_slo"}'
@@ -99,7 +101,7 @@ additionalPrometheusRules:
     - record: "kubernetes::job_verb_code:apiserver_requests:ratio_rate5m"
       expr: "sum without (instance)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m)"
       labels:
-        job: kubernetes_api_slo
+        job: "kubernetes_api_slo"
     - record: "kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m"
       expr: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m / ignoring(verb, code) group_left sum by (job, instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
       labels:
