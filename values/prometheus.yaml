@@ -59,53 +59,108 @@ prometheus:
         target_label: __address__
         replacement: '${1}:2379'
 
-additionalPrometheusRules:
-- name: kube-api-rules
-  groups:
-  - name: kubeapi.rules
-    interval: 15s
-    rules:
-    - record: "kubernetes:job_verb:apiserver_latency:pctl90rate5m"
-      expr: "histogram_quantile ( 0.90, sum by (le, verb)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3 > 0"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes:job_verb_instance:apiserver_latency:pctl90rate5m"
-      expr: "histogram_quantile ( 0.90, sum by (le, job, verb, instance)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes::job:probe_success"
-      expr: "sum by()(probe_success{provider=\"kubernetes\", component=\"apiserver\"})"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes::job_verb_code:apiserver_requests:rate5m"
-      expr: "sum without (instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m"
-      expr: "sum by (job, verb, code, instance)(rate(apiserver_request_count[5m]))"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes::job_verb_code:apiserver_requests:ratio_rate5m"
-      expr: "sum without (instance)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m)"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m"
-      expr: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m / ignoring(verb, code) group_left sum by (job, instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes:job:apiserver_request_errors:ratio_rate5m"
-      expr: "sum by (job)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{verb=~\"GET|POST|DELETE|PATCH\", code=~\"5..\", cluster=\"$cluster\"})"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes::job:apiserver_latency:pctl90rate5m"
-      expr: "histogram_quantile ( 0.90, sum by (le, job)( rate(apiserver_request_latencies_bucket{verb=~\"GET|POST|DELETE|PATCH\", cluster=\"$cluster\"}[5m]) ) ) / 1e3"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes::job:slo_kube_api_ok"
-      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool 0.01 * kubernetes::job:apiserver_latency:pctl90rate5m < bool 200"
-      labels:
-        job: "kubernetes_api_slo"
-    - record: "kubernetes::job:slo_kube_api_sample"
-      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m < bool Inf"
-      labels:
-        job: "kubernetes_api_slo"
+additionalPrometheusRulesMap:
+  alert-rules:
+    groups:
+    - name: pks_rules
+      rules:
+      - alert: PksApiDown
+        annotations:
+          summary: 'PKS api is down'
+          description: 'PKS api is unreachable in the last 5 minutes on {{ .ExternalLabels.foundation }}.'
+        expr: wf_opp_pks_api_up < 1
+        for: 5m
+        labels:
+          severity: critical
+          group: pks_rules
+    - name: istio_rules
+      rules:
+      - alert: IstioPilotAvailabilityDrop
+        summary: 'Istio Pilot Availability Drop'
+        description: 'Pilot pods have dropped during the last 5m (current value: *{{ printf "%2.0f%%" $value }}*). Envoy sidecars might have outdated configuration'
+        expr: >
+              avg(avg_over_time(up{job="pilot"}[1m])) < 0.5
+        for: 5m
+        labels:
+          severity: critical
+          group: istio_rules
+      - alert: IstioGatewayAvailabilityDrop
+        annotations:
+          summary: 'Istio Gateway Availability Drop'
+          description: 'Gateway pods have dropped during the last 5m (current value: *{{ printf "%2.0f%%" $value }}*). Inbound traffic will likely be affected'
+        expr: >
+          min(kube_deployment_status_replicas_available{deployment="istio-ingressgateway", namespace="istio-system"}) without (instance, pod) < 2
+        for: 5m
+        labels:
+          severity: critical
+          group: istio_rules
+      - alert: IstioPilotPushErrorsHigh
+        annotations:
+          summary: 'Number of Istio Pilot push errors is too high'
+          description: 'Pilot has too many push errors during the last 5m (current value: *{{ printf "%2.0f%%" $value }}*). Envoy sidecars might have outdated configuration'
+        expr: >
+          sum(irate(pilot_xds_push_errors{job="pilot"}[5m])) / sum(irate(pilot_xds_pushes{job="pilot"}[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          group: istio_rules
+      - alert: IstioGlobalHTTP5xxRateHigh
+        annotations:
+          summary: 'Istio Percentage of HTTP 5xx responses is too high'
+          description: 'Istio global HTTP 5xx rate is too high in last 5m (current value: *{{ printf "%2.0f%%" $value }}*). The HTTP 5xx errors within the service mesh is unusually high'
+        expr: >
+          sum(irate(istio_requests_total{reporter="destination", response_code=~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination"}[5m])) > 0.01
+        for: 5m
+        labels:
+          severity: critical
+          group: istio_rules
+
+  recording-rules:
+    groups:
+    - name: kube_api_rules
+      interval: 15s
+      rules:
+      - record: "kubernetes:job_verb:apiserver_latency:pctl90rate5m"
+        expr: "histogram_quantile ( 0.90, sum by (le, verb)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3 > 0"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes:job_verb_instance:apiserver_latency:pctl90rate5m"
+        expr: "histogram_quantile ( 0.90, sum by (le, job, verb, instance)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes::job:probe_success"
+        expr: "sum by()(probe_success{provider=\"kubernetes\", component=\"apiserver\"})"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes::job_verb_code:apiserver_requests:rate5m"
+        expr: "sum without (instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m"
+        expr: "sum by (job, verb, code, instance)(rate(apiserver_request_count[5m]))"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes::job_verb_code:apiserver_requests:ratio_rate5m"
+        expr: "sum without (instance)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m)"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m"
+        expr: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m / ignoring(verb, code) group_left sum by (job, instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes:job:apiserver_request_errors:ratio_rate5m"
+        expr: "sum by (job)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{verb=~\"GET|POST|DELETE|PATCH\", code=~\"5..\", cluster=\"$cluster\"})"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes::job:apiserver_latency:pctl90rate5m"
+        expr: "histogram_quantile ( 0.90, sum by (le, job)( rate(apiserver_request_latencies_bucket{verb=~\"GET|POST|DELETE|PATCH\", cluster=\"$cluster\"}[5m]) ) ) / 1e3"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes::job:slo_kube_api_ok"
+        expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool 0.01 * kubernetes::job:apiserver_latency:pctl90rate5m < bool 200"
+        labels:
+          job: "kubernetes_api_slo"
+      - record: "kubernetes::job:slo_kube_api_sample"
+        expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m < bool Inf"
+        labels:
+          job: "kubernetes_api_slo"
