@@ -87,7 +87,7 @@ spec:
   gateways:
   - istio-gateways/istio-gateway
   hosts:
-  - grafana.{{ template "istio-ingress-gateway.clusterName" . }}
+  - grafana.{{ template "ingress-gateway.clusterName" . }}
   http:
   - match:
     - uri:

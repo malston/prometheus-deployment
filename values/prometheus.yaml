@@ -101,10 +101,10 @@ additionalPrometheusRules:
       labels:
         job: "kubernetes_api_slo"
     - record: "kubernetes::job:slo_kube_api_ok"
-      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool 0.01 * kubernetes::job:apiserver_latency:pctl90rate5m < bool 200"
+      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m{cluster=\"$cluster\"} < bool 0.01 * kubernetes::job:apiserver_latency:pctl90rate5m{cluster=\"$cluster\"} < bool 200"
       labels:
         job: "kubernetes_api_slo"
     - record: "kubernetes::job:slo_kube_api_sample"
-      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m < bool Inf"
+      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m{cluster=\"$cluster\"} < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m{cluster=\"$cluster\"} < bool Inf"
       labels:
         job: "kubernetes_api_slo"

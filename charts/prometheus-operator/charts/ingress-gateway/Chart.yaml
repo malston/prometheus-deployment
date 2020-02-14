@@ -1,4 +1,4 @@
 apiVersion: v1
 engine: gotpl
-name: istio-ingress-gateway
+name: ingress-gateway
 version: 1.0.0
