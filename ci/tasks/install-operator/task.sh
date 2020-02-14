@@ -43,6 +43,7 @@ function main() {
         --set global.rbac.pspEnabled=false \
         --set grafana.adminPassword=admin \
         --set grafana.testFramework.enabled=false \
+      	--set ingress-gateway.ingress.enabled=false \
         --set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
         ./charts/prometheus-operator
 
