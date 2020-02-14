@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: {{ $.Release.Name }}-grafana-lb
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
   labels:
     app: grafana
 spec:
@@ -23,6 +25,8 @@ kind: Service
 metadata:
   name: {{ $.Release.Name }}-alertmanager-lb
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
   labels:
     app: alertmanager
 spec:
@@ -42,6 +46,8 @@ kind: Service
 metadata:
   name: {{ $.Release.Name }}-prometheus-lb
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
   labels:
     app: prometheus
 spec:
