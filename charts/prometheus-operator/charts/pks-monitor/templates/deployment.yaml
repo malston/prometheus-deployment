@@ -34,8 +34,8 @@ spec:
             - name: PKS_API
               valueFrom:
                 secretKeyRef:
-                  key: pks-api
                   name: pks-api-monitor
+                  key: pks-api
             - name: UAA_CLI_ID
               valueFrom:
                 secretKeyRef:

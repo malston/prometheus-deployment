@@ -34,7 +34,7 @@ pksMonitor:
   ##
   image:
     repository: victorpupim/pks-monitor
-    tag: 1.0.0
+    tag: 1.1.0
     pullPolicy: Always
 
   ## Number of replicas to create of the pks-monitor pod

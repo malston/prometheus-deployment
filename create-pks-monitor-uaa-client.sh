@@ -38,7 +38,7 @@ function create_uaa_client() {
       --access_token_validity=600 \
       --secret="${pks_api_monitor_secret}" \
       --authorized_grant_types=client_credentials  \
-      --authorities="pks.clusters.manage"
+      --authorities="pks.clusters.admin.read"
     
     kubectl delete secret -n "${namespace}" "pks-api-monitor" --ignore-not-found
     kubectl create secret -n "${namespace}" generic "pks-api-monitor" \
