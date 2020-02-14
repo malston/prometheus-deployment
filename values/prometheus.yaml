@@ -35,6 +35,7 @@ prometheus:
               operator: In
               values:
                 - prometheus
+
     additionalScrapeConfigs:
     - job_name: "kubeEtcd-((cluster_name))"
       file_sd_configs:
@@ -93,18 +94,18 @@ additionalPrometheusRules:
       labels:
         job: "kubernetes_api_slo"
     - record: "kubernetes:job:apiserver_request_errors:ratio_rate5m"
-      expr: "sum by (job)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{verb=~\"GET|POST|DELETE|PATCH\", code=~\"5..\"})"
+      expr: "sum by (job)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{verb=~\"GET|POST|DELETE|PATCH\", code=~\"5..\", cluster=\"$cluster\"})"
       labels:
         job: "kubernetes_api_slo"
     - record: "kubernetes::job:apiserver_latency:pctl90rate5m"
-      expr: "histogram_quantile ( 0.90, sum by (le, job)( rate(apiserver_request_latencies_bucket{verb=~\"GET|POST|DELETE|PATCH\"}[5m]) ) ) / 1e3"
+      expr: "histogram_quantile ( 0.90, sum by (le, job)( rate(apiserver_request_latencies_bucket{verb=~\"GET|POST|DELETE|PATCH\", cluster=\"$cluster\"}[5m]) ) ) / 1e3"
       labels:
         job: "kubernetes_api_slo"
     - record: "kubernetes::job:slo_kube_api_ok"
-      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m{cluster=\"$cluster\"} < bool 0.01 * kubernetes::job:apiserver_latency:pctl90rate5m{cluster=\"$cluster\"} < bool 200"
+      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool 0.01 * kubernetes::job:apiserver_latency:pctl90rate5m < bool 200"
       labels:
         job: "kubernetes_api_slo"
     - record: "kubernetes::job:slo_kube_api_sample"
-      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m{cluster=\"$cluster\"} < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m{cluster=\"$cluster\"} < bool Inf"
+      expr: "kubernetes:job:apiserver_request_errors:ratio_rate5m < bool Inf * kubernetes::job:apiserver_latency:pctl90rate5m < bool Inf"
       labels:
         job: "kubernetes_api_slo"
