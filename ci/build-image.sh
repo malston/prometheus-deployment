@@ -17,6 +17,6 @@ docker build --build-arg pivnet_token="${pivnet_token}" --build-arg opsman_ssh_k
 # docker login
 # docker tag "${docker_image_name}:${docker_image_tag}" "${docker_image_name}:${docker_image_tag}"
 # docker push "${docker_image_name}:${docker_image_tag}"
-docker login "https://${PKS_HARBOR}" --username admin --password "${HARBOR_ADMIN_PASSWORD}"
-docker tag "${docker_image_name}:${docker_image_tag}" "${PKS_HARBOR}/library/${docker_image_name}:${docker_image_tag}"
-docker push "${PKS_HARBOR}/library/${docker_image_name}:${docker_image_tag}"
+docker login "https://${HARBOR_HOSTNAME}" --username admin --password "${HARBOR_ADMIN_PASSWORD}"
+docker tag "${docker_image_name}:${docker_image_tag}" "${HARBOR_HOSTNAME}/library/${docker_image_name}:${docker_image_tag}"
+docker push "${HARBOR_HOSTNAME}/library/${docker_image_name}:${docker_image_tag}"
