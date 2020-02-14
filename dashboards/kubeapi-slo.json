@@ -877,7 +877,7 @@
             "multi": false,
             "name": "cluster",
             "options": [],
-            "query": "label_values(kubernetes::job:slo_kube_api_ok, cluster)",
+            "query": "label_values(up{job=\"prometheus-cluster\"}, instance)",
             "refresh": 1,
             "regex": "",
             "sort": 2,
