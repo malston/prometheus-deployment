@@ -78,8 +78,6 @@ function interpolate() {
     VARS_federated_targets=$(create_federated_targets "${cluster}" "${foundation_domain}")
     export VARS_federated_targets
 
-	set -x
-
     # Replace config variables in config.yaml
     om interpolate \
         --config "environments/${foundation}/config/config.yml" \
@@ -148,14 +146,14 @@ function create_secrets() {
 
 	bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
 	if [[ $bosh_exporter_enabled == true ]]; then
-		# shellcheck disable=SC1091
-		source "./create-bosh-exporter-secrets.sh" "${cluster}"
+		# shellcheck disable=SC1090
+		source "${__PWD}/create-bosh-exporter-secrets.sh" "${cluster}"
 	fi
 
 	pks_monitor_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/pks_monitor_enabled")"
 	if [[ $pks_monitor_enabled == true ]]; then
-		# shellcheck disable=SC1091
-		source "./create-pks-monitor-uaa-client.sh" "${cluster}"
+		# shellcheck disable=SC1090
+		source "${__PWD}/create-pks-monitor-uaa-client.sh" "${cluster}"
 	fi
 }
 
@@ -203,3 +201,5 @@ function install_cluster() {
 	# Remove copied dashboards
 	rm charts/prometheus-operator/charts/grafana/dashboards/*.json
 }
+
+__PWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
