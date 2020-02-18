@@ -30,6 +30,9 @@ fi
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1090
+source "${__DIR}/scripts/target-bosh.sh"
+
+# shellcheck disable=SC1090
 source "${__DIR}/scripts/helpers.sh"
 
 clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"

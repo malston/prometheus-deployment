@@ -11,9 +11,6 @@ function main() {
     printf "Installing %s into %s\n" "${release}" "${cluster}"
     pks get-credentials "${cluster}"
 
-    # shellcheck disable=SC1090
-    source "${__DIR}/../../../scripts/helpers.sh"
-
     install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
 
     printf "\nFinished installing %s into %s\n" "${release}" "${cluster}"
@@ -29,6 +26,9 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1090
 source "${__DIR}/../../../scripts/target-bosh.sh" "/root/.ssh/id_rsa"
+
+# shellcheck disable=SC1090
+source "${__DIR}/../../../scripts/helpers.sh"
 
 foundation="${1:-$FOUNDATION}"
 namespace="${2:-$NAMESPACE}"
