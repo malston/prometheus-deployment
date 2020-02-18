@@ -31,7 +31,6 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
-# ./interpolate.sh "${FOUNDATION}" "${cluster}"
 foundation=${1:?"Foundation name required"}
 cluster_name=${2:?"Cluster name required"}
 
@@ -40,10 +39,16 @@ deployment="service-instance_$(pks show-cluster "${cluster_name}" --json | jq -r
 export VARS_service_instance_id="${deployment}"
 export VARS_cluster_name="${cluster_name}"
 
+foundation_domain=$(om interpolate -s \
+    --config "environments/${foundation}/config/config.yml" \
+    --vars-file "environments/${foundation}/vars/vars.yml" \
+    --vars-env VARS \
+    --path "/clusters/cluster_name=${cluster_name}/foundation_domain")
+
 master_ips=$(bosh -d "${deployment}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
 master_node_ips="$(echo ${master_ips[*]})"
 export VARS_endpoints="[${master_node_ips// /, }]"
-VARS_federated_targets=$(create_federated_targets "${cluster_name}" "${foundation}.pez.pivotal.io")
+VARS_federated_targets=$(create_federated_targets "${cluster_name}" "${foundation_domain}")
 export VARS_federated_targets
 
 # Replace config variables in config.yaml
