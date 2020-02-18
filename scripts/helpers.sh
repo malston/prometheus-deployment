@@ -148,14 +148,14 @@ function create_secrets() {
 
 	bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
 	if [[ $bosh_exporter_enabled == true ]]; then
-		# shellcheck disable=SC1090
-		source "${__DIR}/scripts/create-bosh-exporter-secrets.sh" "${cluster}"
+		# shellcheck disable=SC1091
+		source "./create-bosh-exporter-secrets.sh" "${cluster}"
 	fi
 
 	pks_monitor_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/pks_monitor_enabled")"
 	if [[ $pks_monitor_enabled == true ]]; then
-		# shellcheck disable=SC1090
-		source "${__DIR}/scripts/create-pks-monitor-uaa-client.sh" "${cluster}"
+		# shellcheck disable=SC1091
+		source "./create-pks-monitor-uaa-client.sh" "${cluster}"
 	fi
 }
 
