@@ -30,10 +30,11 @@ fi
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1090
-source "${__DIR}/scripts/target-bosh.sh"
+source "${__DIR}/scripts/helpers.sh"
 
 cluster=$(kubectl config current-context)
 
 # shellcheck disable=SC1090
-source "${__DIR}/scripts/install-cluster.sh"
+source "${__DIR}/scripts/helpers.sh"
+
 install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
