@@ -203,6 +203,3 @@ function install_cluster() {
 	# Remove copied dashboards
 	rm charts/prometheus-operator/charts/grafana/dashboards/*.json
 }
-
-# shellcheck disable=SC1090
-source "${__DIR}/scripts/target-bosh.sh"
