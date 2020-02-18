@@ -35,7 +35,8 @@ source "${__DIR}/scripts/target-bosh.sh"
 clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 for cluster in ${clusters}; do
   printf "Installing Prometheus Operator into %s\n" "${cluster}"
+  cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   # shellcheck disable=SC1090
-  source "${__DIR}/scripts/install-cluster.sh"
+  source "${cwd}/scripts/install-cluster.sh"
   install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
 done

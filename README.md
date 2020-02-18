@@ -4,18 +4,6 @@ Deploys [Prometheus Operator](https://github.com/coreos/prometheus-operator) usi
 
 ## Install
 
-### Create UAA client for PKS API Monitor (Optional)
-
-```bash
-./create-pks-monitor-uaa-client.sh
-```
-
-### Create secrets for BOSH Exporter (Optional)
-
-```bash
-./create-bosh-exporter-secrets.sh
-```
-
 ### Install Operator
 
 ```bash
