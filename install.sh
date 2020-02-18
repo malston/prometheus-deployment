@@ -35,5 +35,5 @@ source "${__DIR}/scripts/target-bosh.sh"
 cluster=$(kubectl config current-context)
 
 # shellcheck disable=SC1090
-source "${__DIR}/install_cluster.sh"
+source "${__DIR}/scripts/install-cluster.sh"
 install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"

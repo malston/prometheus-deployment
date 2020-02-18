@@ -12,7 +12,7 @@ function main() {
     pks get-credentials "${cluster}"
 
     # shellcheck disable=SC1090
-    source "${__DIR}/../../install_cluster.sh"
+    source "${__DIR}/../../../scripts/install-cluster.sh"
     install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
 
     printf "\nFinished installing %s into %s\n" "${release}" "${cluster}"

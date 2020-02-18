@@ -36,6 +36,6 @@ clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 for cluster in ${clusters}; do
   printf "Installing Prometheus Operator into %s\n" "${cluster}"
   # shellcheck disable=SC1090
-  source "${__DIR}/install_cluster.sh"
+  source "${__DIR}/scripts/install-cluster.sh"
   install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
 done
