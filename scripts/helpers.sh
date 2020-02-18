@@ -14,7 +14,7 @@ function credhub_login() {
 		--ca-cert="${credhub_ca_cert}"
 }
 
-function create-etcd-client-secret() {
+function create_etcd_client_secret() {
 	deployment=${1:?"bosh deployment name for service instance of the cluster"}
 
 	credhub_login "${CREDHUB_SERVER}" "${CREDHUB_CLIENT}" "${CREDHUB_SECRET}" "${CREDHUB_CA_CERT}"
@@ -124,7 +124,7 @@ function create_secrets() {
 
 	deployment="service-instance_$(pks show-cluster "${cluster}" --json | jq -r .uuid)"
 
-	create-etcd-client-secret "${deployment}"
+	create_etcd_client_secret "${deployment}"
 
 	kubectl delete configmap -n "${namespace}" bosh-target-groups --ignore-not-found
 	kubectl create configmap -n "${namespace}" bosh-target-groups --from-literal=bosh_target_groups\.json={}
