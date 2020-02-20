@@ -26,7 +26,6 @@ kubeApiServer:
       regex: apiserver_admission_step_admission_latencies_seconds_.*
       sourceLabels:
       - __name__
-
 kubeControllerManager:
   endpoints: ((endpoints))
   serviceMonitor:
