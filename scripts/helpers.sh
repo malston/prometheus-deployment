@@ -144,46 +144,26 @@ function create_secrets() {
 	#     --from-literal=user="${GMAIL_ACCOUNT}" \
 	#     --from-literal=password="${GMAIL_AUTH_TOKEN}"
 
-	bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
+	bosh_exporter_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")
 	if [[ $bosh_exporter_enabled == true ]]; then
 		# shellcheck disable=SC1090
 		source "${__PWD}/create-bosh-exporter-secrets.sh" "${cluster}"
 	fi
 
-	pks_monitor_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/pks_monitor_enabled")"
+	pks_monitor_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/pks_monitor_enabled")
 	if [[ $pks_monitor_enabled == true ]]; then
 		# shellcheck disable=SC1090
 		source "${__PWD}/create-pks-monitor-uaa-client.sh" "${cluster}"
 	fi
 }
 
-function install_cluster() {
+function helm_upgrade() {
 	cluster="${1:?"Cluster name is required"}"
-	foundation="${2:?"Foundation name is required"}"
-	namespace="${3:?"Namespace is required"}"
-	release="${4:?"Release is required"}"
-	version="${5:?"Version is required"}"
-
-	kubectl config use-context "${cluster}"
-
-	if [[ ! $(kubectl get namespace "${namespace}") ]]; then
-		kubectl create namespace "${namespace}"
-	fi
-	kubectl config set-context --current --namespace="${namespace}"
-
-	# Create storage class
-	kubectl delete storageclass thin-disk --ignore-not-found
-	kubectl create -f storage/storage-class.yaml
-
-	create_secrets "${foundation}" "${cluster}" "${namespace}"
-
-	interpolate "${foundation}" "${cluster}"
-
-	# Copy dashboards to grafana chart location
-	cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
-
-	bosh_exporter_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")"
-	pks_monitor_enabled="$(om interpolate -s --config "environments/${foundation}/config/config.yml" --vars-file "environments/${foundation}/vars/vars.yml" --vars-env VARS --path "/clusters/cluster_name=${cluster}/pks_monitor_enabled")"
+	namespace="${2:?"Namespace is required"}"
+	release="${3:?"Release is required"}"
+	version="${4:?"Version is required"}"
+	bosh_exporter_enabled="${5:-"false"}"
+	pks_monitor_enabled="${6:-"false"}"
 
 	# Install prometheus-operator
 	helm upgrade -i --version "${version}" "${release}" \
@@ -196,10 +176,83 @@ function install_cluster() {
 		--set grafana.testFramework.enabled=false \
 		--set ingress-gateway.ingress.enabled=false \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
-		./charts/prometheus-operator
+		"${__BASEDIR}/charts/prometheus-operator"
+}
 
-	# Remove copied dashboards
+function create_namespace() {
+	cluster="${1:?"Cluster name is required"}"
+	namespace="${2:?"Namespace is required"}"
+
+	if [[ ! $(kubectl get namespace "${namespace}") ]]; then
+		kubectl create namespace "${namespace}"
+	fi
+}
+
+function switch_namespace() {
+	cluster="${1:?"Cluster name is required"}"
+	namespace="${2:?"Namespace is required"}"
+
+	kubectl config use-context "${cluster}"
+
+	kubectl config set-context "${cluster}" --namespace="${namespace}"
+}
+
+function create_storage_class() {
+	kubectl delete storageclass thin-disk --ignore-not-found
+	kubectl create -f storage/storage-class.yaml
+}
+
+function copy_dashboards() {
+	cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
+}
+
+function remove_dashboards() {
 	rm charts/prometheus-operator/charts/grafana/dashboards/*.json
 }
 
+function get_config_value() {
+	foundation="${1}"
+	path="${2}"
+
+	output="$(om interpolate -s \
+		--config "environments/${foundation}/config/config.yml" \
+		--vars-file "environments/${foundation}/vars/vars.yml" \
+		--vars-env VARS \
+		--path "${path}")"
+
+	echo $output
+}
+
+function install_cluster() {
+	cluster="${1:?"Cluster name is required"}"
+	foundation="${2:?"Foundation name is required"}"
+	namespace="${3:?"Namespace is required"}"
+	release="${4:?"Release is required"}"
+	version="${5:?"Version is required"}"
+
+	create_namespace "${cluster}" "${namespace}"
+
+	switch_namespace "${cluster}" "${namespace}"
+
+	# Create storage class
+	create_storage_class
+
+	create_secrets "${foundation}" "${cluster}" "${namespace}"
+
+	interpolate "${foundation}" "${cluster}"
+
+	# Copy dashboards to grafana chart location
+	copy_dashboards
+
+	bosh_exporter_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")
+	pks_monitor_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/pks_monitor_enabled")
+
+	# Install prometheus-operator
+	helm_upgrade "${cluster}" "${namespace}" "${release}" "${version}" "${bosh_exporter_enabled}" "${pks_monitor_enabled}"
+
+	# Remove copied dashboards
+	remove_dashboards
+}
+
 __PWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+__BASEDIR="${__PWD}/.."
