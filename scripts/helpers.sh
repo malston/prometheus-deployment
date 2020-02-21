@@ -48,9 +48,9 @@ function create_federated_targets() {
 	local current_target=("prometheus.$(echo "${cluster_name}").${domain}")
 	for target in "${current_target[@]}"; do
 		for i in "${!targets[@]}"; do
-		if [[ "${targets[i]}" = "${target}" ]]; then
-			unset "targets[i]"
-		fi
+			if [[ "${targets[i]}" = "${target}" ]]; then
+				unset "targets[i]"
+			fi
 		done
 	done
 	fed_targets="$(echo ${targets[*]})"
