@@ -32,9 +32,6 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1090
 source "${__DIR}/scripts/target-bosh.sh"
 
-# shellcheck disable=SC1090
-source "${__DIR}/scripts/helpers.sh"
-
 cluster=$(kubectl config current-context)
 
 # shellcheck disable=SC1090
