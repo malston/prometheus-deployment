@@ -8,13 +8,13 @@ function main() {
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
   for cluster in ${clusters}; do
-    printf "Installing %s into %s\n" "${release}" "${cluster}"
     pks get-credentials "${cluster}"
 
+    printf "Installing %s into %s\n" "${release}" "${cluster}"
     install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
 
     printf "\nFinished installing %s into %s\n" "${release}" "${cluster}"
-    printf "============================================================\n\n"
+    printf "============================================================\n"
   done
 }
 

@@ -7,15 +7,15 @@ function main() {
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 
   for cluster in ${clusters}; do
-      printf "Uninstalling %s from %s\n" "${release}" "${cluster}"
       pks get-credentials "${cluster}"
 
       kubectl config use-context "${cluster}"
       kubectl config set-context --current --namespace="${namespace}"
 
+      printf "Uninstalling %s from %s\n" "${release}" "${cluster}"
       helm uninstall "${release}"
       printf "\nFinished uninstalling %s from %s\n" "${release}" "${cluster}"
-      printf "============================================================\n\n"
+      printf "============================================================\n"
   done
 }
 

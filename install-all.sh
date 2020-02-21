@@ -37,7 +37,6 @@ source "${__DIR}/scripts/helpers.sh"
 
 clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 for cluster in ${clusters}; do
-  printf "Installing Prometheus Operator into %s\n" "${cluster}"
-
+  printf "Installing %s into %s\n" "${release}" "${cluster}"
   install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
 done
