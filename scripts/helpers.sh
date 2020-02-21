@@ -45,14 +45,14 @@ function create_federated_targets() {
 		targets=( "${targets[@]}" "prometheus.$(_jq '.name').${domain}" )
 	done
 
-	local current_target=("prometheus.$(echo "${cluster_name}").${domain}")
-	for target in "${current_target[@]}"; do
-		for i in "${!targets[@]}"; do
-			if [[ "${targets[i]}" = "${target}" ]]; then
-				unset "targets[i]"
-			fi
-		done
-	done
+	# local current_target=("prometheus.$(echo "${cluster_name}").${domain}")
+	# for target in "${current_target[@]}"; do
+	# 	for i in "${!targets[@]}"; do
+	# 		if [[ "${targets[i]}" = "${target}" ]]; then
+	# 			unset "targets[i]"
+	# 		fi
+	# 	done
+	# done
 	fed_targets="$(echo ${targets[*]})"
 	fed_targets="${fed_targets// /, }"
 	echo "[${fed_targets}]"
@@ -173,7 +173,7 @@ function helm_upgrade() {
 		--set pks-monitor.pksMonitor.enabled="${pks_monitor_enabled}" \
 		--set global.rbac.pspEnabled=false \
 		--set grafana.adminPassword=admin \
-		--set grafana.testFramework.enabled=false \
+		--set grafana.testFramework.enabled=true \
 		--set ingress-gateway.ingress.enabled=false \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
 		"${__BASEDIR}/charts/prometheus-operator"

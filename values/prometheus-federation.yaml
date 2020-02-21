@@ -1,12 +1,12 @@
 prometheus:
   prometheusSpec:
-    resources:
-      limits:
-        cpu: 1
-        memory: 1Gi
-      requests:
-        cpu: 100m
-        memory: 100Mi
+    # resources:
+    #   limits:
+    #     cpu: 1
+    #     memory: 1Gi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 100Mi
     configMaps:
       - bosh-target-groups
     replicas: 1
@@ -44,7 +44,7 @@ prometheus:
       scheme: http
       params:
         'match[]':
-        - '{job="kubernetes_api_slo"}'
+          - '{job="apiserver"}'
       static_configs:
       - targets: ((federated_targets))
     - job_name: "kubeEtcd-((cluster_name))"
