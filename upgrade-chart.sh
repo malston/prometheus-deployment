@@ -10,3 +10,7 @@ helm fetch \
   --untardir ./charts \
   --version "${version}" \
     prometheus-operator
+
+# Update the requirements.lock
+cd ./charts/prometheus-operator || exit
+helm dep update
