@@ -33,6 +33,7 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${__DIR}/../../../scripts/helpers.sh"
 
 release="${1:-$RELEASE}"
+namespace="${2:-$NAMESPACE}"
 
 if [[ -z "${release}" ]]; then
   echo "Release is required"
