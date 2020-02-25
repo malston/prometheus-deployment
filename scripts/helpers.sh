@@ -126,9 +126,6 @@ function create_secrets() {
 
 	create_etcd_client_secret "${deployment}"
 
-	kubectl delete configmap -n "${namespace}" bosh-target-groups --ignore-not-found
-	kubectl create configmap -n "${namespace}" bosh-target-groups --from-literal=bosh_target_groups\.json={}
-
 	# if [[ -z "${GMAIL_ACCOUNT}" ]]; then
 	#   echo "Email account: "
 	#   read -r GMAIL_ACCOUNT
