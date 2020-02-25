@@ -33,3 +33,6 @@ venv
 
 # Ruby
 .ruby-version
+
+# Releases
+*.tgz
