@@ -9,12 +9,12 @@ image_resource:
     tag: 0.0.1
 
 inputs:
-  - name: prometheus-deployment
+  - name: repo
   - name: pks-config
   - name: kube-config
 
 run:
-  path: prometheus-deployment/ci/tasks/uninstall-operator/task.sh
+  path: repo/ci/tasks/uninstall-operator/task.sh
 
 params:
   RELEASE:
