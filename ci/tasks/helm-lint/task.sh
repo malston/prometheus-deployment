@@ -28,4 +28,4 @@ if [[ -z "${release}" ]]; then
   exit 1
 fi
 
-main "${repo}" "${release}"
+main "repo" "${release}"
