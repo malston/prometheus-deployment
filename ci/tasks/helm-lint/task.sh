@@ -3,23 +3,14 @@
 function main() {
   local repo="${1}"
   local release_name="${2}"
-  local namespace="${2}"
 
   cd "${repo}/charts/${release_name}" || exit
 
-  clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
+  printf "Linting %s\n" "${release_name}"
+  helm lint
 
-  for cluster in ${clusters}; do
-    pks get-credentials "${cluster}"
-
-    switch_namespace "${cluster}" "${namespace}"
-
-    printf "Linting %s on %s\n" "${release_name}" "${cluster}"
-    helm lint
-
-    printf "\nFinished linting %s on %s\n" "${release_name}" "${cluster}"
-    printf "============================================================\n"
-  done
+  printf "\nFinished linting %s\n" "${release_name}"
+  printf "============================================================\n"
   cd -
 }
 
@@ -33,15 +24,9 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${__DIR}/../../../scripts/helpers.sh"
 
 release="${1:-$RELEASE}"
-namespace="${2:-$NAMESPACE}"
 
 if [[ -z "${release}" ]]; then
   echo "Release is required"
-  exit 1
-fi
-
-if [[ -z "${namespace}" ]]; then
-  echo "Namespace name is required"
   exit 1
 fi
 
@@ -51,4 +36,4 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
-main "repo" "${release}" "${namespace}"
+main "repo" "${release}"

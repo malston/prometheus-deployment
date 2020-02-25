@@ -6,7 +6,7 @@ resources:
     branch: ((config.branch))
 
 jobs:
-- name: install-prometheus-operator
+- name: install
   plan:
   - get: repo
     resource: prometheus-deployment
@@ -24,7 +24,6 @@ jobs:
     file: repo/ci/tasks/helm-lint/task.yml
     params:
       RELEASE: ((release))
-      NAMESPACE: ((namespace))
 
   - task: install-operator
     file: repo/ci/tasks/install-operator/task.yml
@@ -42,12 +41,12 @@ jobs:
       RELEASE: ((release))
       VERSION: ((version))
 
-- name: test-prometheus-operator
+- name: test
   plan:
   - get: repo
     resource: prometheus-deployment
     trigger: true
-    passed: [install-prometheus-operator]
+    passed: [install]
 
   - task: pks-login
     file: repo/ci/tasks/pks-login/task.yml
@@ -63,7 +62,7 @@ jobs:
       RELEASE: ((release))
       NAMESPACE: ((namespace))
 
-- name: uninstall-prometheus-operator
+- name: uninstall
   plan:
   - get: repo
     resource: prometheus-deployment
