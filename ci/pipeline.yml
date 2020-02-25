@@ -24,6 +24,7 @@ jobs:
     file: repo/ci/tasks/helm-lint/task.yml
     params:
       RELEASE: ((release))
+      NAMESPACE: ((namespace))
 
   - task: install-operator
     file: repo/ci/tasks/install-operator/task.yml
@@ -60,6 +61,7 @@ jobs:
     file: repo/ci/tasks/helm-test/task.yml
     params:
       RELEASE: ((release))
+      NAMESPACE: ((namespace))
 
 - name: uninstall-prometheus-operator
   plan:
