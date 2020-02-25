@@ -9,7 +9,7 @@ image_resource:
     tag: 0.0.1
 
 inputs:
-  - name: prometheus-deployment
+  - name: repo
 
 outputs:
 - name: pks-config
@@ -22,4 +22,4 @@ params:
   K8S_CLUSTER_NAME:
 
 run:
-  path: prometheus-deployment/ci/tasks/pks-login/task.sh
+  path: repo/ci/tasks/pks-login/task.sh

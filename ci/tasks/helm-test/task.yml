@@ -14,18 +14,7 @@ inputs:
   - name: kube-config
 
 run:
-  path: repo/ci/tasks/install-operator/task.sh
+  path: repo/ci/tasks/helm-test/task.sh
 
 params:
-  OM_TARGET:
-  OM_USERNAME:
-  OM_PASSWORD:
-  OM_SKIP_SSL_VALIDATION:
-  FOUNDATION:
-  NAMESPACE:
   RELEASE:
-  VERSION:
-  BOSH_UAA_CLIENT_ID:
-  BOSH_UAA_CLIENT_SECRET:
-  PKS_API_HOSTNAME:
-  PKS_API_MONITOR_SECRET:

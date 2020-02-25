@@ -8,19 +8,25 @@ resources:
 jobs:
 - name: install-prometheus-operator
   plan:
-  - get: prometheus-deployment
+  - get: repo
+    resource: prometheus-deployment
     trigger: true
 
   - task: pks-login
-    file: prometheus-deployment/ci/tasks/pks-login/task.yml
+    file: repo/ci/tasks/pks-login/task.yml
     params:
       PKS_API_URL: ((pks_api_url))
       PKS_USER: ((pks_user))
       PKS_PASSWORD: ((pks_password))
       K8S_CLUSTER_NAME: ((k8s_cluster_name))
 
+  - task: lint
+    file: repo/ci/tasks/helm-lint/task.yml
+    params:
+      RELEASE: ((release))
+
   - task: install-operator
-    file: prometheus-deployment/ci/tasks/install-operator/task.yml
+    file: repo/ci/tasks/install-operator/task.yml
     params:
       OM_TARGET: ((om_target))
       OM_USERNAME: ((om_username))
@@ -35,12 +41,18 @@ jobs:
       RELEASE: ((release))
       VERSION: ((version))
 
+  - task: test
+    file: repo/ci/tasks/helm-test/task.yml
+    params:
+      RELEASE: ((release))
+
 - name: uninstall-prometheus-operator
   plan:
-  - get: prometheus-deployment
+  - get: repo
+    resource: prometheus-deployment
 
   - task: pks-login
-    file: prometheus-deployment/ci/tasks/pks-login/task.yml
+    file: repo/ci/tasks/pks-login/task.yml
     params:
       PKS_API_URL: ((pks_api_url))
       PKS_USER: ((pks_user))
@@ -48,7 +60,7 @@ jobs:
       K8S_CLUSTER_NAME: ((k8s_cluster_name))
 
   - task: uninstall-operator
-    file: prometheus-deployment/ci/tasks/uninstall-operator/task.yml
+    file: repo/ci/tasks/uninstall-operator/task.yml
     params:
       RELEASE: ((release))
       NAMESPACE: ((namespace))

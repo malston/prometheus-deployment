@@ -61,6 +61,6 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
-cd prometheus-deployment
+cd repo
 
 main "${foundation}" "${namespace}" "${release}" "${version}"
