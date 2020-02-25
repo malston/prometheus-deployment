@@ -11,7 +11,7 @@ function main() {
       printf "%s release not found" "${release_name}"
       exit 1
     fi
-    
+
     printf "Testing %s on %s\n" "${release_name}" "${cluster}"
     helm test "${release_name}"
 
@@ -30,5 +30,11 @@ if [[ -z "${release}" ]]; then
   echo "Release is required"
   exit 1
 fi
+
+mkdir -p ~/.pks
+cp pks-config/creds.yml ~/.pks/creds.yml
+
+mkdir -p ~/.kube
+cp kube-config/config ~/.kube/config
 
 main "${release}"
