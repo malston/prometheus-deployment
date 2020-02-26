@@ -12,7 +12,7 @@ inputs:
   - name: repo
 
 run:
-  path: repo/ci/tasks/upgrade-chart/task.sh
+  path: repo/ci/tasks/helm-fetch/task.sh
 
 params:
   RELEASE:
