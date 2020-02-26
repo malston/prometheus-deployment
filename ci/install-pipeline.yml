@@ -2,11 +2,12 @@ resources:
 - name: prometheus-deployment
   type: git
   source:
-    uri: ((config.uri))
-    branch: ((config.branch))
+    uri: ((repo.uri))
+    branch: ((repo.branch))
 
 jobs:
 - name: install
+  serial_groups: [install]
   plan:
   - get: repo
     resource: prometheus-deployment
@@ -42,6 +43,7 @@ jobs:
       VERSION: ((version))
 
 - name: test
+  serial_groups: [install]
   plan:
   - get: repo
     resource: prometheus-deployment
@@ -63,6 +65,7 @@ jobs:
       NAMESPACE: ((namespace))
 
 - name: uninstall
+  serial_groups: [install]
   plan:
   - get: repo
     resource: prometheus-deployment

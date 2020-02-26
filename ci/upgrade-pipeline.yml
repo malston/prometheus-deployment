@@ -1,0 +1,39 @@
+resources:
+- name: prometheus-deployment
+  type: git
+  source:
+    uri: ((repo.uri))
+    branch: ((repo.branch))
+
+jobs:
+- name: upgrade-chart
+  plan:
+  - get: repo
+    resource: prometheus-deployment
+    trigger: true
+
+- name: test
+  plan:
+  - get: repo
+    resource: prometheus-deployment
+    trigger: true
+    passed: [install]
+
+  - task: pks-login
+    file: repo/ci/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+
+  - task: lint
+    file: repo/ci/tasks/helm-lint/task.yml
+    params:
+      RELEASE: ((release))
+
+  - task: test
+    file: repo/ci/tasks/helm-test/task.yml
+    params:
+      RELEASE: ((release))
+      NAMESPACE: ((namespace))
