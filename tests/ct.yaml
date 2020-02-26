@@ -1,0 +1,9 @@
+remote: origin
+target-branch: master
+charts:
+  - charts/prometheus-operator
+chart-dirs:
+  - charts
+chart-repos:
+  - charts=https://kubernetes-charts.storage.googleapis.com
+helm-extra-args: --timeout 300s
