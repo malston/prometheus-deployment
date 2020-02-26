@@ -14,7 +14,8 @@ if [ ! -d "$destination_directory" ]; then
   mkdir -p "$destination_directory";
 fi;
 
-cp file-source/"$FILE_SOURCE_PATH" \
+rm -rf "$FILE_DESTINATION_PATH"
+cp -R file-source/"$FILE_SOURCE_PATH" \
    "$FILE_DESTINATION_PATH"
 cd repo-commit
 
