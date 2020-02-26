@@ -4,7 +4,7 @@ function main() {
   local release="${1}"
   local version="${2}"
   
-  printf "Fetch chart for %s\n" "${release}"
+  printf "Fetch %s of %s chart\n" "${version}" "${release}"
 
   helm fetch \
     --repo https://kubernetes-charts.storage.googleapis.com \

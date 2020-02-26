@@ -23,6 +23,14 @@ jobs:
     params:
       RELEASE: ((release))
 
+  - task: pks-login
+    file: repo/ci/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+
   - task: install
     file: repo/ci/tasks/install-operator/task.yml
     params:
