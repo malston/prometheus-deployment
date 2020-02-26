@@ -48,4 +48,4 @@ params:
 
 
 run:
-  path: repo/ci/tasks/make-commit/task.sh
+  path: repo/ci/tasks/tag-and-commit/task.sh
