@@ -13,6 +13,8 @@ function install() {
 
   printf "\nFinished installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
   printf "============================================================\n"
+
+  echo "${version}" > ../version/version
 }
 
 function main() {
@@ -80,6 +82,3 @@ cp kube-config/config ~/.kube/config
 pushd repo
 main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
 popd
-
-touch version/version
-echo "${version}" > version/version
