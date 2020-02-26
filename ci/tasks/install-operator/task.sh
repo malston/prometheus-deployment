@@ -52,7 +52,7 @@ foundation="${1:-$FOUNDATION}"
 namespace="${2:-$NAMESPACE}"
 release="${3:-$RELEASE}"
 version="${4:-$VERSION}"
-cluster="${4:-$CLUSTER_NAME}"
+cluster="${5:-$CLUSTER_NAME}"
 
 if [[ -z "${foundation}" ]]; then
   echo "Foundation name is required"
