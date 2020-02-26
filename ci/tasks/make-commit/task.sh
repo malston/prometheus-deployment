@@ -1,19 +1,27 @@
 #!/usr/bin/env bash
 
-cat /var/version && echo ""
-
-set -eu
-git config --global user.email "$GIT_AUTHOR_EMAIL"
-git config --global user.name "$GIT_AUTHOR_NAME"
+set -e
+# only exit with zero if all commands of the pipeline exit successfully
+set -o pipefail
 
 git clone repo repo-commit
 
-mkdir -p $(dirname repo-commit/"$FILE_DESTINATION_PATH")
+FILE_DESTINATION_PATH="repo-commit/$FILE_DESTINATION_PATH"
+destination_directory=$(dirname "$FILE_DESTINATION_PATH")
+
+if [ ! -d "$destination_directory" ]; then
+  echo "Directory $destination_directory does not exist in repository, creating it..."
+  mkdir -p "$destination_directory";
+fi;
 
 cp file-source/"$FILE_SOURCE_PATH" \
-	repo-commit/"$FILE_DESTINATION_PATH"
+   "$FILE_DESTINATION_PATH"
 cd repo-commit
+
+git config user.name "$GIT_AUTHOR_NAME"
+git config user.email "$GIT_AUTHOR_EMAIL"
+
 if [[ -n $(git status --porcelain) ]]; then
-	git add -A
-	git commit -m "$COMMIT_MESSAGE" --allow-empty
+  git add -A
+  git commit -m "$COMMIT_MESSAGE" --allow-empty
 fi
