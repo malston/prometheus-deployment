@@ -77,7 +77,7 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
-cd pushd
+pushd
 main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
 popd
 
