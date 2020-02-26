@@ -4,6 +4,7 @@ function install() {
   local namespace="${2}"
   local release="${3}"
   local version="${4}"
+  local cluster="${5}"
 
   pks get-credentials "${cluster}"
 
@@ -25,7 +26,7 @@ function main() {
   local cluster="${5}"
 
   if [[ -n "${cluster}" ]]; then
-    install "${foundation}" "${namespace}" "${release}" "${version}"
+    install "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
     exit $?
   fi
 

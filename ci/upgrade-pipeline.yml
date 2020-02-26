@@ -54,6 +54,7 @@ jobs:
     params:
       RELEASE: ((release))
       NAMESPACE: ((namespace))
+      CLUSTER_NAME: ((upgrade_cluster_name))
 
   - task: tag-and-commit
     file: repo/ci/tasks/tag-and-commit/task.yml

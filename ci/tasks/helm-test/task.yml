@@ -19,3 +19,4 @@ run:
 params:
   RELEASE:
   NAMESPACE:
+  CLUSTER_NAME:
