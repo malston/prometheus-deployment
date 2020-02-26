@@ -81,4 +81,5 @@ pushd repo
 main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
 popd
 
+touch version/version
 echo "${version}" > version/version
