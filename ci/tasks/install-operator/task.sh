@@ -13,9 +13,6 @@ function install() {
 
   printf "\nFinished installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
   printf "============================================================\n"
-
-  mkdir -p version/
-  echo "${version}" > version/version
 }
 
 function main() {
@@ -80,6 +77,8 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
-cd repo
-
+cd pushd
 main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
+popd
+
+echo "${version}" > version/version
