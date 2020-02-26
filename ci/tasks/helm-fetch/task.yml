@@ -11,6 +11,9 @@ image_resource:
 inputs:
   - name: repo
 
+outputs:
+  - name: charts-commit
+
 run:
   path: repo/ci/tasks/helm-fetch/task.sh
 

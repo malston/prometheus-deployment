@@ -62,7 +62,7 @@ jobs:
       GIT_AUTHOR_NAME: "Mark Alston"
       COMMIT_MESSAGE: "Update helm chart"
     input_mapping:
-      file-source: charts
+      file-source: charts-commit
   - put: repo
     resource: prometheus-deployment
     params:

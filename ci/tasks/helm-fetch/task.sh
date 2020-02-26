@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 
 function main() {
-  local release="${1}"
-  local version="${2}"
+  local repo="${1}"
+  local release="${2}"
+  local version="${3}"
   
   printf "Fetch %s of %s chart\n" "${version}" "${release}"
 
   helm fetch \
     --repo https://kubernetes-charts.storage.googleapis.com \
     --untar \
-    --untardir ./charts \
+    --untardir "${repo}/charts" \
     --version "${version}" \
     "${release}"
+
+  mkdir "charts-commit"
+
+  cp -r "${repo}/charts" "charts-commit"
 }
 
 set -e
@@ -31,4 +36,4 @@ if [[ -z "${version}" ]]; then
   exit 1
 fi
 
-main "${release}" "${version}"
+main "repo" "${release}" "${version}"
