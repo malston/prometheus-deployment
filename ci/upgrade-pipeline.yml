@@ -66,5 +66,5 @@ jobs:
   - put: repo
     resource: prometheus-deployment
     params:
-      repo: repo-commit
+      repository: repo-commit
       merge: true
