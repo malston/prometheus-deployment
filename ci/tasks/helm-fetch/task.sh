@@ -14,8 +14,6 @@ function main() {
     --version "${version}" \
     "${release}"
 
-  mkdir "charts-commit"
-
   cp -r "${repo}/charts" "charts-commit"
 }
 
