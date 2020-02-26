@@ -2,7 +2,7 @@ grafana:
   replicas: 1
   # ingress:
   #   enabled: true
-  notifiers: 
+  notifiers:
     notifiers.yaml:
       notifiers:
       - name: email-notifier
