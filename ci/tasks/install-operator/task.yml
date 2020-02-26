@@ -13,6 +13,9 @@ inputs:
   - name: pks-config
   - name: kube-config
 
+outputs:
+  - name: version
+
 run:
   path: repo/ci/tasks/install-operator/task.sh
 
@@ -29,3 +32,4 @@ params:
   BOSH_UAA_CLIENT_SECRET:
   PKS_API_HOSTNAME:
   PKS_API_MONITOR_SECRET:
+  CLUSTER_NAME:

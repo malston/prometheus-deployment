@@ -18,6 +18,8 @@ inputs:
   # - This is the input folder containing the file to be committed.
   #   Typically, this will from some other task
   #   with an output that needs to be persisted.
+  - name: tag
+  # - This is the tag we want to place on the commit
 outputs:
   - name: repo-commit
 

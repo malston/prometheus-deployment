@@ -4,6 +4,7 @@ resources:
   source:
     uri: ((repo.uri))
     branch: ((repo.branch))
+    private_key: ((repo.private_key))
 
 jobs:
 - name: upgrade-chart
@@ -43,6 +44,7 @@ jobs:
       PKS_API_HOSTNAME: ((pks_api_hostname))
       PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
       FOUNDATION: ((foundation))
+      CLUSTER_NAME: ((upgrade_cluster_name))
       NAMESPACE: ((namespace))
       RELEASE: ((release))
       VERSION: ((version))
@@ -53,8 +55,8 @@ jobs:
       RELEASE: ((release))
       NAMESPACE: ((namespace))
 
-  - task: commit
-    file: repo/ci/tasks/make-commit/task.yml
+  - task: tag-and-commit
+    file: repo/ci/tasks/tag-and-commit/task.yml
     params:
       FILE_SOURCE_PATH: charts
       FILE_DESTINATION_PATH: charts
@@ -63,6 +65,8 @@ jobs:
       COMMIT_MESSAGE: "Update helm chart"
     input_mapping:
       file-source: charts-commit
+      tag: version
+
   - put: repo
     resource: prometheus-deployment
     params:

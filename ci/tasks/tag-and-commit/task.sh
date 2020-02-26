@@ -25,4 +25,6 @@ git config user.email "$GIT_AUTHOR_EMAIL"
 if [[ -n $(git status --porcelain) ]]; then
   git add -A
   git commit -m "$COMMIT_MESSAGE" --allow-empty
+  git tag "$(cat tag/version)"
 fi
+
