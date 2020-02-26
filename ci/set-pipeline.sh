@@ -10,7 +10,7 @@ type="${1:?"Enter pipeline type [install/upgrade]:" }"
 target="${CONCOURSE_TARGET:-concourse}"
 
 fly -t "${target}" set-pipeline \
-    -p "install-prometheus-operator" \
+    -p "${type}-prometheus-operator" \
     -c "${__PWD}/${type}-pipeline.yml" \
     -l "${__PWD}/pipeline-params.yml" \
     -l "${__PWD}/creds.yml"

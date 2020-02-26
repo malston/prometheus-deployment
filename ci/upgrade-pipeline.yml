@@ -12,28 +12,49 @@ jobs:
     resource: prometheus-deployment
     trigger: true
 
-- name: test
-  plan:
-  - get: repo
-    resource: prometheus-deployment
-    trigger: true
-    passed: [install]
-
-  - task: pks-login
-    file: repo/ci/tasks/pks-login/task.yml
+  - task: fetch
+    file: repo/ci/tasks/helm-fetch/task.yml
     params:
-      PKS_API_URL: ((pks_api_url))
-      PKS_USER: ((pks_user))
-      PKS_PASSWORD: ((pks_password))
-      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+      RELEASE: ((release))
+      VERSION: ((version))
 
   - task: lint
     file: repo/ci/tasks/helm-lint/task.yml
     params:
       RELEASE: ((release))
 
+  - task: install
+    file: repo/ci/tasks/install-operator/task.yml
+    params:
+      OM_TARGET: ((om_target))
+      OM_USERNAME: ((om_username))
+      OM_PASSWORD: ((om_password))
+      OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
+      BOSH_UAA_CLIENT_ID: ((bosh_uaa_client_id))
+      BOSH_UAA_CLIENT_SECRET: ((bosh_uaa_client_secret))
+      PKS_API_HOSTNAME: ((pks_api_hostname))
+      PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
+      FOUNDATION: ((foundation))
+      NAMESPACE: ((namespace))
+      RELEASE: ((release))
+      VERSION: ((version))
+
   - task: test
     file: repo/ci/tasks/helm-test/task.yml
     params:
       RELEASE: ((release))
       NAMESPACE: ((namespace))
+
+  - task: commit
+    file: repo/ci/tasks/make-commit/task.yml
+    input_mapping:
+      repository: repo
+      file-source: chart/
+    output_mapping:
+      repository-commit: state-commit
+    params:
+      FILE_SOURCE_PATH: state.yml
+      FILE_DESTINATION_PATH: ((foundation))/state/state.yml
+      GIT_AUTHOR_EMAIL: "pcf-pipeline-bot@acme.com"
+      GIT_AUTHOR_NAME: "PCF Automation Bot"
+      COMMIT_MESSAGE: 'Update state file'
