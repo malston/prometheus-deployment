@@ -4,6 +4,8 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
+TAG="$(cat tag/version)"
+
 git clone repo repo-commit
 
 FILE_DESTINATION_PATH="repo-commit/$FILE_DESTINATION_PATH"
@@ -25,6 +27,6 @@ git config user.email "$GIT_AUTHOR_EMAIL"
 if [[ -n $(git status --porcelain) ]]; then
   git add -A
   git commit -m "$COMMIT_MESSAGE" --allow-empty
-  git tag "$(cat tag/version)"
+  git tag "$TAG"
 fi
 
