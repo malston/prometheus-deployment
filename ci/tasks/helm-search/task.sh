@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 function main() {
+	local release="${1}"
 	printf "Checking for newest version of chart\n"
 	
-	helm search repo prometheus-operator -o json \
-		| jq -r '.[] | select(.name=="stable/prometheus-operator") | .version' \
+	helm search repo "${release}" -o json \
+		| jq -r '.[] | select(.name=="stable/${release}") | .version' \
 		> version/version
 }
 
@@ -14,4 +15,11 @@ set -o pipefail
 
 helm repo add stable "$CHART_REPO"
 
-main
+release="${1:-$RELEASE}"
+
+if [[ -z "${release}" ]]; then
+  echo "Release is required"
+  exit 1
+fi
+
+main "${release}"
