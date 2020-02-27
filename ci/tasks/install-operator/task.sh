@@ -51,8 +51,10 @@ release="${3:-$RELEASE}"
 version="${4:-$VERSION}"
 cluster="${5:-$CLUSTER_NAME}"
 
-if [[ -z "${VERSION}" ]]; then
+if [[ -z "${version}" ]]; then
   version="$(cat version/version)"
+else
+  echo "${version}" > version/version
 fi
 
 if [[ -z "${foundation}" ]]; then
@@ -67,11 +69,6 @@ fi
 
 if [[ -z "${release}" ]]; then
   echo "Release is required"
-  exit 1
-fi
-
-if [[ -z "${version}" ]]; then
-  echo "Version is required"
   exit 1
 fi
 
