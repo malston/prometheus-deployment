@@ -51,14 +51,6 @@ release="${3:-$RELEASE}"
 version="${4:-$VERSION}"
 cluster="${5:-$CLUSTER_NAME}"
 
-if [[ -z "${version}" ]]; then
-  version="$(cat version/version)"
-  if [[ -z "${version}" ]]; then
-    echo "Version is required"
-    exit 1
-  fi
-fi
-
 if [[ -z "${foundation}" ]]; then
   echo "Foundation name is required"
   exit 1
@@ -72,6 +64,14 @@ fi
 if [[ -z "${release}" ]]; then
   echo "Release is required"
   exit 1
+fi
+
+if [[ -z "${version}" ]]; then
+  version="$(cat version/version)"
+  if [[ -z "${version}" ]]; then
+    echo "Version is required"
+    exit 1
+  fi
 fi
 
 mkdir -p ~/.pks

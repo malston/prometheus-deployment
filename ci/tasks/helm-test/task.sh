@@ -29,7 +29,7 @@ function main() {
 
   if [[ -n "${cluster}" ]]; then
     helm_test "${release_name}" "${namespace}" "${cluster}"
-    exit $?
+    return $?
   fi
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"

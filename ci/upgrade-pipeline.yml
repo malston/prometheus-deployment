@@ -24,6 +24,7 @@ jobs:
     file: repo/ci/tasks/helm-fetch/task.yml
     params:
       RELEASE: ((release))
+      CHART_REPO: ((chart_repo))
 
   - task: lint-chart
     file: repo/ci/tasks/helm-lint/task.yml

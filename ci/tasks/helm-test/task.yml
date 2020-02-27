@@ -20,3 +20,4 @@ params:
   RELEASE:
   NAMESPACE:
   CLUSTER_NAME:
+  CHART_REPO:
