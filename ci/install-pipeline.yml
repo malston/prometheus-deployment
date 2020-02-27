@@ -4,6 +4,7 @@ resources:
   source:
     uri: ((repo.uri))
     branch: ((repo.branch))
+    private_key: ((repo.private_key))
 
 jobs:
 - name: install
