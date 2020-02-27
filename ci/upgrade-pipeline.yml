@@ -30,7 +30,7 @@ jobs:
     params:
       RELEASE: ((release))
 
-  - task: pks-login
+  - task: login
     file: repo/ci/tasks/pks-login/task.yml
     params:
       PKS_API_URL: ((pks_api_url))

@@ -13,9 +13,10 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
-helm repo add stable "$CHART_REPO"
-
 release="${1:-$RELEASE}"
+chart_repo="${2:-$CHART_REPO}"
+
+helm repo add stable "${chart_repo}"
 
 if [[ -z "${release}" ]]; then
   echo "Release is required"
