@@ -14,15 +14,15 @@ jobs:
     resource: prometheus-deployment
     trigger: true
 
-  - task: get-latest-version
+  - task: get-latest-chart-version
     file: repo/ci/tasks/helm-search/task.yml
 
-  - task: fetch
+  - task: fetch-chart
     file: repo/ci/tasks/helm-fetch/task.yml
     params:
       RELEASE: ((release))
 
-  - task: lint
+  - task: lint-chart
     file: repo/ci/tasks/helm-lint/task.yml
     params:
       RELEASE: ((release))
@@ -35,7 +35,7 @@ jobs:
       PKS_PASSWORD: ((pks_password))
       K8S_CLUSTER_NAME: ((k8s_cluster_name))
 
-  - task: install
+  - task: install-chart
     file: repo/ci/tasks/install-operator/task.yml
     params:
       OM_TARGET: ((om_target))
@@ -51,7 +51,7 @@ jobs:
       NAMESPACE: ((namespace))
       RELEASE: ((release))
 
-  - task: test
+  - task: test-chart
     file: repo/ci/tasks/helm-test/task.yml
     params:
       RELEASE: ((release))

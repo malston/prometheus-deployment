@@ -13,6 +13,7 @@ inputs:
 
 outputs:
   - name: charts-commit
+  - name: version
 
 run:
   path: repo/ci/tasks/helm-fetch/task.sh

@@ -53,6 +53,10 @@ cluster="${5:-$CLUSTER_NAME}"
 
 if [[ -z "${version}" ]]; then
   version="$(cat version/version)"
+  if [[ -z "${version}" ]]; then
+    echo "Version is required"
+    exit 1
+  fi
 else
   mkdir -p version
   echo "${version}" > version/version
