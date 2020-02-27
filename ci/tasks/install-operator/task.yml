@@ -10,6 +10,7 @@ image_resource:
 
 inputs:
   - name: repo
+  - name: version
   - name: pks-config
   - name: kube-config
 

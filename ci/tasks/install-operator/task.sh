@@ -51,6 +51,10 @@ release="${3:-$RELEASE}"
 version="${4:-$VERSION}"
 cluster="${5:-$CLUSTER_NAME}"
 
+if [[ -z "${VERSION}" ]]; then
+  version="$(cat version/version)"
+fi
+
 if [[ -z "${foundation}" ]]; then
   echo "Foundation name is required"
   exit 1
@@ -79,6 +83,6 @@ cp kube-config/config ~/.kube/config
 
 pushd repo
   main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
-popd repo
+popd
 
 echo "${version}" > version/version
