@@ -57,9 +57,6 @@ if [[ -z "${version}" ]]; then
     echo "Version is required"
     exit 1
   fi
-else
-  mkdir -p version
-  echo "${version}" > version/version
 fi
 
 if [[ -z "${foundation}" ]]; then

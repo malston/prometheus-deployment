@@ -12,8 +12,6 @@ inputs:
   - name: repo
   - name: pks-config
   - name: kube-config
-
-outputs:
   - name: version
 
 run:
