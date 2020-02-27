@@ -1,27 +1,41 @@
 #!/usr/bin/env bash
 
+function helm_test() {
+  local release_name="${1}"
+  local namespace="${2}"
+  local cluster="${3}"
+
+  pks get-credentials "${cluster}"
+
+  switch_namespace "${cluster}" "${namespace}"
+
+  release="$(helm list -q -f "${release_name}")"
+  if [[ -z "${release}" ]]; then
+    printf "%s release not found" "${release_name}"
+    exit 1
+  fi
+
+  printf "Testing %s on %s\n" "${release_name}" "${cluster}"
+  helm test "${release_name}"
+
+  printf "\nFinished testing %s on %s\n" "${release_name}" "${cluster}"
+  printf "============================================================\n"
+}
+
 function main() {
   local release_name="${1}"
   local namespace="${2}"
+  local cluster="${3}"
+
+  if [[ -n "${cluster}" ]]; then
+    helm_test "${release_name}" "${namespace}" "${cluster}"
+    return $?
+  fi
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 
   for cluster in ${clusters}; do
-    pks get-credentials "${cluster}"
-
-    switch_namespace "${cluster}" "${namespace}"
-
-    release="$(helm list -q -f "${release_name}")"
-    if [[ -z "${release}" ]]; then
-      printf "%s release not found" "${release_name}"
-      exit 1
-    fi
-
-    printf "Testing %s on %s\n" "${release_name}" "${cluster}"
-    helm test "${release_name}"
-
-    printf "\nFinished testing %s on %s\n" "${release_name}" "${cluster}"
-    printf "============================================================\n"
+    helm_test "${release_name}" "${namespace}" "${cluster}"
   done
 }
 
@@ -36,6 +50,7 @@ source "${__DIR}/../../../scripts/helpers.sh"
 
 release="${1:-$RELEASE}"
 namespace="${2:-$NAMESPACE}"
+cluster="${3:-$CLUSTER_NAME}"
 
 if [[ -z "${release}" ]]; then
   echo "Release is required"
@@ -53,4 +68,4 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
-main "${release}" "${namespace}"
+main "${release}" "${namespace}" "${cluster}"

@@ -29,12 +29,6 @@ prometheus:
           resources:
             requests:
               storage: 5Gi
-        selector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - prometheus
 
     additionalScrapeConfigs:
     - job_name: "kubeEtcd-((cluster_name))"
@@ -76,8 +70,9 @@ additionalPrometheusRulesMap:
     - name: istio_rules
       rules:
       - alert: IstioPilotAvailabilityDrop
-        summary: 'Istio Pilot Availability Drop'
-        description: 'Pilot pods have dropped during the last 5m (current value: *{{ printf "%2.0f%%" $value }}*). Envoy sidecars might have outdated configuration'
+        annotations:
+          summary: 'Istio Pilot Availability Drop'
+          description: 'Pilot pods have dropped during the last 5m (current value: *{{ printf "%2.0f%%" $value }}*). Envoy sidecars might have outdated configuration'
         expr: >
               avg(avg_over_time(up{job="pilot"}[1m])) < 0.5
         for: 5m

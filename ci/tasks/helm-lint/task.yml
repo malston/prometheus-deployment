@@ -10,8 +10,6 @@ image_resource:
 
 inputs:
   - name: repo
-  - name: pks-config
-  - name: kube-config
 
 run:
   path: repo/ci/tasks/helm-lint/task.sh

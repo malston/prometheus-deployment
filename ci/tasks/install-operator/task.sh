@@ -1,20 +1,35 @@
 #!/usr/bin/env bash
+function install() {
+  local foundation="${1}"
+  local namespace="${2}"
+  local release="${3}"
+  local version="${4}"
+  local cluster="${5}"
+
+  pks get-credentials "${cluster}"
+
+  printf "Installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
+  install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
+
+  printf "\nFinished installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
+  printf "============================================================\n"
+}
 
 function main() {
   local foundation="${1}"
   local namespace="${2}"
   local release="${3}"
   local version="${4}"
+  local cluster="${5}"
+
+  if [[ -n "${cluster}" ]]; then
+    install "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
+    return $?
+  fi
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
   for cluster in ${clusters}; do
-    pks get-credentials "${cluster}"
-
-    printf "Installing %s into %s\n" "${release}" "${cluster}"
-    install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
-
-    printf "\nFinished installing %s into %s\n" "${release}" "${cluster}"
-    printf "============================================================\n"
+    install "${foundation}" "${namespace}" "${release}" "${version}"
   done
 }
 
@@ -34,6 +49,7 @@ foundation="${1:-$FOUNDATION}"
 namespace="${2:-$NAMESPACE}"
 release="${3:-$RELEASE}"
 version="${4:-$VERSION}"
+cluster="${5:-$CLUSTER_NAME}"
 
 if [[ -z "${foundation}" ]]; then
   echo "Foundation name is required"
@@ -51,8 +67,11 @@ if [[ -z "${release}" ]]; then
 fi
 
 if [[ -z "${version}" ]]; then
-  echo "Version is required"
-  exit 1
+  version="$(cat version/version)"
+  if [[ -z "${version}" ]]; then
+    echo "Version is required"
+    exit 1
+  fi
 fi
 
 mkdir -p ~/.pks
@@ -63,4 +82,4 @@ cp kube-config/config ~/.kube/config
 
 cd repo
 
-main "${foundation}" "${namespace}" "${release}" "${version}"
+main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
