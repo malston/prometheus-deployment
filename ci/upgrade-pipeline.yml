@@ -16,6 +16,8 @@ jobs:
 
   - task: get-latest-chart-version
     file: repo/ci/tasks/helm-search/task.yml
+    params:
+      CHART_REPO: ((chart_repo))
 
   - task: fetch-chart
     file: repo/ci/tasks/helm-fetch/task.yml

@@ -12,6 +12,6 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo add stable "$CHART_REPO"
 
 main
