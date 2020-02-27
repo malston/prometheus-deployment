@@ -10,12 +10,8 @@ image_resource:
 
 inputs:
   - name: repo
-  - name: chart-version
   - name: pks-config
   - name: kube-config
-
-outputs:
-  - name: version
 
 run:
   path: repo/ci/tasks/install-operator/task.sh

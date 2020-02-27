@@ -12,7 +12,7 @@ inputs:
   - name: repo
 
 outputs:
-  - name: chart-version
+  - name: version
 
 run:
   path: repo/ci/tasks/helm-search/task.sh

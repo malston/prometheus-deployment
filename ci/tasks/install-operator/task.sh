@@ -52,7 +52,7 @@ version="${4:-$VERSION}"
 cluster="${5:-$CLUSTER_NAME}"
 
 if [[ -z "${VERSION}" ]]; then
-  version="$(cat chart-version/version)"
+  version="$(cat version/version)"
 fi
 
 if [[ -z "${foundation}" ]]; then
@@ -81,8 +81,6 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
-pushd repo
-  main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
-popd
+cd repo
 
-echo "${version}" > version/version
+main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
