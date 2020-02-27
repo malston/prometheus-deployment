@@ -5,7 +5,7 @@ function main() {
 	
 	helm search repo prometheus-operator -o json \
 		| jq -r '.[] | select(.name=="stable/prometheus-operator") | .version' \
-		> ../version/version
+		> version/version
 }
 
 set -e
