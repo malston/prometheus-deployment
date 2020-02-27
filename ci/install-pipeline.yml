@@ -1,9 +1,16 @@
 resources:
-- name: prometheus-deployment
+- name: repo-master
   type: git
   source:
     uri: ((repo.uri))
-    branch: ((repo.branch))
+    branch: master
+    private_key: ((repo.private_key))
+
+- name: repo-develop
+  type: git
+  source:
+    uri: ((repo.uri))
+    branch: develop
     private_key: ((repo.private_key))
 
 jobs:
@@ -11,7 +18,7 @@ jobs:
   serial_groups: [install]
   plan:
   - get: repo
-    resource: prometheus-deployment
+    resource: repo-master
     trigger: true
 
   - task: pks-login
@@ -28,26 +35,39 @@ jobs:
       RELEASE: ((release))
 
   - task: install-operator
-    file: repo/ci/tasks/install-operator/task.yml
-    params:
-      OM_TARGET: ((om_target))
-      OM_USERNAME: ((om_username))
-      OM_PASSWORD: ((om_password))
-      OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
-      BOSH_UAA_CLIENT_ID: ((bosh_uaa_client_id))
-      BOSH_UAA_CLIENT_SECRET: ((bosh_uaa_client_secret))
-      PKS_API_HOSTNAME: ((pks_api_hostname))
-      PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
-      FOUNDATION: ((foundation))
-      NAMESPACE: ((namespace))
-      RELEASE: ((release))
-      VERSION: ((version))
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: harbor.haas-440.pez.pivotal.io/library/malston/pks-control-plane
+          insecure_registries: [harbor.haas-440.pez.pivotal.io]
+          tag: 0.0.1
+      inputs:
+        - name: repo
+        - name: pks-config
+        - name: kube-config
+      run:
+        path: repo/ci/tasks/install-operator/task.sh
+      params:
+        OM_TARGET: ((om_target))
+        OM_USERNAME: ((om_username))
+        OM_PASSWORD: ((om_password))
+        OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
+        BOSH_UAA_CLIENT_ID: ((bosh_uaa_client_id))
+        BOSH_UAA_CLIENT_SECRET: ((bosh_uaa_client_secret))
+        PKS_API_HOSTNAME: ((pks_api_hostname))
+        PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
+        FOUNDATION: ((foundation))
+        NAMESPACE: ((namespace))
+        RELEASE: ((release))
+        VERSION: ((version))
 
 - name: test
   serial_groups: [install]
   plan:
   - get: repo
-    resource: prometheus-deployment
+    resource: repo-master
     trigger: true
     passed: [install]
 
@@ -69,7 +89,7 @@ jobs:
   serial_groups: [install]
   plan:
   - get: repo
-    resource: prometheus-deployment
+    resource: repo-master
 
   - task: pks-login
     file: repo/ci/tasks/pks-login/task.yml
@@ -84,3 +104,76 @@ jobs:
     params:
       RELEASE: ((release))
       NAMESPACE: ((namespace))
+
+- name: upgrade-chart
+  serial_groups: [upgrade]
+  plan:
+  - get: repo
+    resource: repo-develop
+    trigger: true
+
+  - task: get-latest-chart-version
+    file: repo/ci/tasks/helm-search/task.yml
+    params:
+      RELEASE: ((release))
+      CHART_REPO: ((chart_repo))
+
+  - task: fetch-chart
+    file: repo/ci/tasks/helm-fetch/task.yml
+    params:
+      RELEASE: ((release))
+      CHART_REPO: ((chart_repo))
+
+  - task: lint-chart
+    file: repo/ci/tasks/helm-lint/task.yml
+    params:
+      RELEASE: ((release))
+
+  - task: login
+    file: repo/ci/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+
+  - task: install-chart
+    file: repo/ci/tasks/install-operator/task.yml
+    params:
+      OM_TARGET: ((om_target))
+      OM_USERNAME: ((om_username))
+      OM_PASSWORD: ((om_password))
+      OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
+      BOSH_UAA_CLIENT_ID: ((bosh_uaa_client_id))
+      BOSH_UAA_CLIENT_SECRET: ((bosh_uaa_client_secret))
+      PKS_API_HOSTNAME: ((pks_api_hostname))
+      PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
+      FOUNDATION: ((foundation))
+      CLUSTER_NAME: ((upgrade_cluster_name))
+      NAMESPACE: ((namespace))
+      RELEASE: ((release))
+
+  - task: test-chart
+    file: repo/ci/tasks/helm-test/task.yml
+    params:
+      RELEASE: ((release))
+      NAMESPACE: ((namespace))
+      CLUSTER_NAME: ((upgrade_cluster_name))
+
+  - task: tag-and-commit
+    file: repo/ci/tasks/tag-and-commit/task.yml
+    params:
+      FILE_SOURCE_PATH: charts
+      FILE_DESTINATION_PATH: charts
+      GIT_AUTHOR_EMAIL: "malston@pivotal.io"
+      GIT_AUTHOR_NAME: "Mark Alston"
+      COMMIT_MESSAGE: "Update helm chart"
+    input_mapping:
+      file-source: charts-commit
+      tag: version
+
+  - put: repo
+    resource: repo-develop
+    params:
+      repository: repo-commit
+      merge: true

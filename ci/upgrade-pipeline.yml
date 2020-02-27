@@ -1,9 +1,9 @@
 resources:
-- name: prometheus-deployment
+- name: repo-develop
   type: git
   source:
     uri: ((repo.uri))
-    branch: ((repo.branch))
+    branch: develop
     private_key: ((repo.private_key))
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
   serial_groups: [upgrade]
   plan:
   - get: repo
-    resource: prometheus-deployment
+    resource: repo-develop
     trigger: true
 
   - task: get-latest-chart-version
@@ -75,7 +75,7 @@ jobs:
       tag: version
 
   - put: repo
-    resource: prometheus-deployment
+    resource: repo-develop
     params:
       repository: repo-commit
       merge: true
