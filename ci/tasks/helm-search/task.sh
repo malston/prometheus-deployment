@@ -7,7 +7,7 @@ function main() {
 	REPO_RELEASE="stable/${release}"
 	
 	helm search repo "${release}" -o json \
-		| jq -r  --arg repo_release "$REPO_RELEASE" '.[] | select(.name=="$repo_release") | .version' \
+		| jq -r  --arg repo_release "$REPO_RELEASE" '.[] | select(.name==$repo_release) | .version' \
 		> version/version
 }
 
