@@ -3,9 +3,11 @@
 function main() {
 	local release="${1}"
 	printf "Checking for newest version of chart\n"
+
+	REPO_RELEASE="stable/${release}"
 	
 	helm search repo "${release}" -o json \
-		| jq -r '.[] | select(.name=="stable/${release}") | .version' \
+		| jq -r  --arg repo_release "$REPO_RELEASE" '.[] | select(.name=="$repo_release") | .version' \
 		> version/version
 }
 
