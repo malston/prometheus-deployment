@@ -30,6 +30,13 @@ if [[ -z "${release}" ]]; then
 fi
 
 if [[ -z "${version}" ]]; then
+  version="$(cat version/version)"
+else
+  mkdir -p version
+  echo "${version}" > version/version
+fi
+
+if [[ -z "${version}" ]]; then
   echo "Version is required"
   exit 1
 fi

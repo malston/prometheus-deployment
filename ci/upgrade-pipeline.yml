@@ -13,11 +13,13 @@ jobs:
     resource: prometheus-deployment
     trigger: true
 
+  - task: get-latest-version
+    file: repo/ci/tasks/helm-search/task.yml
+
   - task: fetch
     file: repo/ci/tasks/helm-fetch/task.yml
     params:
       RELEASE: ((release))
-      VERSION: ((version))
 
   - task: lint
     file: repo/ci/tasks/helm-lint/task.yml
@@ -31,9 +33,6 @@ jobs:
       PKS_USER: ((pks_user))
       PKS_PASSWORD: ((pks_password))
       K8S_CLUSTER_NAME: ((k8s_cluster_name))
-
-  - task: get-latest-version
-    file: repo/ci/tasks/helm-search/task.yml
 
   - task: install
     file: repo/ci/tasks/install-operator/task.yml
@@ -50,7 +49,6 @@ jobs:
       CLUSTER_NAME: ((upgrade_cluster_name))
       NAMESPACE: ((namespace))
       RELEASE: ((release))
-      VERSION: ((version))
 
   - task: test
     file: repo/ci/tasks/helm-test/task.yml
