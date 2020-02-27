@@ -54,6 +54,7 @@ cluster="${5:-$CLUSTER_NAME}"
 if [[ -z "${version}" ]]; then
   version="$(cat version/version)"
 else
+  mkdir -p version
   echo "${version}" > version/version
 fi
 
