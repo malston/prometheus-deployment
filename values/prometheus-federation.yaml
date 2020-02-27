@@ -29,12 +29,6 @@ prometheus:
           resources:
             requests:
               storage: 5Gi
-          selector:
-            matchExpressions:
-              - key: app
-                operator: In
-                values:
-                  - prometheus
 
     additionalScrapeConfigs:
     - job_name: "prometheus-cluster"
