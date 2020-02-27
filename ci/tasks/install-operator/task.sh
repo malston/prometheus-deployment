@@ -13,8 +13,6 @@ function install() {
 
   printf "\nFinished installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
   printf "============================================================\n"
-
-  echo "${version}" > ../version/version
 }
 
 function main() {
@@ -26,7 +24,7 @@ function main() {
 
   if [[ -n "${cluster}" ]]; then
     install "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
-    exit $?
+    return $?
   fi
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
@@ -80,5 +78,7 @@ mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
 pushd repo
-main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
-popd
+  main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
+popd repo
+
+echo "${version}" > version/version
