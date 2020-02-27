@@ -8,6 +8,7 @@ resources:
 
 jobs:
 - name: upgrade-chart
+  serial_groups: [upgrade]
   plan:
   - get: repo
     resource: prometheus-deployment
