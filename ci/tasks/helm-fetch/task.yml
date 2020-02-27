@@ -21,3 +21,4 @@ run:
 params:
   RELEASE:
   VERSION:
+  CHART_REPO:
