@@ -52,7 +52,7 @@ version="${4:-$VERSION}"
 cluster="${5:-$CLUSTER_NAME}"
 
 if [[ -z "${VERSION}" ]]; then
-  version="$(cat version/version)"
+  version="$(cat chart-version/version)"
 fi
 
 if [[ -z "${foundation}" ]]; then

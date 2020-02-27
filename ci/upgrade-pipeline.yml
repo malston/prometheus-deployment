@@ -32,6 +32,9 @@ jobs:
       PKS_PASSWORD: ((pks_password))
       K8S_CLUSTER_NAME: ((k8s_cluster_name))
 
+  - task: get-latest-version
+    file: repo/ci/tasks/helm-search/task.yml
+
   - task: install
     file: repo/ci/tasks/install-operator/task.yml
     params:
