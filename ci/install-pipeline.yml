@@ -21,6 +21,11 @@ jobs:
     resource: repo-master
     trigger: true
 
+  - task: lint
+    file: repo/ci/tasks/helm-lint/task.yml
+    params:
+      RELEASE: ((release))
+
   - task: pks-login
     file: repo/ci/tasks/pks-login/task.yml
     params:
@@ -28,11 +33,6 @@ jobs:
       PKS_USER: ((pks_user))
       PKS_PASSWORD: ((pks_password))
       K8S_CLUSTER_NAME: ((k8s_cluster_name))
-
-  - task: lint
-    file: repo/ci/tasks/helm-lint/task.yml
-    params:
-      RELEASE: ((release))
 
   - task: install-operator
     config:
