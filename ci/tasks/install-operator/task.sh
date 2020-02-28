@@ -6,6 +6,7 @@ function install() {
   local version="${4}"
   local cluster="${5}"
 
+  printf "Logging into k8s cluster (%s)..." "${cluster}"
   pks get-credentials "${cluster}"
 
   printf "Installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
