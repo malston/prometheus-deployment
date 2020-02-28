@@ -10,6 +10,6 @@ clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
 
 for cluster in ${clusters}; do
     kubectl config use-context "${cluster}"
-    printf "Unstalling %s from %s\n" "${release}" "${cluster}"
+    printf "Uninstalling %s from %s\n" "${release}" "${cluster}"
     helm uninstall "${release}"
 done
