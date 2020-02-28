@@ -1,0 +1,18 @@
+repo:
+  uri: git@github.com:username/prometheus-deployment.git
+  branch: develop
+  private_key: |
+
+pks_api_url: https://api.pks.example.com
+pks_user: admin
+pks_password: pks-password
+
+bosh_uaa_client_id: client-id
+bosh_uaa_client_secret: client-secret
+
+om_password: om_password
+om_skip_ssl_validation: true
+om_target: opsmgr.example.com
+om_username: admin
+pks_api_hostname: api.pks.example.com
+pks_api_monitor_secret: some-secret
