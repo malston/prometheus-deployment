@@ -83,6 +83,8 @@ To create the pipeline run:
 
 You'll need to create a [creds.yml](./ci/creds.yml.sample) file before you run this script.
 
+__N.B.__ When you set your pipeline parameters, you should pick a cluster for the `upgrade-chart` job that is reserved for upgrades only. Consider this as a canary cluster. Don't use a cluster that you are already using for the `install` job. Eventually, the pipeline will either create a cluster or a new namespace to avoid these possible collisions. For example, I reserve one of my clusters for the `upgrade-chart` job and if that passes then the pipeline will run through the rest of the clusters. The `upgrade-chart` job runs all the same tasks as the `install` pipeline but with an additional step to grab the latest chart version beforehand. If that cluster upgrades and passes all the tests, then I rebase `master` from `develop` and that kicks off the pipeline again to upgrade the remaining clusters. Remember, because the `install` job is running a `helm upgrade -i`, it will upgrade unless there isn't an existing deployment already running in the specified namespace.
+
 ## Performing Blue/Green
 
 TBD: How are we going to do blue/green deployments?
