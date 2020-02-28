@@ -20,13 +20,13 @@ Install operator into all clusters
 
 ### Uninstall Operator
 
-Uninstall operator into a single cluster
+Uninstall operator from a single cluster
 
 ```bash
 ./uninstall.sh
 ```
 
-Uninstall operator into all clusters
+Uninstall operator from all clusters
 
 ```bash
 ./uninstall-all.sh
