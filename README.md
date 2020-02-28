@@ -69,7 +69,7 @@ where `${version}` is the version of the chart that you want to upgrade to, and 
 
 ## Pipeline
 
-The [Concourse](https://concourse-ci.org/) CI [pipeline](./ci/pipeline.yml) runs lint, installs or upgrades the Prometheus Operator including the `bosh-exporter` and `pks-monitor` and runs helm tests on each deployment. The upgrade pulls the latest code from `develop` and gets the latest version of the chart, then upgrades the deployment on a single cluster. If that passes all the checks, then we merge into master and the upgrade runs on all the clusters.
+The [Concourse](https://concourse-ci.org/) CI [pipeline](./ci/pipeline.yml) runs lint, installs or upgrades the Prometheus Operator including the [bosh-exporter](./charts/prometheus-operator/charts/bosh-exporter) and [pks-monitor](./charts/prometheus-operator/charts/pks-monitor) and runs helm tests on each deployment. The upgrade pulls the latest code from `develop` and gets the latest version of the chart, then upgrades the deployment on a single cluster. If that passes all the checks, then we merge into master and the upgrade runs on all the clusters.
 
 ![alt text](pipeline.png "Concourse Pipeline")
 
@@ -85,13 +85,7 @@ You'll need to create a [creds.yml](./ci/creds.yml.sample) file before you run t
 
 ## Performing Blue/Green
 
-How are we going to do blue/green deployments?
+TBD: How are we going to do blue/green deployments?
 
 1. Deploy multiple replicas of Prometheus
 2. Prometheus is deployed into multiple clusters... Do a canary upgrade to each Prometheus across the foundation
-
-## Open Questions
-
-- Since helm charts do not appear to track releases with a tag or branch in the helm git repository, how should we keep track of changes from one release to the next? After we run our upgrade-chart.sh script, the chart directory is updated with the version of the chart we download from helm repository, so we can diff all the changes in there to see what the differences are but this is a bit too low level and doesn't give us a summary or log of the changes that are going to be applied. I am wondering how other helm chart operators are dealing with this problem.
-- The Prometheus Operator is sophisticated enough to handle more complex upgrade scenarios (i.e., rolling upgrades for more than 1 Prometheus instance), however, if we go a long time between upgrades then we might find ourselves having to perform a more complicated upgrade path to get us to the latest revision. This could include upgrading from current revision to multiple revisions to get to the latest release. This means there could be downtime while we perform the upgrade. In every upgrade scenario we'll want to perform some tests against the deployment to ensure the least amount of downtime. In the case where we are jumping major releases, we could have multiple instances of Prometheus running at the same time, what's known as a blue green deployment, whereby we slowly cut over traffic from the old (blue) to the new (green).  The best practice for managing a large Prometheus deployment is to have multiple instances of Prometheus scaled across clusters and federation across data centers. When there are multiple instances of Prometheus running, only one is actually being used to query metrics until there is an issue with it and then a smart proxy can be used to switch to a healthy one while the problematic instance is fixed. After the instance is fixed, it doesn't become actively used until there's an issue with the other Prometheus. In this scenario, you're not incurring much downtime as long as all the healthy Prometheus are able to handle the load. For upgrades to Prometheus, we can treat the system the same way, where we take a node down, upgrade it and bring it back up. We can bring down the nodes that are not being queried first, bring them up and do this in a round-robin fashion to minimize any loss of metrics or time that Prometheus is unable to be queried.
-
