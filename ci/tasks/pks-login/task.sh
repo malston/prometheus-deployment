@@ -2,13 +2,13 @@
 
 function login_pks() {
 	(
-		echo "Logging in to PKS (${PKS_API_URL})..."
+		echo "Logging into PKS (${PKS_API_URL})..."
 		pks login -a "${PKS_API_URL}" -u "${PKS_USER}" -p "${PKS_PASSWORD}" -k
 	)
 }
 
 function login_pks_k8s_cluster() {
-	echo "login to pks kubernetes cluster..."
+	printf "Logging into k8s cluster (%s)..." "${K8S_CLUSTER_NAME}"
 	login_pks
 	pks get-credentials "${K8S_CLUSTER_NAME}"
 	return 0

@@ -6,11 +6,10 @@ set -o pipefail
 
 __PWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-type="${1:?"Enter pipeline type [install/upgrade]:" }"
 target="${CONCOURSE_TARGET:-concourse}"
 
 fly -t "${target}" set-pipeline \
-    -p "${type}-prometheus-operator" \
-    -c "${__PWD}/${type}-pipeline.yml" \
+    -p "prometheus-operator" \
+    -c "${__PWD}/pipeline.yml" \
     -l "${__PWD}/pipeline-params.yml" \
     -l "${__PWD}/creds.yml"
