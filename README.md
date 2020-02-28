@@ -2,12 +2,34 @@
 
 Deploys [Prometheus Operator](https://github.com/coreos/prometheus-operator) using the [Helm Chart](https://github.com/helm/charts/tree/master/stable/prometheus-operator).
 
-## Install
+## Install / Uninstall
 
 ### Install Operator
 
+Install operator into a single cluster
+
 ```bash
 ./install.sh
+```
+
+Install operator into all clusters
+
+```bash
+./install-all.sh
+```
+
+### Uninstall Operator
+
+Uninstall operator into a single cluster
+
+```bash
+./uninstall.sh
+```
+
+Uninstall operator into all clusters
+
+```bash
+./uninstall-all.sh
 ```
 
 ## Upgrade
@@ -34,11 +56,7 @@ It's important that you make your updates using the `helm upgrade` command inste
 
 The install script runs `helm upgrade -i` where the `-i` tells helm to install the chart if it doesn't exist.
 
-```bash
-./install.sh
-```
-
-The script will issue a command like this
+The script will issue a command like this:
 
 ```bash
 helm upgrade -i --version "${version}" "${release}" \
@@ -48,6 +66,20 @@ helm upgrade -i --version "${version}" "${release}" \
 ```
 
 where `${version}` is the version of the chart that you want to upgrade to, and `${release}` is the name of the release that is managing the instance of the Operator that you are trying to upgrade. Although, not strictly necessary, the `--version` flag is useful for when the chart is maintained in a central Helm Chart Repository and not referenced from a local directory. In our case, the chart is located inside this git repository so the `--version` flag doesn't have any effect.
+
+## Pipeline
+
+The [Concourse](https://concourse-ci.org/) CI [pipeline](./ci/pipeline.yml) runs lint, installs or upgrades the Prometheus Operator including the `bosh-exporter` and `pks-monitor` and runs helm tests on each deployment. The upgrade pulls the latest code from `develop` and gets the latest version of the chart, then upgrades the deployment on a single cluster. If that passes all the checks, then we merge into master and the upgrade runs on all the clusters.
+
+### Setup
+
+To create the pipeline run:
+
+```bash
+./ci/set-pipeline.sh
+```
+
+You'll need to create a `creds.yml` file before you run this script.
 
 ## Performing Blue/Green
 
