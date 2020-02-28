@@ -30,7 +30,7 @@ function main() {
 
   clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
   for cluster in ${clusters}; do
-    install "${foundation}" "${namespace}" "${release}" "${version}"
+    install "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
   done
 }
 
