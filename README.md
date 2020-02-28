@@ -71,7 +71,7 @@ where `${version}` is the version of the chart that you want to upgrade to, and 
 
 The [Concourse](https://concourse-ci.org/) CI [pipeline](./ci/pipeline.yml) runs lint, installs or upgrades the Prometheus Operator including the [bosh-exporter](./charts/prometheus-operator/charts/bosh-exporter) and [pks-monitor](./charts/prometheus-operator/charts/pks-monitor) and runs helm tests on each deployment. The upgrade pulls the latest code from `develop` and gets the latest version of the chart, then upgrades the deployment on a single cluster. If that passes all the checks, then we merge into master and the upgrade runs on all the clusters.
 
-![alt text](pipeline.png "Concourse Pipeline")
+![Concourse Pipeline](pipeline.png "Concourse Pipeline")
 
 ### Setup
 
