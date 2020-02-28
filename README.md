@@ -81,7 +81,7 @@ To create the pipeline run:
 ./ci/set-pipeline.sh
 ```
 
-You'll need to create a `creds.yml` file before you run this script.
+You'll need to create a [creds.yml](./ci/creds.yml.sample) file before you run this script.
 
 ## Performing Blue/Green
 
