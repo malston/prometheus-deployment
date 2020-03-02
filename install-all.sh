@@ -35,7 +35,7 @@ source "${__DIR}/scripts/target-bosh.sh"
 # shellcheck disable=SC1090
 source "${__DIR}/scripts/helpers.sh"
 
-clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
+clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
 for cluster in ${clusters}; do
   printf "Installing %s into %s\n" "${release}" "${cluster}"
   install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"

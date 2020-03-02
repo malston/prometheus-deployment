@@ -28,7 +28,7 @@ function main() {
     return $?
   fi
 
-  clusters="$(pks clusters --json | jq 'sort_by(.name)' | jq -r .[].name)"
+  clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
   for cluster in ${clusters}; do
     install "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
   done
