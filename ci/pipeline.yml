@@ -14,7 +14,7 @@ resources:
     private_key: ((repo.private_key))
 
 jobs:
-- name: upgrade-chart
+- name: upgrade-and-test
   serial: true
   serial_groups: [install]
   plan:
@@ -63,14 +63,6 @@ jobs:
       NAMESPACE: ((namespace))
       RELEASE: ((release))
 
-- name: test-upgrade
-  serial_groups: [install]
-  plan:
-  - get: repo
-    resource: repo-develop
-    trigger: true
-    passed: [upgrade-chart]
-
   - task: login
     file: repo/ci/tasks/pks-login/task.yml
     params:
@@ -111,7 +103,7 @@ jobs:
   - aggregate:
     - get: repo-master
     - get: repo-develop
-      passed: [test-upgrade]
+      passed: [upgrade-and-test]
   - put: repo
     resource: repo-master
     params:
