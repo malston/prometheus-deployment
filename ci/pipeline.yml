@@ -14,6 +14,95 @@ resources:
     private_key: ((repo.private_key))
 
 jobs:
+- name: upgrade-chart
+  serial: true
+  serial_groups: [upgrade]
+  plan:
+  - get: repo
+    resource: repo-develop
+    trigger: true
+
+  - task: get-latest-chart-version
+    file: repo/ci/tasks/helm-search/task.yml
+    params:
+      RELEASE: ((release))
+      CHART_REPO: ((chart_repo))
+
+  - task: fetch-chart
+    file: repo/ci/tasks/helm-fetch/task.yml
+    params:
+      RELEASE: ((release))
+      CHART_REPO: ((chart_repo))
+
+  - task: lint-chart
+    file: repo/ci/tasks/helm-lint/task.yml
+    params:
+      RELEASE: ((release))
+
+  - task: login
+    file: repo/ci/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+
+  - task: install-chart
+    file: repo/ci/tasks/install-operator/task.yml
+    params:
+      OM_TARGET: ((om_target))
+      OM_USERNAME: ((om_username))
+      OM_PASSWORD: ((om_password))
+      OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
+      BOSH_UAA_CLIENT_ID: ((bosh_uaa_client_id))
+      BOSH_UAA_CLIENT_SECRET: ((bosh_uaa_client_secret))
+      PKS_API_HOSTNAME: ((pks_api_hostname))
+      PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
+      FOUNDATION: ((foundation))
+      CLUSTER_NAME: ((upgrade_cluster_name))
+      NAMESPACE: ((namespace))
+      RELEASE: ((release))
+
+- name: test-upgrade
+  serial_groups: [upgrade]
+  plan:
+  - get: repo
+    resource: repo-develop
+    passed: [upgrade-chart]
+
+  - task: login
+    file: repo/ci/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+
+  - task: test-chart
+    file: repo/ci/tasks/helm-test/task.yml
+    params:
+      RELEASE: ((release))
+      NAMESPACE: ((namespace))
+      CLUSTER_NAME: ((upgrade_cluster_name))
+
+  - task: tag-and-commit
+    file: repo/ci/tasks/tag-and-commit/task.yml
+    params:
+      FILE_SOURCE_PATH: charts
+      FILE_DESTINATION_PATH: charts
+      GIT_AUTHOR_EMAIL: "malston@pivotal.io"
+      GIT_AUTHOR_NAME: "Mark Alston"
+      COMMIT_MESSAGE: "Update helm chart"
+    input_mapping:
+      file-source: charts-commit
+      tag: version
+
+  - put: repo
+    resource: repo-develop
+    params:
+      repository: repo-commit
+      merge: true
+
 - name: rebase-develop-to-master
   serial: true
   serial_groups: [upgrade]
@@ -21,11 +110,13 @@ jobs:
   - aggregate:
     - get: repo-master
     - get: repo-develop
+      passed: [test-upgrade]
   - put: repo
     resource: repo-master
     params:
       repository: repo-develop
       rebase: true
+
 - name: install
   serial_groups: [install]
   serial: true
@@ -77,7 +168,7 @@ jobs:
         RELEASE: ((release))
         VERSION: ((version))
 
-- name: test
+- name: test-install
   serial_groups: [install]
   plan:
   - get: repo
@@ -117,77 +208,3 @@ jobs:
     params:
       RELEASE: ((release))
       NAMESPACE: ((namespace))
-
-- name: upgrade-chart
-  serial: true
-  serial_groups: [upgrade]
-  plan:
-  - get: repo
-    resource: repo-develop
-    trigger: true
-
-  - task: get-latest-chart-version
-    file: repo/ci/tasks/helm-search/task.yml
-    params:
-      RELEASE: ((release))
-      CHART_REPO: ((chart_repo))
-
-  - task: fetch-chart
-    file: repo/ci/tasks/helm-fetch/task.yml
-    params:
-      RELEASE: ((release))
-      CHART_REPO: ((chart_repo))
-
-  - task: lint-chart
-    file: repo/ci/tasks/helm-lint/task.yml
-    params:
-      RELEASE: ((release))
-
-  - task: login
-    file: repo/ci/tasks/pks-login/task.yml
-    params:
-      PKS_API_URL: ((pks_api_url))
-      PKS_USER: ((pks_user))
-      PKS_PASSWORD: ((pks_password))
-      K8S_CLUSTER_NAME: ((k8s_cluster_name))
-
-  - task: install-chart
-    file: repo/ci/tasks/install-operator/task.yml
-    params:
-      OM_TARGET: ((om_target))
-      OM_USERNAME: ((om_username))
-      OM_PASSWORD: ((om_password))
-      OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
-      BOSH_UAA_CLIENT_ID: ((bosh_uaa_client_id))
-      BOSH_UAA_CLIENT_SECRET: ((bosh_uaa_client_secret))
-      PKS_API_HOSTNAME: ((pks_api_hostname))
-      PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
-      FOUNDATION: ((foundation))
-      CLUSTER_NAME: ((upgrade_cluster_name))
-      NAMESPACE: ((namespace))
-      RELEASE: ((release))
-
-  - task: test-chart
-    file: repo/ci/tasks/helm-test/task.yml
-    params:
-      RELEASE: ((release))
-      NAMESPACE: ((namespace))
-      CLUSTER_NAME: ((upgrade_cluster_name))
-
-  - task: tag-and-commit
-    file: repo/ci/tasks/tag-and-commit/task.yml
-    params:
-      FILE_SOURCE_PATH: charts
-      FILE_DESTINATION_PATH: charts
-      GIT_AUTHOR_EMAIL: "malston@pivotal.io"
-      GIT_AUTHOR_NAME: "Mark Alston"
-      COMMIT_MESSAGE: "Update helm chart"
-    input_mapping:
-      file-source: charts-commit
-      tag: version
-
-  - put: repo
-    resource: repo-develop
-    params:
-      repository: repo-commit
-      merge: true
