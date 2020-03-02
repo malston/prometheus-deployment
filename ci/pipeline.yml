@@ -14,12 +14,25 @@ resources:
     private_key: ((repo.private_key))
 
 jobs:
+- name: rebase-develop-to-master
+  serial: true
+  serial_groups: [upgrade]
+  plan:
+  - aggregate:
+    - get: repo-master
+    - get: repo-develop
+  - put: repo
+    resource: repo-master
+    params:
+      repository: repo-develop
+      rebase: true
 - name: install
   serial_groups: [install]
   serial: true
   plan:
   - get: repo
     resource: repo-master
+    passed: [rebase-develop-to-master]
     trigger: true
 
   - task: lint
@@ -69,7 +82,6 @@ jobs:
   plan:
   - get: repo
     resource: repo-master
-    trigger: true
     passed: [install]
 
   - task: pks-login
