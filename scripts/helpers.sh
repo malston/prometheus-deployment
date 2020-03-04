@@ -205,6 +205,7 @@ function copy_dashboards() {
 
 function remove_dashboards() {
 	rm charts/prometheus-operator/charts/grafana/dashboards/*.json
+	git checkout charts/prometheus-operator/charts/grafana/dashboards/custom-dashboard.json
 }
 
 function get_config_value() {

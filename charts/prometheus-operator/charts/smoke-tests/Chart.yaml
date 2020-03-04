@@ -1,0 +1,4 @@
+apiVersion: v1
+engine: gotpl
+name: smoke-tests
+version: 1.0.0

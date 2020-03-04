@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "smoke-tests.fullname" . }}
+  labels:
+    {{- include "smoke-tests.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+  namespace: monitoring
+spec:
+  containers:
+    - name: {{ .Release.Name }}-test
+      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
+      command: ["/opt/bats/bin/bats", "-t", "/tests/run.sh"]
+      volumeMounts:
+        - mountPath: /tests
+          name: tests
+          readOnly: true
+  volumes:
+  - name: tests
+    configMap:
+      name: {{ template "smoke-tests.fullname" . }}
+  restartPolicy: Never
