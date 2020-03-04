@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
