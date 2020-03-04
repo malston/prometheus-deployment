@@ -14,7 +14,7 @@ function main() {
 
       release_name="$(helm list -q -f "${release}")"
       if [[ -z "${release_name}" ]]; then
-        printf "%s release not found... skipping uninstall from %s" "${release_name}" "${cluster}"
+        printf "%s release not found... skipping uninstall from %s" "${release}" "${cluster}"
         continue
       fi
 
