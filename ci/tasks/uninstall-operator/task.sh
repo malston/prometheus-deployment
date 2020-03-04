@@ -12,6 +12,12 @@ function main() {
       kubectl config use-context "${cluster}"
       kubectl config set-context --current --namespace="${namespace}"
 
+      release="$(helm list -q -f "${release}")"
+      if [[ -z "${release}" ]]; then
+        printf "%s release not found... skipping uninstall from %s" "${release}" "${cluster}"
+        continue
+      fi
+
       printf "Uninstalling %s from %s\n" "${release}" "${cluster}"
       helm uninstall "${release}"
       printf "\nFinished uninstalling %s from %s\n" "${release}" "${cluster}"
