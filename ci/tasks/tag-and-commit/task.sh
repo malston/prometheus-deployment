@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
@@ -31,4 +31,3 @@ if [[ -n $(git status --porcelain) ]]; then
   [[ ${latest_tag} == "$TAG" ]] && exit 0
   git tag "$TAG"
 fi
-
