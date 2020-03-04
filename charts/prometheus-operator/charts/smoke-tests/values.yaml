@@ -17,3 +17,7 @@ testFramework:
 ## Provide the name of the ClusterIP service used for Prometheus
 ##
 prometheusServiceName: prometheus-operator-prometheus
+
+## Provide the name of the ClusterIP service used for Alertmanager
+##
+alertmanagerServiceName: prometheus-operator-alertmanager

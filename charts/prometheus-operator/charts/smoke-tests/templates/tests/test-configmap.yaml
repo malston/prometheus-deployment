@@ -7,9 +7,15 @@ metadata:
     {{- include "smoke-tests.labels" . | nindent 4 }}
 data:
   run.sh: |-
-    @test "Test Health" {
+    @test "Test Prometheus Health" {
       url="http://{{ .Values.prometheusServiceName }}.{{ $.Release.Namespace }}.svc.cluster.local:9090"
 
       code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}' | tail -1)
+      [ "$code" == "200" ]
+    }
+    @test "Test Alertmanager Health" {
+      url="http://{{ .Values.alertmanagerServiceName }}.{{ $.Release.Namespace }}.svc.cluster.local:9093"
+
+      code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}')
       [ "$code" == "200" ]
     }
