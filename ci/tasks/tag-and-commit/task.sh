@@ -26,8 +26,8 @@ git config user.email "$GIT_AUTHOR_EMAIL"
 
 if [[ -n $(git status --porcelain) ]]; then
   git add -A
-  git commit -m "$COMMIT_MESSAGE -- version $TAG" --allow-empty
-  latest_tag=$(git tag | head -1)
+  git commit -m "$COMMIT_MESSAGE -- version $TAG" -m "[ci skip]" --allow-empty
+  latest_tag="$(git for-each-ref --sort=creatordate --format '%(refname)' refs/tags | tail -1 | cut -d/ -f3)"
   [[ ${latest_tag} == "$TAG" ]] && exit 0
   git tag "$TAG"
 fi
