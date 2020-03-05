@@ -1,0 +1,9 @@
+FROM bats/bats:v1.1.0
+
+LABEL maintainer="malston@pivotal.io"
+
+ARG prometheus_version
+ENV PROMETHEUS_VERSION ${prometheus_version:-2.16.0}
+
+ADD https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz .
+RUN tar -xvf prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz --strip=1 -C /tmp && rm prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz && chmod +x /tmp/promtool && mv /tmp/promtool /usr/bin/promtool

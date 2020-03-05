@@ -11,8 +11,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 testFramework:
-  image: "bats/bats"
-  tag: "v1.1.0"
+  image: "malston/bats-promtool"
+  tag: "1.1.0"
 
 ## Provide the name of the ClusterIP service used for Prometheus
 ##

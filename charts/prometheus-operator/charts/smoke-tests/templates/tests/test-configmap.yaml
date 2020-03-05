@@ -19,3 +19,9 @@ data:
       code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}')
       [ "$code" == "200" ]
     }
+    @test "Test Prometheus Targets are Healthy" {
+      url="http://{{ .Values.prometheusServiceName }}.{{ $.Release.Namespace }}.svc.cluster.local:9090"
+      
+      result=$(promtool query instant ${url} 'up == 0')
+      [ "$result" == "" ]
+    }
