@@ -78,9 +78,9 @@ pksMonitor:
     annotations:
       prometheus.io/scrape: "true"
     labels: {}
-    ## Port for bosh exporter service to listen on
+    ## Port for pks monitor service to listen on
     ##
-    port: 9190
+    port: 8080
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##

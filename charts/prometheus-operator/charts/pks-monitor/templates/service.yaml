@@ -38,7 +38,7 @@ spec:
       nodePort: {{ .Values.pksMonitor.service.nodePort }}
     {{- end }}
       port: {{ .Values.pksMonitor.service.port }}
-      targetPort: 9190
+      targetPort: 8080
       protocol: TCP
   selector:
     app: {{ template "pks-monitor.name" . }}-pks-monitor
