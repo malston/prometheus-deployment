@@ -32,7 +32,8 @@ function create_etcd_client_secret() {
 }
 
 function create_federated_targets() {
-	local cluster_name="${1}"
+	local foundation="${1}"
+	# local cluster_name="${1}"
 	local domain="${2}"
 	local targets=()
 	local clusters
@@ -40,9 +41,17 @@ function create_federated_targets() {
 
 	for row in $(echo "${clusters}" | jq -r '.[] | @base64'); do
 		_jq() {
-		echo "${row}" | base64 --decode | jq -r "${1}"
+			echo "${row}" | base64 --decode | jq -r "${1}"
 		}
-		targets=( "${targets[@]}" "prometheus.$(_jq '.name').${domain}" )
+		cluster=$(_jq '.name')
+		config_exists=$(om interpolate -s \
+			--config "environments/${foundation}/config/config.yml" \
+			--vars-file "environments/${foundation}/vars/vars.yml" \
+			--vars-env VARS \
+			--path "/clusters/cluster_name=${cluster}")
+		if [[ ${config_exists} ]]; then
+			targets=( "${targets[@]}" "prometheus.${cluster}.${domain}" )
+		fi
 	done
 
 	# local current_target=("prometheus.$(echo "${cluster_name}").${domain}")
@@ -75,7 +84,7 @@ function interpolate() {
     master_ips=$(bosh -d "${deployment}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
     master_node_ips="$(echo ${master_ips[*]})"
     export VARS_endpoints="[${master_node_ips// /, }]"
-    VARS_federated_targets=$(create_federated_targets "${cluster}" "${foundation_domain}")
+    VARS_federated_targets=$(create_federated_targets "${foundation}" "${foundation_domain}")
     export VARS_federated_targets
 
     # Replace config variables in config.yaml
