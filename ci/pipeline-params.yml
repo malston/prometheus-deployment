@@ -3,5 +3,5 @@ foundation: haas-440
 namespace: monitoring
 release: prometheus-operator
 version: 8.9.2
-upgrade_cluster_name: cluster01
+upgrade_cluster_name: cluster02
 chart_repo: https://kubernetes-charts.storage.googleapis.com
