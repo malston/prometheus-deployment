@@ -677,7 +677,7 @@
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "max by (operation, instance)(\n  apiserver_request_latencies_summary{component=\"apiserver\",quantile=\"0.9\"}\n)/ 1e3\n",
+              "expr": "max by (operation, instance)(\n  etcd_request_latencies_summary{job=\"kubernetes_apiservers\",quantile=\"0.9\"}\n)/ 1e3\n",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "{{ instance }} - {{ operation }}",
@@ -851,29 +851,6 @@
         "query": "CONNECT|WATCH|PROXY",
         "refresh": 0,
         "type": "custom"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "text": "",
-          "value": ""
-        },
-        "datasource": "$datasource",
-        "hide": 0,
-        "includeAll": false,
-        "label": "cluster",
-        "multi": false,
-        "name": "cluster",
-        "options": [],
-        "query": "label_values(kubernetes::job:slo_kube_api_ok, cluster)",
-        "refresh": 1,
-        "regex": "",
-        "sort": 2,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
       }
     ]
   },
