@@ -47,6 +47,8 @@ grafana:
     kubeapislo:
       kubeapi-slo:
         file: dashboards/kubeapi-slo.json
+      kubeapi-slo-federation:
+        file: dashboards/kubeapi-slo-federation.json
     pkscontrolplane:
       pks-control-plane:
         file: dashboards/pks-control-plane.json

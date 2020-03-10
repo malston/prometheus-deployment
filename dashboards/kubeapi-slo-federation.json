@@ -305,7 +305,7 @@
             "targets": [
                 {
                     "datasource": "$datasource",
-                    "expr": "sum by (job, verb, code, instance)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{verb!~\"CONNECT|WATCH|PROXY\", code!~\"2..\"})",
+                    "expr": "sum by (foundation, cluster, job, verb, code, instance)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{foundation=\"$foundation\", cluster=\"$cluster\", verb!~\"CONNECT|WATCH|PROXY\", code!~\"2..\"})",
                     "format": "time_series",
                     "intervalFactor": 2,
                     "legendFormat": "{{ verb }} - {{ code }} - {{ instance }}",
@@ -481,7 +481,7 @@
             "targets": [
                 {
                     "datasource": "$datasource",
-                    "expr": "kubernetes:job_verb_instance:apiserver_latency:pctl90rate5m{verb!~\"CONNECT|WATCH|PROXY\"}",
+                    "expr": "kubernetes:job_verb_instance:apiserver_latency:pctl90rate5m{foundation=\"$foundation\", cluster=\"$cluster\", verb!~\"CONNECT|WATCH|PROXY\"}",
                     "format": "time_series",
                     "intervalFactor": 2,
                     "legendFormat": "{{ verb }} - {{ instance }}",
@@ -583,10 +583,10 @@
             "targets": [
                 {
                     "datasource": "$datasource",
-                    "expr": "sum by (instance)(\n  APIServiceRegistrationController_work_duration{quantile=\"0.9\"}\n)\n",
+                    "expr": "sum by (foundation, cluster, instance)(\n  APIServiceRegistrationController_work_duration{quantile=\"0.9\"}\n)\n",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ instance }}",
+                    "legendFormat": "{{ foundation }}-{{ cluster }}-{{ instance }}",
                     "refId": "A"
                 }
             ],
