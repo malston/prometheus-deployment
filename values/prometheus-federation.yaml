@@ -130,7 +130,7 @@ additionalPrometheusRulesMap:
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes:job_verb_instance:apiserver_latency:pctl90rate5m"
-        expr: "histogram_quantile ( 0.90, sum by (le, job, verb, instance)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3"
+        expr: "histogram_quantile ( 0.90, sum by (le, foundation, cluster, job, verb, instance)( rate(apiserver_request_latencies_bucket[5m]) ) ) / 1e3"
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes::job:probe_success"
@@ -142,7 +142,7 @@ additionalPrometheusRulesMap:
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m"
-        expr: "sum by (job, verb, code, instance)(rate(apiserver_request_count[5m]))"
+        expr: "sum by (foundation, cluster, job, verb, code, instance)(rate(apiserver_request_count[5m]))"
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes::job_verb_code:apiserver_requests:ratio_rate5m"
@@ -150,7 +150,7 @@ additionalPrometheusRulesMap:
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m"
-        expr: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m / ignoring(verb, code) group_left sum by (job, instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
+        expr: "kubernetes:job_verb_code_instance:apiserver_requests:rate5m / ignoring(verb, code) group_left sum by (foundation, cluster, job, instance)(kubernetes:job_verb_code_instance:apiserver_requests:rate5m)"
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes:job:apiserver_request_errors:ratio_rate5m"
