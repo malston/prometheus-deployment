@@ -209,7 +209,21 @@ function create_storage_class() {
 }
 
 function copy_dashboards() {
+    foundation="${1:?"Foundation name required"}"
+    cluster="${2:?"Cluster name required"}"
+
+	is_master=$(om interpolate -s \
+		--config "environments/${foundation}/config/config.yml" \
+		--vars-file "environments/${foundation}/vars/vars.yml" \
+		--vars-env VARS \
+		--path "/clusters/cluster_name=${cluster}/is_master")
+
 	cp dashboards/*.json charts/prometheus-operator/charts/grafana/dashboards/
+	if [[ $is_master == true ]]; then
+		rm charts/prometheus-operator/charts/grafana/dashboards/kubeapi-slo.json
+	else
+		rm charts/prometheus-operator/charts/grafana/dashboards/kubeapi-slo-federation.json
+	fi
 }
 
 function remove_dashboards() {
@@ -249,7 +263,7 @@ function install_cluster() {
 	interpolate "${foundation}" "${cluster}"
 
 	# Copy dashboards to grafana chart location
-	copy_dashboards
+	copy_dashboards "${foundation}" "${cluster}"
 
 	bosh_exporter_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")
 	pks_monitor_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/pks_monitor_enabled")
