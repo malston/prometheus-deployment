@@ -895,7 +895,7 @@
           },
           "datasource": "$datasource",
           "hide": 0,
-          "includeAll": false,
+          "includeAll": true,
           "label": "cluster",
           "multi": false,
           "name": "cluster",
