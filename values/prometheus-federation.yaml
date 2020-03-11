@@ -154,11 +154,11 @@ additionalPrometheusRulesMap:
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes:job:apiserver_request_errors:ratio_rate5m"
-        expr: "sum by (foundation, cluster, job)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{foundation=\"$foundation\", cluster=\"$cluster\", verb=~\"GET|POST|DELETE|PATCH\", code=~\"5..\"})"
+        expr: "sum by (foundation, cluster, job)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{verb=~\"GET|POST|DELETE|PATCH\", code=~\"5..\"})"
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes::job:apiserver_latency:pctl90rate5m"
-        expr: "histogram_quantile ( 0.90, sum by (le, foundation, cluster, job)( rate(apiserver_request_latencies_bucket{foundation=\"$foundation\", cluster=\"$cluster\", verb=~\"GET|POST|DELETE|PATCH\"}[5m]) ) ) / 1e3"
+        expr: "histogram_quantile ( 0.90, sum by (le, foundation, cluster, job)( rate(apiserver_request_latencies_bucket{verb=~\"GET|POST|DELETE|PATCH\"}[5m]) ) ) / 1e3"
         labels:
           job: "kubernetes_api_slo"
       - record: "kubernetes::job:slo_kube_api_ok"
