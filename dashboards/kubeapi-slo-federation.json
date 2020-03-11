@@ -80,7 +80,7 @@
                     "expr": "sum_over_time(kubernetes::job:slo_kube_api_ok[$availability_span]) / sum_over_time(kubernetes::job:slo_kube_api_sample[$availability_span])\n",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ job }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ job }}",
                     "refId": "A"
                 }
             ],
@@ -161,7 +161,7 @@
                     "expr": "scalar((sum_over_time(kubernetes::job:slo_kube_api_ok[$availability_span]) / sum_over_time(kubernetes::job:slo_kube_api_sample[$availability_span]) - 0.98999999999999999)) * \n  scalar((time() - timestamp(up{job=\"prometheus\"} offset $availability_span)))\n",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ job }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ job }}",
                     "refId": "A"
                 }
             ],
@@ -219,7 +219,7 @@
                     "expr": "sum_over_time(kubernetes::job:slo_kube_api_ok[10m]) / sum_over_time(kubernetes::job:slo_kube_api_sample[10m])\n",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ job }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ job }}",
                     "refId": "A"
                 }
             ],
@@ -308,7 +308,7 @@
                     "expr": "sum by (foundation, cluster, job, verb, code, instance)(kubernetes:job_verb_code_instance:apiserver_requests:ratio_rate5m{foundation=\"$foundation\", cluster=\"$cluster\", verb!~\"CONNECT|WATCH|PROXY\", code!~\"2..\"})",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ verb }} - {{ code }} - {{ instance }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ verb }} - {{ code }} - {{ instance }}",
                     "refId": "A"
                 }
             ],
@@ -393,10 +393,10 @@
             "targets": [
                 {
                     "datasource": "$datasource",
-                    "expr": "kubernetes::job_verb_code:apiserver_requests:ratio_rate5m",
+                    "expr": "kubernetes::job_verb_code:apiserver_requests:ratio_rate5m{foundation=\"$foundation\", cluster=\"$cluster\"}",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ verb }} - {{ code }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ verb }} - {{ code }}",
                     "refId": "A"
                 }
             ],
@@ -484,7 +484,7 @@
                     "expr": "kubernetes:job_verb_instance:apiserver_latency:pctl90rate5m{foundation=\"$foundation\", cluster=\"$cluster\", verb!~\"CONNECT|WATCH|PROXY\"}",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ verb }} - {{ instance }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ verb }} - {{ instance }}",
                     "refId": "A"
                 }
             ],
@@ -583,10 +583,10 @@
             "targets": [
                 {
                     "datasource": "$datasource",
-                    "expr": "sum by (foundation, cluster, instance)(\n  APIServiceRegistrationController_work_duration{quantile=\"0.9\"}\n)\n",
+                    "expr": "sum by (foundation, cluster, instance)(\n  APIServiceRegistrationController_work_duration{foundation=\"$foundation\", cluster=\"$cluster\", quantile=\"0.9\"}\n)\n",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ foundation }}-{{ cluster }}-{{ instance }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ instance }}",
                     "refId": "A"
                 }
             ],
@@ -685,10 +685,10 @@
             "targets": [
                 {
                     "datasource": "$datasource",
-                    "expr": "max by (operation, instance)(\n  apiserver_request_latencies_summary{component=\"apiserver\",quantile=\"0.9\"}\n)/ 1e3\n",
+                    "expr": "max by (foundation, cluster, operation, instance)(\n  apiserver_request_latencies_summary{foundation=\"$foundation\", cluster=\"$cluster\", component=\"apiserver\", quantile=\"0.9\"}\n)/ 1e3\n",
                     "format": "time_series",
                     "intervalFactor": 2,
-                    "legendFormat": "{{ instance }} - {{ operation }}",
+                    "legendFormat": "{{ foundation }} - {{ cluster }} : {{ instance }} - {{ operation }}",
                     "refId": "A"
                 }
             ],
@@ -897,7 +897,7 @@
           "hide": 0,
           "includeAll": false,
           "label": "cluster",
-          "multi": true,
+          "multi": false,
           "name": "cluster",
           "options": [],
           "query": "label_values(up{job=\"apiserver\"}, cluster)",
