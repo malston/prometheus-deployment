@@ -16,6 +16,8 @@ grafana:
     existingSecret: "smtp-creds"
     userKey: "user"
     passwordKey: "password"
+  service:
+    portName: http-service
 
   grafana.ini:
     smtp:
