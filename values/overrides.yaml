@@ -10,6 +10,11 @@ ingress-gateway:
   prometheus:
     host: ((prometheus_hostname))
 
+bosh-exporter:
+  boshExporter:
+    env:
+      BOSH_EXPORTER_SD_CONFIGMAP_NAMESPACE: ((namespace))
+
 kubeApiServer:
   serviceMonitor:
     interval: 30s

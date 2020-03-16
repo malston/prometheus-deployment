@@ -70,10 +70,12 @@ function create_federated_targets() {
 function interpolate() {
     foundation="${1:?"Foundation name required"}"
     cluster="${2:?"Cluster name required"}"
+    namespace="${3:?"Namespace required"}"
     deployment="service-instance_$(pks show-cluster "${cluster}" --json | jq -r .uuid)"
 
     export VARS_service_instance_id="${deployment}"
     export VARS_cluster_name="${cluster}"
+    export VARS_namespace="${namespace}"
 
     foundation_domain=$(om interpolate -s \
         --config "environments/${foundation}/config/config.yml" \
@@ -149,6 +151,13 @@ function create_secrets() {
 	# kubectl create secret -n "${namespace}" generic "smtp-creds" \
 	#     --from-literal=user="${GMAIL_ACCOUNT}" \
 	#     --from-literal=password="${GMAIL_AUTH_TOKEN}"
+
+	# Create the initial bosh-target-groups configmap
+	# Prometheus will not start if this does not exist; the bosh-exporter will
+	# recreate it when it is scraped
+	kubectl delete configmap -n "${namespace}" bosh-target-groups --ignore-not-found
+	kubectl create configmap -n "${namespace}" bosh-target-groups \
+	    --from-literal=bosh-target-groups="{}"
 
 	bosh_exporter_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")
 	if [[ $bosh_exporter_enabled == true ]]; then
@@ -260,7 +269,7 @@ function install_cluster() {
 
 	create_secrets "${foundation}" "${cluster}" "${namespace}"
 
-	interpolate "${foundation}" "${cluster}"
+	interpolate "${foundation}" "${cluster}" "${namespace}"
 
 	# Copy dashboards to grafana chart location
 	copy_dashboards "${foundation}" "${cluster}"
