@@ -33,7 +33,7 @@ boshExporter:
   ## Image of bosh-exporter collector
   ##
   image:
-    repository: harbor.haas-440.pez.pivotal.io/prometheus/malston/bosh-exporter
+    repository: malston/bosh-exporter
     tag: 3.3.1
     pullPolicy: Always
 
