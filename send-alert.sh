@@ -2,7 +2,7 @@
 
 CLUSTER_NAME="$(kubectl config current-context)"
 CLUSTER_NUM="$(echo "${CLUSTER_NAME}" | cut -c8-9)"
-ALERTMANAGER_URL="https://alertmanager-${CLUSTER_NUM}.haas-440.pez.pivotal.io"
+ALERTMANAGER_URL="https://alertmanager-${CLUSTER_NUM}.haas-420.pez.pivotal.io"
 
 firing_alerts='[
   {

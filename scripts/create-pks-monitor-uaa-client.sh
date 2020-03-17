@@ -6,7 +6,7 @@ function download_pks_ca_cert() {
     local om_username="${3}"
     local om_password="${4}"
 
-    om -t "${om_target}" -u "${om_username}" -p "${om_password}" --skip-ssl-validation credentials \
+    om -t "${om_target}" -k -u "${om_username}" -p "${om_password}" --skip-ssl-validation credentials \
       -p pivotal-container-service \
       --credential-reference .pivotal-container-service.pks_tls \
       --credential-field cert_pem > ./pks-ca.crt
@@ -24,16 +24,18 @@ function create_uaa_client() {
     local pks_api_hostname="${5}"
     local pks_api_monitor_secret="${6}"
     local admin_client_secret
-    admin_client_secret="$(om -t "${om_target}" -u "${om_username}" -p "${om_password}" credentials --product-name pivotal-container-service --credential-reference .properties.pks_uaa_management_admin_client --credential-field secret)"
+    admin_client_secret="$(om -t "${om_target}" -k -u "${om_username}" -p "${om_password}" credentials --product-name pivotal-container-service --credential-reference .properties.pks_uaa_management_admin_client --credential-field secret)"
     
     uaac target https://${pks_api_hostname}:8443 --ca-cert ./pks-ca.crt
     uaac token client get admin -s "${admin_client_secret}"
 
-    ok=$(uaac client get pks-api-monitor)
-    if [[ $ok != *NotFound* ]]; then
+    ok="$(uaac client get pks-api-monitor || echo "NotFound")"
+    if [[ "${ok}" != *NotFound* ]]; then
+      echo "Deleting pks-api-monitor uaa client"
       uaac client delete pks-api-monitor
     fi
 
+    echo "Adding pks-api-monitor uaa client"
     uaac client add pks-api-monitor \
       --access_token_validity=600 \
       --secret="${pks_api_monitor_secret}" \

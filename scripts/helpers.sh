@@ -101,12 +101,14 @@ function interpolate() {
     om interpolate \
         --config "values/overrides.yaml" \
         --vars-file /tmp/vars.yml \
+        --vars-env VARS \
         > /tmp/overrides.yaml
 
     # Replace config variables in alertmanager.yaml
     om interpolate \
         --config "values/alertmanager.yaml" \
         --vars-file /tmp/vars.yml \
+        --vars-env VARS \
         >> /tmp/overrides.yaml
 
     is_master=$(om interpolate -s \
@@ -117,12 +119,28 @@ function interpolate() {
 
     if [[ $is_master == true ]]; then
       # Replace config variables in master prometheus/grafana.yaml (contains /federate targets)
-      om interpolate --config "values/prometheus-federation.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
-      om interpolate --config "values/grafana-federation.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
+      om interpolate \
+          --config "values/prometheus-federation.yaml" \
+		  --vars-file /tmp/vars.yml \
+          --vars-env VARS \
+		  >> /tmp/overrides.yaml
+      om interpolate \
+          --config "values/grafana-federation.yaml" \
+		  --vars-file /tmp/vars.yml \
+          --vars-env VARS \
+		  >> /tmp/overrides.yaml
     else
       # Replace config variables in federated prometheus/grafana.yaml
-      om interpolate --config "values/prometheus.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
-      om interpolate --config "values/grafana.yaml" --vars-file /tmp/vars.yml >> /tmp/overrides.yaml
+      om interpolate \
+    	  --config "values/prometheus.yaml" \
+		  --vars-file /tmp/vars.yml \
+          --vars-env VARS \
+		  >> /tmp/overrides.yaml
+      om interpolate \
+	      --config "values/grafana.yaml" \
+		  --vars-file /tmp/vars.yml \
+          --vars-env VARS \
+		  >> /tmp/overrides.yaml
     fi
 
     cat /tmp/overrides.yaml
@@ -250,7 +268,7 @@ function get_config_value() {
 		--vars-env VARS \
 		--path "${path}")"
 
-	echo $output
+	echo "$output"
 }
 
 function install_cluster() {
