@@ -25,6 +25,8 @@ function main() {
   local release="${5}"
   local version="${6}"
 
+  export VARS_cluster_name="${cluster}"
+
   clusters_in_order_of_upgrade=$(om interpolate -s --config "environments/${foundation}/config/config.yml" \
       --vars-file "environments/${foundation}/vars/vars.yml" \
       --vars-env VARS \
