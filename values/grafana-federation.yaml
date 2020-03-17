@@ -12,10 +12,10 @@ grafana:
         is_default: true
         settings:
           addresses: ((gmail_account))
-  smtp:
-    existingSecret: "smtp-creds"
-    userKey: "user"
-    passwordKey: "password"
+  # smtp:
+  #   existingSecret: "smtp-creds"
+  #   userKey: "user"
+  #   passwordKey: "password"
   service:
     portName: http-service
 

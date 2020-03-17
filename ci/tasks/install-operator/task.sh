@@ -1,36 +1,46 @@
 #!/usr/bin/env bash
 function install() {
   local foundation="${1}"
-  local namespace="${2}"
-  local release="${3}"
-  local version="${4}"
-  local cluster="${5}"
+  local cluster="${2}"
+  local namespace="${3}"
+  local release="${4}"
+  local version="${5}"
 
   printf "Logging into k8s cluster (%s)..." "${cluster}"
   pks get-credentials "${cluster}"
 
-  printf "Installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
-  install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
+  printf "Installing %s into %s\n" "${release}" "${cluster}"
 
-  printf "\nFinished installing version %s of %s into %s\n" "${version}" "${release}" "${cluster}"
+  install_cluster "${foundation}" "${cluster}" "${namespace}" "${release}"
+
+  printf "\nFinished installing %s into %s\n" "${release}" "${cluster}"
   printf "============================================================\n"
 }
 
 function main() {
-  local foundation="${1}"
-  local namespace="${2}"
-  local release="${3}"
-  local version="${4}"
-  local cluster="${5}"
+  local canary="${1}"
+  local foundation="${2}"
+  local cluster="${3}"
+  local namespace="${4}"
+  local release="${5}"
+  local version="${6}"
 
-  if [[ -n "${cluster}" ]]; then
-    install "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
-    return $?
-  fi
+  clusters_in_order_of_upgrade=$(om interpolate -s --config "environments/${foundation}/config/config.yml" \
+      --vars-file "environments/${foundation}/vars/vars.yml" \
+      --vars-env VARS \
+      --path "/clusters" | \
+      grep cluster_name | awk '{print $NF}')
 
-  clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
-  for cluster in ${clusters}; do
-    install "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
+  for cluster in ${clusters_in_order_of_upgrade}; do
+    is_cluster_canary=$(om interpolate -s \
+          --config "environments/${foundation}/config/config.yml" \
+          --vars-file "environments/${foundation}/vars/vars.yml" \
+          --vars-env VARS \
+          --path "/clusters/cluster_name=${cluster}/is_canary")
+
+    if [[ "${is_cluster_canary}" == "${canary}" ]]; then
+      install "${foundation}" "${cluster}" "${namespace}" "${release}" "${version}"
+    fi
   done
 }
 
@@ -46,14 +56,24 @@ source "${__DIR}/../../../scripts/target-bosh.sh" "/root/.ssh/id_rsa"
 # shellcheck disable=SC1090
 source "${__DIR}/../../../scripts/helpers.sh"
 
-foundation="${1:-$FOUNDATION}"
-namespace="${2:-$NAMESPACE}"
-release="${3:-$RELEASE}"
-version="${4:-$VERSION}"
-cluster="${5:-$CLUSTER_NAME}"
+canary="${1:-$CANARY}"
+foundation="${2:-$FOUNDATION}"
+cluster="${3:-$CLUSTER_NAME}"
+namespace="${4:-$NAMESPACE}"
+release="${5:-$RELEASE}"
+version="${6:-$VERSION}"
+
+if [[ -z "${canary}" ]]; then
+  canary="false"
+fi
 
 if [[ -z "${foundation}" ]]; then
   echo "Foundation name is required"
+  exit 1
+fi
+
+if [[ -z "${cluster}" ]]; then
+  echo "Cluster name is required"
   exit 1
 fi
 
@@ -69,10 +89,6 @@ fi
 
 if [[ -z "${version}" ]]; then
   version="$(cat version/version)"
-  if [[ -z "${version}" ]]; then
-    echo "Version is required"
-    exit 1
-  fi
 fi
 
 mkdir -p ~/.pks
@@ -83,4 +99,4 @@ cp kube-config/config ~/.kube/config
 
 cd repo
 
-main "${foundation}" "${namespace}" "${release}" "${version}" "${cluster}"
+main "${canary}" "${foundation}" "${cluster}" "${namespace}" "${release}" "${version}"

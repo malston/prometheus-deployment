@@ -16,7 +16,6 @@ set -o pipefail
 foundation="${1:-$FOUNDATION}"
 namespace="${2:-monitoring}"
 release="${3:-prometheus-operator}"
-version="${4:-8.5.4}"
 
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage
@@ -37,4 +36,4 @@ cluster=$(kubectl config current-context)
 # shellcheck disable=SC1090
 source "${__DIR}/scripts/helpers.sh"
 
-install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
+install_cluster "${foundation}" "${cluster}" "${namespace}" "${release}"

@@ -1,7 +1,6 @@
-k8s_cluster_name: cluster01
 foundation: haas-420
 namespace: monitoring
 release: prometheus-operator
 version: 8.9.2
-upgrade_cluster_name: cluster02
+cluster_name: cluster02
 chart_repo: https://kubernetes-charts.storage.googleapis.com

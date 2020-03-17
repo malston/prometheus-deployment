@@ -190,16 +190,14 @@ function create_secrets() {
 	fi
 }
 
-function helm_upgrade() {
+function helm_install() {
 	cluster="${1:?"Cluster name is required"}"
 	namespace="${2:?"Namespace is required"}"
 	release="${3:?"Release is required"}"
-	version="${4:?"Version is required"}"
-	bosh_exporter_enabled="${5:-"false"}"
-	pks_monitor_enabled="${6:-"false"}"
+	bosh_exporter_enabled="${4:-"false"}"
+	pks_monitor_enabled="${5:-"false"}"
 
-	# Install prometheus-operator
-	helm upgrade -i --version "${version}" "${release}" \
+	helm upgrade -i "${release}" \
 		--namespace "${namespace}" \
 		--values /tmp/overrides.yaml \
 		--set bosh-exporter.boshExporter.enabled="${bosh_exporter_enabled}" \
@@ -207,6 +205,7 @@ function helm_upgrade() {
 		--set global.rbac.pspEnabled=false \
 		--set grafana.adminPassword=admin \
 		--set grafana.testFramework.enabled=true \
+		--set ingress-gateway.istio.enabled=false \
 		--set ingress-gateway.ingress.enabled=false \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
 		"${__BASEDIR}/charts/prometheus-operator"
@@ -272,11 +271,10 @@ function get_config_value() {
 }
 
 function install_cluster() {
-	cluster="${1:?"Cluster name is required"}"
-	foundation="${2:?"Foundation name is required"}"
+	foundation="${1:?"Foundation name is required"}"
+	cluster="${2:?"Cluster name is required"}"
 	namespace="${3:?"Namespace is required"}"
 	release="${4:?"Release is required"}"
-	version="${5:?"Version is required"}"
 
 	create_namespace "${cluster}" "${namespace}"
 
@@ -289,14 +287,12 @@ function install_cluster() {
 
 	interpolate "${foundation}" "${cluster}" "${namespace}"
 
-	# Copy dashboards to grafana chart location
 	copy_dashboards "${foundation}" "${cluster}"
 
 	bosh_exporter_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")
 	pks_monitor_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/pks_monitor_enabled")
 
-	# Install prometheus-operator
-	helm_upgrade "${cluster}" "${namespace}" "${release}" "${version}" "${bosh_exporter_enabled}" "${pks_monitor_enabled}"
+	helm_install "${cluster}" "${namespace}" "${release}" "${bosh_exporter_enabled}" "${pks_monitor_enabled}"
 
 	# Remove copied dashboards
 	remove_dashboards

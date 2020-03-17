@@ -1,22 +1,8 @@
 
 clusters:
-  - cluster_name: cluster01
-    is_master: true
-    pks_monitor_enabled: true
-    bosh_exporter_enabled: true
-    alertmanager_url: https://alertmanager.cluster01.((foundation_domain))
-    endpoints: ((endpoints))
-    gmail_account: marktalston@gmail.com
-    prometheus_url: https://prometheus.cluster01.((foundation_domain))
-    foundation: ((foundation))
-    foundation_domain: ((foundation_domain))
-    federated_targets: ((federated_targets))
-    service_instance_id: ((service_instance_id))
-    alertmanager_hostname: alertmanager.cluster01.((foundation_domain))
-    grafana_hostname: grafana.cluster01.((foundation_domain))
-    prometheus_hostname: prometheus.cluster01.((foundation_domain))
   - cluster_name: cluster02
     is_master: false
+    is_canary: true
     pks_monitor_enabled: false
     bosh_exporter_enabled: true
     alertmanager_url: https://alertmanager.cluster02.((foundation_domain))
@@ -30,6 +16,22 @@ clusters:
     alertmanager_hostname: alertmanager.cluster02.((foundation_domain))
     grafana_hostname: grafana.cluster02.((foundation_domain))
     prometheus_hostname: prometheus.cluster02.((foundation_domain))
+  - cluster_name: cluster01
+    is_master: true
+    is_canary: true
+    pks_monitor_enabled: true
+    bosh_exporter_enabled: true
+    alertmanager_url: https://alertmanager.cluster01.((foundation_domain))
+    endpoints: ((endpoints))
+    gmail_account: marktalston@gmail.com
+    prometheus_url: https://prometheus.cluster01.((foundation_domain))
+    foundation: ((foundation))
+    foundation_domain: ((foundation_domain))
+    federated_targets: ((federated_targets))
+    service_instance_id: ((service_instance_id))
+    alertmanager_hostname: alertmanager.cluster01.((foundation_domain))
+    grafana_hostname: grafana.cluster01.((foundation_domain))
+    prometheus_hostname: prometheus.cluster01.((foundation_domain))
   - cluster_name: cluster03
     is_master: false
     pks_monitor_enabled: false

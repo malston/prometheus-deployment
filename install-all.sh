@@ -16,7 +16,6 @@ set -o pipefail
 foundation="${1:-$FOUNDATION}"
 namespace="${2:-monitoring}"
 release="${3:-prometheus-operator}"
-version="${4:-8.5.4}"
 
 if [ "${1}" == "-h" ] || [ "${1}" == "help" ] || [ "${1}" == "--help" ]; then
   usage
@@ -38,5 +37,5 @@ source "${__DIR}/scripts/helpers.sh"
 clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
 for cluster in ${clusters}; do
   printf "Installing %s into %s\n" "${release}" "${cluster}"
-  install_cluster "${cluster}" "${foundation}" "${namespace}" "${release}" "${version}"
+  install_cluster "${foundation}" "${cluster}" "${namespace}" "${release}"
 done

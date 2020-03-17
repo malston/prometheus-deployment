@@ -10,8 +10,8 @@ function login_pks() {
 function login_pks_k8s_cluster() {
 	login_pks
 
-	printf "Logging into k8s cluster (%s)..." "${K8S_CLUSTER_NAME}"
-	pks get-credentials "${K8S_CLUSTER_NAME}"
+	printf "Logging into k8s cluster (%s)..." "${CLUSTER_NAME}"
+	pks get-credentials "${CLUSTER_NAME}"
 
 	return 0
 }

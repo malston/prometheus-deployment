@@ -46,7 +46,7 @@ jobs:
       PKS_API_URL: ((pks_api_url))
       PKS_USER: ((pks_user))
       PKS_PASSWORD: ((pks_password))
-      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+      CLUSTER_NAME: ((cluster_name))
 
   - task: install-chart
     file: repo/ci/tasks/install-operator/task.yml
@@ -60,16 +60,17 @@ jobs:
       PKS_API_HOSTNAME: ((pks_api_hostname))
       PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
       FOUNDATION: ((foundation))
-      CLUSTER_NAME: ((upgrade_cluster_name))
+      CLUSTER_NAME: ((cluster_name))
       NAMESPACE: ((namespace))
       RELEASE: ((release))
+      CANARY: true
 
   - task: test-chart
     file: repo/ci/tasks/helm-test/task.yml
     params:
       RELEASE: ((release))
       NAMESPACE: ((namespace))
-      CLUSTER_NAME: ((upgrade_cluster_name))
+      CLUSTER_NAME: ((cluster_name))
 
   - task: tag-and-commit
     file: repo/ci/tasks/tag-and-commit/task.yml
@@ -123,7 +124,7 @@ jobs:
       PKS_API_URL: ((pks_api_url))
       PKS_USER: ((pks_user))
       PKS_PASSWORD: ((pks_password))
-      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+      CLUSTER_NAME: ((cluster_name))
 
   - task: install-operator
     config:
@@ -131,9 +132,11 @@ jobs:
       image_resource:
         type: docker-image
         source:
-          repository: harbor.haas-440.pez.pivotal.io/library/malston/pks-control-plane
-          insecure_registries: [harbor.haas-440.pez.pivotal.io]
-          tag: 0.0.1
+          repository: malston/pks-control-plane
+        # source:
+        #   repository: harbor.haas-420.pez.pivotal.io/library/malston/pks-control-plane
+        #   insecure_registries: [harbor.haas-420.pez.pivotal.io]
+        #   tag: 0.0.1
       inputs:
         - name: repo
         - name: pks-config
@@ -152,7 +155,7 @@ jobs:
         FOUNDATION: ((foundation))
         NAMESPACE: ((namespace))
         RELEASE: ((release))
-        VERSION: ((version))
+        CANARY: false
 
   - task: test
     file: repo/ci/tasks/helm-test/task.yml
@@ -172,7 +175,7 @@ jobs:
       PKS_API_URL: ((pks_api_url))
       PKS_USER: ((pks_user))
       PKS_PASSWORD: ((pks_password))
-      K8S_CLUSTER_NAME: ((k8s_cluster_name))
+      CLUSTER_NAME: ((cluster_name))
 
   - task: uninstall-operator
     file: repo/ci/tasks/uninstall-operator/task.yml
