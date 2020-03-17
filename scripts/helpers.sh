@@ -280,7 +280,6 @@ function install_cluster() {
 
 	switch_namespace "${cluster}" "${namespace}"
 
-	# Create storage class
 	create_storage_class
 
 	create_secrets "${foundation}" "${cluster}" "${namespace}"
@@ -294,7 +293,6 @@ function install_cluster() {
 
 	helm_install "${cluster}" "${namespace}" "${release}" "${bosh_exporter_enabled}" "${pks_monitor_enabled}"
 
-	# Remove copied dashboards
 	remove_dashboards
 }
 
