@@ -215,7 +215,7 @@ function create_namespace() {
 	cluster="${1:?"Cluster name is required"}"
 	namespace="${2:?"Namespace is required"}"
 
-	if [[ ! $(kubectl get namespace "${namespace}") ]]; then
+	if ! kubectl get namespace "${namespace}" > /dev/null 2>&1; then
 		kubectl create namespace "${namespace}"
 	fi
 }
