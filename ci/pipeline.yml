@@ -68,9 +68,11 @@ jobs:
   - task: test-chart
     file: repo/ci/tasks/helm-test/task.yml
     params:
-      RELEASE: ((release))
-      NAMESPACE: ((namespace))
+      CANARY: true
+      FOUNDATION: ((foundation))
       CLUSTER_NAME: ((cluster_name))
+      NAMESPACE: ((namespace))
+      RELEASE: ((release))
 
   - task: tag-and-commit
     file: repo/ci/tasks/tag-and-commit/task.yml
@@ -133,10 +135,9 @@ jobs:
         type: docker-image
         source:
           repository: malston/pks-control-plane
-        # source:
         #   repository: harbor.haas-420.pez.pivotal.io/library/malston/pks-control-plane
         #   insecure_registries: [harbor.haas-420.pez.pivotal.io]
-        #   tag: 0.0.1
+          tag: 0.0.1
       inputs:
         - name: repo
         - name: pks-config
@@ -160,7 +161,9 @@ jobs:
   - task: test
     file: repo/ci/tasks/helm-test/task.yml
     params:
-      RELEASE: ((release))
+      CANARY: false
+      FOUNDATION: ((foundation))
+      CLUSTER_NAME: ((cluster_name))
       NAMESPACE: ((namespace))
 
 - name: uninstall

@@ -5,10 +5,9 @@ image_resource:
   type: docker-image
   source:
     repository: malston/pks-control-plane
-  # source:
   #   repository: harbor.haas-420.pez.pivotal.io/library/malston/pks-control-plane
   #   insecure_registries: [harbor.haas-420.pez.pivotal.io]
-  #   tag: 0.0.1
+    tag: 0.0.1
 
 inputs:
   - name: repo
@@ -19,7 +18,8 @@ run:
   path: repo/ci/tasks/helm-test/task.sh
 
 params:
-  RELEASE:
-  NAMESPACE:
+  CANARY:
+  FOUNDATION:
   CLUSTER_NAME:
-  CHART_REPO:
+  NAMESPACE:
+  RELEASE:
