@@ -21,6 +21,8 @@ prometheus:
 
 istio:
   enabled: false
+  hosts: 
+    - '*.cluster01.haas-420.pez.pivotal.io'
 
 ingress:
   enabled: false

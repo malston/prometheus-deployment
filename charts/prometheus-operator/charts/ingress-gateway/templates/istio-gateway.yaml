@@ -14,7 +14,7 @@ spec:
     istio: ingressgateway
   servers:
   - hosts:
-    - '*.cluster01.haas-440.pez.pivotal.io'
+    - '*.cluster01.haas-420.pez.pivotal.io'
 	port:
 	  name: https
 	  number: 443
@@ -24,7 +24,7 @@ spec:
 	  privateKey: /etc/istio/ingressgateway-certs/tls.key
 	  serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
   - hosts:
-    - '*.cluster01.haas-440.pez.pivotal.io'
+    - '*.cluster01.haas-420.pez.pivotal.io'
 	port:
 	  name: http
 	  number: 80
@@ -32,7 +32,7 @@ spec:
 	tls:
       httpsRedirect: true
   - hosts:
-    - '*.cluster01.haas-440.pez.pivotal.io'
+    - '*.cluster01.haas-420.pez.pivotal.io'
 	port:
 	  name: tls
 	  number: 15443
