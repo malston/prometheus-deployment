@@ -91,3 +91,21 @@ TBD: How are we going to do blue/green deployments?
 
 1. Deploy multiple replicas of Prometheus
 2. Prometheus is deployed into multiple clusters... Do a canary upgrade to each Prometheus across the foundation
+
+## Development
+
+<TODO>
+
+### Get latest helm chart dependencies
+
+To find all images used by the prometheus-operator helm chart run `find-images.py`. This is a python script with local dependencies use `venv` as follows
+
+```bash
+source .venv/bin/activate
+```
+
+Then run the script
+
+```bash
+./find-images.py
+```

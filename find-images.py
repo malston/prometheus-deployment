@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import yaml
 import os
+import yaml
 
 def find(key, dictionary):
     for k, v in dictionary.items():
