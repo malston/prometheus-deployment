@@ -73,6 +73,7 @@ jobs:
       CLUSTER_NAME: ((cluster_name))
       NAMESPACE: ((namespace))
       RELEASE: ((release))
+    attempts: 3
 
   - task: tag-and-commit
     file: repo/ci/tasks/tag-and-commit/task.yml
@@ -165,6 +166,7 @@ jobs:
       FOUNDATION: ((foundation))
       CLUSTER_NAME: ((cluster_name))
       NAMESPACE: ((namespace))
+    attempts: 3
 
 - name: uninstall
   serial_groups: [install]
