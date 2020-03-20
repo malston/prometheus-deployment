@@ -95,4 +95,6 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
+cd repo
+
 main "${canary}" "${foundation}" "${cluster}" "${namespace}" "${release}"
