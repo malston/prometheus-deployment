@@ -12,7 +12,7 @@ resources:
     uri: ((repo.uri))
     branch: develop
     private_key: ((repo.private_key))
-    ignore_paths: [charts/prometheus-operator]
+    # ignore_paths: [charts/prometheus-operator]
 
 jobs:
 - name: upgrade-and-test

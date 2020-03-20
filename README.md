@@ -67,13 +67,42 @@ helm upgrade -i --version "${version}" "${release}" \
 
 where `${version}` is the version of the chart that you want to upgrade to, and `${release}` is the name of the release that is managing the instance of the Operator that you are trying to upgrade. Although, not strictly necessary, the `--version` flag is useful for when the chart is maintained in a central Helm Chart Repository and not referenced from a local directory. In our case, the chart is located inside this git repository so the `--version` flag doesn't have any effect.
 
+### Setup
+
+1. Create a network profile (Only applicable for NSX-T)
+
+```bash
+export TEMP_DIR=$(mktemp -d)
+cat > "${TEMP_DIR}/network-profile-medium.json" <<EOF
+{
+  "description": "network profile with medium size LB",
+  "name": "network-profile-medium",
+  "parameters": {
+    "lb_size": "medium"
+  }
+}
+EOF
+```
+
+```bash
+pks create-network-profile "${TEMP_DIR}/network-profile-medium.json"
+```
+
+1. Create 3 clusters
+
+```bash
+for i in `seq 3`; do
+    pks create-cluster cluster0$i --num-nodes 1 \
+        --external-hostname cluster0$i.$PKS_SUBDOMAIN_NAME.$PKS_DOMAIN_NAME \
+        --plan small-Istio --network-profile network-profile-medium --non-interactive
+done
+```
+
 ## Pipeline
 
 The [Concourse](https://concourse-ci.org/) CI [pipeline](./ci/pipeline.yml) runs lint, installs or upgrades the Prometheus Operator including the [bosh-exporter](./charts/prometheus-operator/charts/bosh-exporter) and [pks-monitor](./charts/prometheus-operator/charts/pks-monitor) and runs helm tests on each deployment. The upgrade pulls the latest code from `develop` and gets the latest version of the chart, then upgrades the deployment on a single cluster. If that passes all the checks, then we merge into master and the upgrade runs on all the clusters.
 
 ![Concourse Pipeline](pipeline.png "Concourse Pipeline")
-
-### Setup
 
 To create the pipeline run:
 
