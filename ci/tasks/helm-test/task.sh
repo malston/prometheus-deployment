@@ -60,9 +60,10 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${__DIR}/../../../scripts/helpers.sh"
 
 canary="${1:-$CANARY}"
-cluster="${2:-$CLUSTER_NAME}"
-namespace="${3:-$NAMESPACE}"
-release="${4:-$RELEASE}"
+foundation="${2:-$FOUNDATION}"
+cluster="${3:-$CLUSTER_NAME}"
+namespace="${4:-$NAMESPACE}"
+release="${5:-$RELEASE}"
 
 if [[ -z "${canary}" ]]; then
   canary="false"
