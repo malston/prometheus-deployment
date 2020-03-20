@@ -94,7 +94,7 @@ TBD: How are we going to do blue/green deployments?
 
 ## Development
 
-<TODO>
+TODO
 
 ### Get latest helm chart dependencies
 
