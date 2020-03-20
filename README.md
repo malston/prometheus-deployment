@@ -23,7 +23,7 @@ EOF
 pks create-network-profile "${TEMP_DIR}/network-profile-medium.json"
 ```
 
-1. Create 3 clusters
+2. Create 3 clusters
 
 ```bash
 for i in `seq 3`; do
