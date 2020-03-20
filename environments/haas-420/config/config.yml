@@ -34,6 +34,7 @@ clusters:
     prometheus_hostname: prometheus.cluster01.((foundation_domain))
   - cluster_name: cluster03
     is_master: false
+    is_canary: false
     pks_monitor_enabled: false
     bosh_exporter_enabled: true
     alertmanager_url: https://alertmanager.cluster03.((foundation_domain))
