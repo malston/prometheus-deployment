@@ -57,9 +57,6 @@ set -o pipefail
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1090
-source "${__DIR}/../../../scripts/target-bosh.sh" "/root/.ssh/id_rsa"
-
-# shellcheck disable=SC1090
 source "${__DIR}/../../../scripts/helpers.sh"
 
 canary="${1:-$CANARY}"
