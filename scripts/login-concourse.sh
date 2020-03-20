@@ -1,11 +1,11 @@
 #!/bin/bash -e
 
-if [ -z "${ENVIRONMENT_NAME}" ]; then
+if [ -z "${FOUNDATION}" ]; then
   echo "Enter an environment name (e.g. haas-420): "
-  read -r ENVIRONMENT_NAME
+  read -r FOUNDATION
 fi
 
-export CONCOURSE_URL="https://plane.${ENVIRONMENT_NAME}.pez.pivotal.io"
+export CONCOURSE_URL="https://concourse.${FOUNDATION}.pez.pivotal.io"
 
 printf "\n\n Concourse admin password: %s\n\n" "${CONCOURSE_PASSWORD}"
 
