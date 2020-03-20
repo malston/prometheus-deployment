@@ -205,7 +205,7 @@ function helm_install() {
 		--set global.rbac.pspEnabled=false \
 		--set grafana.adminPassword=admin \
 		--set grafana.testFramework.enabled=true \
-		--set ingress-gateway.istio.enabled=false \
+		--set ingress-gateway.istio.enabled=true \
 		--set ingress-gateway.ingress.enabled=false \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
 		"${__BASEDIR}/charts/prometheus-operator"
