@@ -21,3 +21,8 @@ prometheusServiceName: prometheus-operator-prometheus
 ## Provide the name of the ClusterIP service used for Alertmanager
 ##
 alertmanagerServiceName: prometheus-operator-alertmanager
+
+## Provide a list of targets to exclude from the test
+## Must be space delimited e.g. "prometheus.cluster03.example.com prometheus.cluster02.example.com"
+##
+excludedTargets: ""

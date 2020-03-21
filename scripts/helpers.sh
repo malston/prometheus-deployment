@@ -33,8 +33,6 @@ function create_etcd_client_secret() {
 
 function create_federated_targets() {
 	local foundation="${1}"
-	# local cluster_name="${1}"
-	local domain="${2}"
 	local targets=()
 	local clusters
 	clusters=$(pks clusters --json | jq 'sort_by(.name)')
@@ -44,27 +42,43 @@ function create_federated_targets() {
 			echo "${row}" | base64 --decode | jq -r "${1}"
 		}
 		cluster=$(_jq '.name')
-		config_exists=$(om interpolate -s \
+		prometheus_hostname=$(om interpolate -s \
 			--config "environments/${foundation}/config/config.yml" \
 			--vars-file "environments/${foundation}/vars/vars.yml" \
 			--vars-env VARS \
-			--path "/clusters/cluster_name=${cluster}")
-		if [[ ${config_exists} ]]; then
-			targets=( "${targets[@]}" "prometheus.${cluster}.${domain}" )
+			--path "/clusters/cluster_name=${cluster}/prometheus_hostname")
+		if [[ ${prometheus_hostname} ]]; then
+			targets=( "${targets[@]}" "${prometheus_hostname}" )
 		fi
 	done
 
-	# local current_target=("prometheus.$(echo "${cluster_name}").${domain}")
-	# for target in "${current_target[@]}"; do
-	# 	for i in "${!targets[@]}"; do
-	# 		if [[ "${targets[i]}" = "${target}" ]]; then
-	# 			unset "targets[i]"
-	# 		fi
-	# 	done
-	# done
 	fed_targets="$(echo ${targets[*]})"
 	fed_targets="${fed_targets// /, }"
 	echo "[${fed_targets}]"
+}
+
+function get_federated_targets() {
+	local foundation="${1}"
+	local targets=()
+	local clusters
+	clusters=$(pks clusters --json | jq 'sort_by(.name)')
+
+	for row in $(echo "${clusters}" | jq -r '.[] | @base64'); do
+		_jq() {
+			echo "${row}" | base64 --decode | jq -r "${1}"
+		}
+		cluster=$(_jq '.name')
+		prometheus_hostname=$(om interpolate -s \
+			--config "environments/${foundation}/config/config.yml" \
+			--vars-file "environments/${foundation}/vars/vars.yml" \
+			--vars-env VARS \
+			--path "/clusters/cluster_name=${cluster}/prometheus_hostname")
+		if [[ ${prometheus_hostname} ]]; then
+			targets=( "${targets[@]}" "${prometheus_hostname}" )
+		fi
+	done
+
+	echo "${targets[*]}"
 }
 
 function interpolate() {
@@ -77,16 +91,10 @@ function interpolate() {
     export VARS_cluster_name="${cluster}"
     export VARS_namespace="${namespace}"
 
-    foundation_domain=$(om interpolate -s \
-        --config "environments/${foundation}/config/config.yml" \
-        --vars-file "environments/${foundation}/vars/vars.yml" \
-        --vars-env VARS \
-        --path "/clusters/cluster_name=${cluster}/foundation_domain")
-
     master_ips=$(bosh -d "${deployment}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
     master_node_ips="$(echo ${master_ips[*]})"
     export VARS_endpoints="[${master_node_ips// /, }]"
-    VARS_federated_targets=$(create_federated_targets "${foundation}" "${foundation_domain}")
+    VARS_federated_targets=$(create_federated_targets "${foundation}")
     export VARS_federated_targets
 
     # Replace config variables in config.yaml
@@ -197,6 +205,17 @@ function helm_install() {
 	bosh_exporter_enabled="${4:-"false"}"
 	pks_monitor_enabled="${5:-"false"}"
 
+	excluded_targets=""
+	is_cluster_canary=$(om interpolate -s \
+		--config "environments/${foundation}/config/config.yml" \
+		--vars-file "environments/${foundation}/vars/vars.yml" \
+		--vars-env VARS \
+		--path "/clusters/cluster_name=${cluster}/is_canary")
+	
+	if [[ "${is_cluster_canary}" ]]; then
+		excluded_targets=$(get_federated_targets "${foundation}")
+	fi
+
 	helm upgrade -i "${release}" \
 		--namespace "${namespace}" \
 		--values /tmp/overrides.yaml \
@@ -207,6 +226,7 @@ function helm_install() {
 		--set grafana.testFramework.enabled=true \
 		--set ingress-gateway.istio.enabled=true \
 		--set ingress-gateway.ingress.enabled=false \
+		--set smoke-tests.excludedTargets="${excluded_targets}" \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
 		"${__BASEDIR}/charts/prometheus-operator"
 }

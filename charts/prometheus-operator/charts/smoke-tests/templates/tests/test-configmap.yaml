@@ -23,5 +23,12 @@ data:
       url="http://{{ .Values.prometheusServiceName }}.{{ $.Release.Namespace }}.svc.cluster.local:9090"
       
       result=$(promtool query instant ${url} 'up == 0')
+
+      # targets to exclude from test
+      exclude_targets="{{ .Values.excludedTargets }}"
+      for exclude_target in ${exclude_targets[@]}; do
+        result=$(echo "$result" | sed /$exclude_target/d)
+      done
+
       [ "$result" == "" ]
     }
