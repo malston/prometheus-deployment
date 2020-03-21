@@ -10,12 +10,13 @@ function helm_test() {
   switch_namespace "${cluster}" "${namespace}"
 
   printf "Testing %s on %s\n" "${release}" "${cluster}"
-  exit_code=$(helm test "${release}")
+  exit_code=0
+  helm test "${release}" 2>/dev/null || exit_code=1
   kubectl logs "${release}-smoke-tests"
 
   printf "\nFinished testing %s on %s\n" "${release}" "${cluster}"
   printf "============================================================\n"
-  return "${exit_code}"
+  return $exit_code
 }
 
 function main() {
@@ -41,9 +42,11 @@ function main() {
           --path "/clusters/cluster_name=${cluster}/is_canary")
 
     if [[ "${is_cluster_canary}" == "${canary}" ]]; then
-        helm_test "${cluster}" "${namespace}" "${release}"
-        if [[ "${exit_code}" == "1" ]]; then
-          echo "Smoke tests failed" && exit 1
+        exit_code=0
+        helm_test "${cluster}" "${namespace}" "${release}" 2>/dev/null || exit_code=1
+        if [[ $exit_code -ne 0 ]]; then
+           echo ""
+           echo "Smoke tests failed" && exit $exit_code
         fi
     fi
   done
