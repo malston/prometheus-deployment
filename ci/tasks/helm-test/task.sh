@@ -10,7 +10,9 @@ function helm_test() {
   switch_namespace "${cluster}" "${namespace}"
 
   printf "Testing %s on %s\n" "${release}" "${cluster}"
+  set +e
   helm test "${release}"
+  set -e
   exit_code=$?
   kubectl logs "${release}-smoke-tests"
 
