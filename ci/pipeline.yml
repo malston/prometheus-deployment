@@ -155,6 +155,7 @@ jobs:
         PKS_API_HOSTNAME: ((pks_api_hostname))
         PKS_API_MONITOR_SECRET: ((pks_api_monitor_secret))
         FOUNDATION: ((foundation))
+        CLUSTER_NAME: ((cluster_name))
         NAMESPACE: ((namespace))
         RELEASE: ((release))
         CANARY: false

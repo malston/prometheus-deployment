@@ -4,7 +4,6 @@ function install() {
   local cluster="${2}"
   local namespace="${3}"
   local release="${4}"
-  local version="${5}"
 
   printf "Logging into k8s cluster (%s)..." "${cluster}"
   pks get-credentials "${cluster}"
@@ -23,7 +22,6 @@ function main() {
   local cluster="${3}"
   local namespace="${4}"
   local release="${5}"
-  local version="${6}"
 
   export VARS_cluster_name="${cluster}"
 
@@ -41,7 +39,7 @@ function main() {
           --path "/clusters/cluster_name=${cluster}/is_canary")
 
     if [[ "${is_cluster_canary}" == "${canary}" ]]; then
-      install "${foundation}" "${cluster}" "${namespace}" "${release}" "${version}"
+      install "${foundation}" "${cluster}" "${namespace}" "${release}"
     fi
   done
 }
@@ -63,7 +61,6 @@ foundation="${2:-$FOUNDATION}"
 cluster="${3:-$CLUSTER_NAME}"
 namespace="${4:-$NAMESPACE}"
 release="${5:-$RELEASE}"
-version="${6:-$VERSION}"
 
 if [[ -z "${canary}" ]]; then
   canary="false"
@@ -89,10 +86,6 @@ if [[ -z "${release}" ]]; then
   exit 1
 fi
 
-if [[ -z "${version}" ]]; then
-  version="$(cat version/version)"
-fi
-
 mkdir -p ~/.pks
 cp pks-config/creds.yml ~/.pks/creds.yml
 
@@ -101,4 +94,4 @@ cp kube-config/config ~/.kube/config
 
 cd repo
 
-main "${canary}" "${foundation}" "${cluster}" "${namespace}" "${release}" "${version}"
+main "${canary}" "${foundation}" "${cluster}" "${namespace}" "${release}"
