@@ -167,6 +167,7 @@ jobs:
       FOUNDATION: ((foundation))
       CLUSTER_NAME: ((cluster_name))
       NAMESPACE: ((namespace))
+      RELEASE: ((release))
     attempts: 3
 
 - name: uninstall
