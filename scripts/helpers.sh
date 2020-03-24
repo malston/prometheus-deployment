@@ -35,7 +35,7 @@ function get_excluded_targets() {
 	local foundation="${1}"
 	local cluster="${2}"
 	local release="${3}"
-	excluded_targets=()
+	local excluded_targets=()
 
 	# for each cluster in pks clusters
 	# login to cluster
@@ -222,7 +222,7 @@ function helm_install() {
 		--path "/clusters/cluster_name=${cluster}/is_canary")
 	
 	if [[ "${is_cluster_canary}" ]]; then
-		excluded_targets=$(get_excluded_targets "${foundation}" "${cluster}" "${release}")
+		excluded_targets=$(get_excluded_targets "${foundation}" "${cluster}" "${release}" 2>/dev/null)
 	fi
 
 	helm upgrade -i "${release}" \
