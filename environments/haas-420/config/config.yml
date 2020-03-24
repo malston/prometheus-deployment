@@ -1,4 +1,5 @@
-
+# Order matters. This is ordered so that the slave prometheuses are installed before its masters
+# so that the prometheus federation doesn't produce down targets for the slaves that have not yet come up
 clusters:
   - cluster_name: cluster02
     is_master: false
@@ -27,6 +28,7 @@ clusters:
     foundation: ((foundation))
     foundation_domain: ((foundation_domain))
     federated_targets: ((federated_targets))
+    excluded_targets: prometheus.cluster01.((foundation_domain))
     service_instance_id: ((service_instance_id))
     alertmanager_hostname: alertmanager.cluster01.((foundation_domain))
     grafana_hostname: grafana.cluster01.((foundation_domain))

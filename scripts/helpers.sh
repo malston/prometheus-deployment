@@ -31,6 +31,34 @@ function create_etcd_client_secret() {
 		--from-file=etcd-client.key
 }
 
+function get_excluded_targets() {
+	local foundation="${1}"
+	local cluster="${2}"
+	local release="${3}"
+	excluded_targets=()
+
+	# for each cluster in pks clusters
+	# login to cluster
+	# check that the operator is NOT installed (helm list)
+	# if operator is NOT installed then it is added to the list of excluded target
+	# return list of excluded targets
+
+	clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
+	for cluster in ${clusters}; do
+		release_name="$(helm list -q -f "${release}")"
+		if [[ -z "${release_name}" ]]; then
+			prometheus_hostname=$(om interpolate -s \
+				--config "environments/${foundation}/config/config.yml" \
+				--vars-file "environments/${foundation}/vars/vars.yml" \
+				--vars-env VARS \
+				--path "/clusters/cluster_name=${cluster}/prometheus_hostname")
+			# printf "%s release not found... adding %s to excluded targets" "${prometheus_hostname}" "${release}"
+			excluded_targets=( "${excluded_targets[@]}" "${prometheus_hostname}" )
+		fi
+	done
+	echo "${excluded_targets[*]}"
+}
+
 function create_federated_targets() {
 	local foundation="${1}"
 	fed_targets=$(get_federated_targets "${foundation}")
@@ -194,7 +222,7 @@ function helm_install() {
 		--path "/clusters/cluster_name=${cluster}/is_canary")
 	
 	if [[ "${is_cluster_canary}" ]]; then
-		excluded_targets=$(get_federated_targets "${foundation}")
+		excluded_targets=$(get_excluded_targets "${foundation}" "${cluster}" "${release}")
 	fi
 
 	helm upgrade -i "${release}" \
