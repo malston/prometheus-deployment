@@ -28,7 +28,6 @@ clusters:
     foundation: ((foundation))
     foundation_domain: ((foundation_domain))
     federated_targets: ((federated_targets))
-    excluded_targets: prometheus.cluster01.((foundation_domain))
     service_instance_id: ((service_instance_id))
     alertmanager_hostname: alertmanager.cluster01.((foundation_domain))
     grafana_hostname: grafana.cluster01.((foundation_domain))
