@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# ./build-image.sh $PIVNET_TOKEN /Users/malston/.ssh/haas-440.pub
+# ./build-image.sh $PIVNET_TOKEN /Users/malston/.ssh/haas-420.pub
 
 set -e
 # only exit with zero if all commands of the pipeline exit successfully
