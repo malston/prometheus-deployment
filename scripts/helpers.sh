@@ -33,26 +33,7 @@ function create_etcd_client_secret() {
 
 function create_federated_targets() {
 	local foundation="${1}"
-	local targets=()
-	local clusters
-	clusters=$(pks clusters --json | jq 'sort_by(.name)')
-
-	for row in $(echo "${clusters}" | jq -r '.[] | @base64'); do
-		_jq() {
-			echo "${row}" | base64 --decode | jq -r "${1}"
-		}
-		cluster=$(_jq '.name')
-		prometheus_hostname=$(om interpolate -s \
-			--config "environments/${foundation}/config/config.yml" \
-			--vars-file "environments/${foundation}/vars/vars.yml" \
-			--vars-env VARS \
-			--path "/clusters/cluster_name=${cluster}/prometheus_hostname")
-		if [[ ${prometheus_hostname} ]]; then
-			targets=( "${targets[@]}" "${prometheus_hostname}" )
-		fi
-	done
-
-	fed_targets="$(echo ${targets[*]})"
+	fed_targets=$(get_federated_targets "${foundation}")
 	fed_targets="${fed_targets// /, }"
 	echo "[${fed_targets}]"
 }
