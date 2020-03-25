@@ -34,7 +34,8 @@ function create_etcd_client_secret() {
 function get_excluded_targets() {
 	local foundation="${1}"
 	local cluster="${2}"
-	local release="${3}"
+	local namespace="${3}"
+	local release="${4}"
 	local excluded_targets=()
 
 	# for each cluster in pks clusters
@@ -225,7 +226,7 @@ function helm_install() {
 		--path "/clusters/cluster_name=${cluster}/is_canary")
 	
 	if [[ "${is_cluster_canary}" ]]; then
-		excluded_targets=("$(get_excluded_targets "${foundation}" "${cluster}" "${release}" 2>/dev/null)")
+		excluded_targets=("$(get_excluded_targets "${foundation}" "${cluster}" "${namespace}" "${release}" 2>/dev/null)")
 	fi
 
 	echo "excluded_targets: '${excluded_targets[*]}'"
