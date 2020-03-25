@@ -33,7 +33,7 @@ function create_etcd_client_secret() {
 
 function get_excluded_targets() {
 	local foundation="${1}"
-	local cluster="${2}"
+	local current_cluster="${2}"
 	local namespace="${3}"
 	local release="${4}"
 	local excluded_targets=()
@@ -42,6 +42,7 @@ function get_excluded_targets() {
 	# login to cluster
 	# check that the operator is NOT installed (helm list)
 	# if operator is NOT installed then it is added to the list of excluded target
+	# login to current cluster
 	# return list of excluded targets
 
 	clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
@@ -60,6 +61,12 @@ function get_excluded_targets() {
 			excluded_targets=( "${excluded_targets[@]}" "${prometheus_hostname}" )
 		fi
 	done
+
+	# Make sure you're in the current cluster
+	pks get-credentials "${current_cluster}" > /dev/null 2>&1
+	kubectl config use-context "${current_cluster}" > /dev/null 2>&1
+	kubectl config set-context --current --namespace="${namespace}" > /dev/null 2>&1
+
 	echo "${excluded_targets[*]}"
 }
 
