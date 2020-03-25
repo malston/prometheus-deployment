@@ -225,6 +225,12 @@ function helm_install() {
 	fi
 
 	echo "excluded_targets: '${excluded_targets[*]}'"
+	foundation_domain=$(om interpolate -s \
+		--config "environments/${foundation}/config/config.yml" \
+		--vars-file "environments/${foundation}/vars/vars.yml" \
+		--vars-env VARS \
+		--path "/clusters/cluster_name=${cluster}/foundation_domain")
+	echo "clusterDomain: '${cluster}.${foundation_domain}'"
 
 	helm upgrade -i "${release}" \
 		--namespace "${namespace}" \
@@ -236,6 +242,7 @@ function helm_install() {
 		--set grafana.testFramework.enabled=true \
 		--set ingress-gateway.istio.enabled=true \
 		--set ingress-gateway.ingress.enabled=false \
+		--set ingress-gateway.clusterDomain="${cluster}.${foundation_domain}" \
 		--set smoke-tests.excludedTargets="${excluded_targets[*]}" \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
 		"${__BASEDIR}/charts/prometheus-operator"

@@ -19,6 +19,8 @@ grafana:
 prometheus:
   host: ""
 
+clusterDomain: ""
+
 istio:
   enabled: false
   hosts: 

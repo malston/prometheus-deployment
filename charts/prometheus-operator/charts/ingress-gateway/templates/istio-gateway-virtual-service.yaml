@@ -2,7 +2,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: monitoring-grafana-gateway
+  name: monitoring-istio-gateway
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
@@ -10,42 +10,10 @@ spec:
   servers:
   - port:
       number: 80
-      name: grafana
+      name: http
       protocol: HTTP
     hosts:
-    - "*"
----
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: monitoring-prometheus-gateway
-  namespace: {{ .Release.Namespace }}
-spec:
-  selector:
-    istio: ingressgateway # use istio default controller
-  servers:
-  - port:
-      number: 9090
-      name: prometheus
-      protocol: HTTP
-    hosts:
-    - "*"
----
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: monitoring-alertmanager-gateway
-  namespace: {{ .Release.Namespace }}
-spec:
-  selector:
-    istio: ingressgateway # use istio default controller
-  servers:
-  - port:
-      number: 9093
-      name: alertmanager
-      protocol: HTTP
-    hosts:
-    - "*"
+    - "*.{{ .Values.clusterDomain }}"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -54,16 +22,16 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-  - "*"
+  - "grafana.{{ .Values.clusterDomain }}"
   gateways:
-  - monitoring-grafana-gateway
+  - monitoring-istio-gateway
   http:
   - match:
     - uri:
         prefix: /
     route:
     - destination:
-        host: prometheus-operator-grafana.monitoring.svc.cluster.local
+        host: prometheus-operator-grafana
         port:
           number: 80
 ---
@@ -74,16 +42,16 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-  - "*"
+  - "prometheus.{{ .Values.clusterDomain }}"
   gateways:
-  - monitoring-prometheus-gateway
+  - monitoring-istio-gateway
   http:
   - match:
     - uri:
         prefix: /
     route:
     - destination:
-        host: prometheus-operator-prometheus.monitoring.svc.cluster.local
+        host: prometheus-operator-prometheus
         port:
           number: 9090
 ---
@@ -94,16 +62,16 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-  - "*"
+  - "alertmanager.{{ .Values.clusterDomain }}"
   gateways:
-  - monitoring-alertmanager-gateway
+  - monitoring-istio-gateway
   http:
   - match:
     - uri:
         prefix: /
     route:
     - destination:
-        host: prometheus-operator-alertmanager.monitoring.svc.cluster.local
+        host: prometheus-operator-alertmanager
         port:
           number: 9093
 {{- end }}
