@@ -45,9 +45,9 @@ function get_excluded_targets() {
 
 	clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
 	for cluster in ${clusters}; do
-		pks get-credentials "${cluster}"
-		kubectl config use-context "${cluster}"
-		kubectl config set-context --current --namespace="${namespace}"
+		pks get-credentials "${cluster}" > /dev/null 2>&1
+		kubectl config use-context "${cluster}" > /dev/null 2>&1
+		kubectl config set-context --current --namespace="${namespace}" > /dev/null 2>&1
 
 		release_name="$(helm list -q -f "${release}")"
 		if [[ -z "${release_name}" ]]; then
