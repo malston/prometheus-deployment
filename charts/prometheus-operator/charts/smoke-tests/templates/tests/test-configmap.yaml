@@ -7,16 +7,31 @@ metadata:
     {{- include "smoke-tests.labels" . | nindent 4 }}
 data:
   run.sh: |-
+    @test "Test Grafana Health" {
+      url="http://{{ .Values.grafanaServiceName }}/api/health"
+
+      code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}')
+      if [ ! "$code" == "200" ]; then
+        echo "result is '$result'"
+      fi
+      [ "$code" == "200" ]
+    }
     @test "Test Prometheus Health" {
       url="http://{{ .Values.prometheusServiceName }}.{{ $.Release.Namespace }}.svc.cluster.local:9090"
 
       code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}' | tail -1)
+      if [ ! "$code" == "200" ]; then
+        echo "result is '$result'"
+      fi
       [ "$code" == "200" ]
     }
     @test "Test Alertmanager Health" {
       url="http://{{ .Values.alertmanagerServiceName }}.{{ $.Release.Namespace }}.svc.cluster.local:9093"
 
       code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}')
+      if [ ! "$code" == "200" ]; then
+        echo "result is '$result'"
+      fi
       [ "$code" == "200" ]
     }
     @test "Test Prometheus Targets are Healthy" {
@@ -29,6 +44,10 @@ data:
       for exclude_target in ${exclude_targets[@]}; do
         result=$(echo "$result" | sed /$exclude_target/d)
       done
+
+      if [ ! "$result" == "" ]; then
+        echo "result is '$result'"
+      fi
 
       [ "$result" == "" ]
     }

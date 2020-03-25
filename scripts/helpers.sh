@@ -52,7 +52,6 @@ function get_excluded_targets() {
 				--vars-file "environments/${foundation}/vars/vars.yml" \
 				--vars-env VARS \
 				--path "/clusters/cluster_name=${cluster}/prometheus_hostname")
-			# printf "%s release not found... adding %s to excluded targets" "${prometheus_hostname}" "${release}"
 			excluded_targets=( "${excluded_targets[@]}" "${prometheus_hostname}" )
 		fi
 	done
@@ -214,7 +213,7 @@ function helm_install() {
 	bosh_exporter_enabled="${4:-"false"}"
 	pks_monitor_enabled="${5:-"false"}"
 
-	excluded_targets=""
+	excluded_targets=()
 	is_cluster_canary=$(om interpolate -s \
 		--config "environments/${foundation}/config/config.yml" \
 		--vars-file "environments/${foundation}/vars/vars.yml" \
@@ -222,8 +221,10 @@ function helm_install() {
 		--path "/clusters/cluster_name=${cluster}/is_canary")
 	
 	if [[ "${is_cluster_canary}" ]]; then
-		excluded_targets=$(get_excluded_targets "${foundation}" "${cluster}" "${release}" 2>/dev/null)
+		excluded_targets=("$(get_excluded_targets "${foundation}" "${cluster}" "${release}" 2>/dev/null)")
 	fi
+
+	echo "excluded_targets: '${excluded_targets[*]}'"
 
 	helm upgrade -i "${release}" \
 		--namespace "${namespace}" \
@@ -235,7 +236,7 @@ function helm_install() {
 		--set grafana.testFramework.enabled=true \
 		--set ingress-gateway.istio.enabled=true \
 		--set ingress-gateway.ingress.enabled=false \
-		--set smoke-tests.excludedTargets="${excluded_targets}" \
+		--set smoke-tests.excludedTargets="${excluded_targets[*]}" \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
 		"${__BASEDIR}/charts/prometheus-operator"
 }
