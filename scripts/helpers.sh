@@ -45,6 +45,10 @@ function get_excluded_targets() {
 
 	clusters="$(pks clusters --json | jq -r 'sort_by(.name) | .[] | select(.last_action_state=="succeeded") | .name')"
 	for cluster in ${clusters}; do
+		pks get-credentials "${cluster}"
+		kubectl config use-context "${cluster}"
+		kubectl config set-context --current --namespace="${namespace}"
+
 		release_name="$(helm list -q -f "${release}")"
 		if [[ -z "${release_name}" ]]; then
 			prometheus_hostname=$(om interpolate -s \
