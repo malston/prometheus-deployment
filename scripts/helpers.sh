@@ -72,13 +72,15 @@ function get_excluded_targets() {
 
 function create_federated_targets() {
 	local foundation="${1}"
-	fed_targets=$(get_federated_targets "${foundation}")
+	local cluster="${2}"
+	fed_targets=$(get_federated_targets "${foundation}" "${cluster}")
 	fed_targets="${fed_targets// /, }"
 	echo "[${fed_targets}]"
 }
 
 function get_federated_targets() {
 	local foundation="${1}"
+	local current_cluster="${2}"
 	local targets=()
 	local clusters
 	clusters=$(pks clusters --json | jq 'sort_by(.name)')
@@ -98,6 +100,22 @@ function get_federated_targets() {
 		fi
 	done
 
+	current_prometheus_hostname=$(om interpolate -s \
+			--config "environments/${foundation}/config/config.yml" \
+			--vars-file "environments/${foundation}/vars/vars.yml" \
+			--vars-env VARS \
+			--path "/clusters/cluster_name=${current_cluster}/prometheus_hostname")
+
+	# Don't federate self -- don't scrape its own /federate endpoint
+	local current_target=("${current_prometheus_hostname}")
+	for target in "${current_target[@]}"; do
+		for i in "${!targets[@]}"; do
+			if [[ "${targets[i]}" = "${target}" ]]; then
+				unset "targets[i]"
+			fi
+		done
+	done
+
 	echo "${targets[*]}"
 }
 
@@ -114,7 +132,7 @@ function interpolate() {
     master_ips=$(bosh -d "${deployment}" vms --column=Instance --column=IPs | grep master | awk '{print $2}' | sort)
     master_node_ips="$(echo ${master_ips[*]})"
     export VARS_endpoints="[${master_node_ips// /, }]"
-    VARS_federated_targets=$(create_federated_targets "${foundation}")
+    VARS_federated_targets=$(create_federated_targets "${foundation}" "${cluster}")
     export VARS_federated_targets
 
     # Replace config variables in config.yaml
