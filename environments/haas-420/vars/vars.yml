@@ -3,3 +3,4 @@ foundation_domain: haas-420.pez.pivotal.io
 harbor_project: prometheus
 docker_registry: harbor.haas-420.pez.pivotal.io
 harbor_registry: ((docker_registry))/((harbor_project))
+gmail_account: marktalston@gmail.com
