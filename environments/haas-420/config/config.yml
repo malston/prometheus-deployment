@@ -1,3 +1,8 @@
+# This file contains params for running from the command line and the pipeline
+# Params that are global to all clusters are interpolated from vars.yml
+# Some variables that are determined at runtime, like service_instance_id and
+# endpoints, get exported as VARS_ environment variables before interpolation
+
 # Order matters. This is ordered so that the slave prometheuses are installed before its masters
 # so that the prometheus federation doesn't produce down targets for the slaves that have not yet come up
 clusters:

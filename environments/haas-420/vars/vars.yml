@@ -1,3 +1,6 @@
+# This file contains foundation params that are the same for all clusters
+# If they vary between clusters they go into config.yml
+# If they are are secrets they go into credhub or kubernetes
 foundation: haas-420
 foundation_domain: haas-420.pez.pivotal.io
 harbor_project: prometheus
