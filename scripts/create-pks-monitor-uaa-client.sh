@@ -26,7 +26,7 @@ function create_uaa_client() {
     local admin_client_secret
     admin_client_secret="$(om -t "${om_target}" -k -u "${om_username}" -p "${om_password}" credentials --product-name pivotal-container-service --credential-reference .properties.pks_uaa_management_admin_client --credential-field secret)"
     
-    uaac target https://${pks_api_hostname}:8443 --ca-cert ./pks-ca.crt
+    uaac target https://${pks_api_hostname}:8443 --ca-cert ./pks-ca.crt --skip-ssl-validation
     uaac token client get admin -s "${admin_client_secret}"
 
     ok="$(uaac client get pks-api-monitor || echo "NotFound")"
