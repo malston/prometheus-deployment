@@ -1,13 +1,8 @@
 #!/bin/bash -e
 
-if [ -z "${PKS_DOMAIN_NAME}" ]; then
-  echo "Enter domain: (e.g., pez.pivotal.io)"
-  read -r PKS_DOMAIN_NAME
-fi
-
-if [ -z "${PKS_SUBDOMAIN_NAME}" ]; then
-  echo "Enter subdomain: (e.g., haas-420)"
-  read -r PKS_SUBDOMAIN_NAME
+if [ -z "${PKS_API_HOSTNAME}" ]; then
+  echo "Enter domain: (e.g., api.pks.pez.pivotal.io)"
+  read -r PKS_API_HOSTNAME
 fi
 
 __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,7 +19,7 @@ ADMIN_PASSWORD=$(om -k credentials \
 printf "\n\nAdmin password: %s\n\n" "${ADMIN_PASSWORD}"
 
 pks login -a \
-    "https://api.pks.${PKS_SUBDOMAIN_NAME}.${PKS_DOMAIN_NAME}" \
+    "https://${PKS_API_HOSTNAME}" \
     --skip-ssl-validation \
     -u admin \
     -p "${ADMIN_PASSWORD}"

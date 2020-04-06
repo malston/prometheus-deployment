@@ -23,15 +23,16 @@ EOF
 pks create-network-profile "${TEMP_DIR}/network-profile-medium.json"
 ```
 
-2. Create 3 clusters
+1. Create 3 clusters
 
 ```bash
-for i in `seq 3`; do
-    pks create-cluster cluster0$i --num-nodes 1 \
-        --external-hostname cluster0$i.$PKS_SUBDOMAIN_NAME.$PKS_DOMAIN_NAME \
+for i in $(seq 3); do
+    pks create-cluster "cluster0$i" --num-nodes 1 \
+        --external-hostname "cluster0$i.$EXTERNAL_HOSTNAME" \
         --plan small-Istio --network-profile network-profile-medium --non-interactive
 done
 ```
+
 ## Install / Uninstall
 
 ### Install Operator
