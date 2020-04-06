@@ -1,0 +1,9 @@
+# This file contains foundation params that are the same for all clusters
+# If they vary between clusters they go into config.yml
+# If they are are secrets they go into credhub or kubernetes
+foundation: dev
+foundation_domain: markalston.net
+harbor_project: prometheus
+docker_registry: harbor.pks.markalston.net
+harbor_registry: ((docker_registry))/((harbor_project))
+gmail_account: marktalston@gmail.com
