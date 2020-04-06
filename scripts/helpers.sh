@@ -242,6 +242,8 @@ function helm_install() {
 	release="${3:?"Release is required"}"
 	bosh_exporter_enabled="${4:-"false"}"
 	pks_monitor_enabled="${5:-"false"}"
+	istio_enabled="${6:-"false"}"
+	ingress_enabled="${7:-"false"}"
 
 	excluded_targets=()
 	is_cluster_canary=$(om interpolate -s \
@@ -270,8 +272,8 @@ function helm_install() {
 		--set global.rbac.pspEnabled=false \
 		--set grafana.adminPassword=admin \
 		--set grafana.testFramework.enabled=true \
-		--set ingress-gateway.istio.enabled=true \
-		--set ingress-gateway.ingress.enabled=false \
+		--set ingress-gateway.istio.enabled="${istio_enabled}" \
+		--set ingress-gateway.ingress.enabled="${ingress_enabled}" \
 		--set ingress-gateway.clusterDomain="${cluster}.${foundation_domain}" \
 		--set smoke-tests.excludedTargets="${excluded_targets[*]}" \
 		--set kubeTargetVersionOverride="$(kubectl version --short | grep -i server | awk '{print $3}' |  cut -c2-1000)" \
@@ -357,8 +359,10 @@ function install_cluster() {
 
 	bosh_exporter_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/bosh_exporter_enabled")
 	pks_monitor_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/pks_monitor_enabled")
+	istio_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/istio_enabled")
+	ingress_enabled=$(get_config_value "${foundation}" "/clusters/cluster_name=${cluster}/ingress_enabled")
 
-	helm_install "${cluster}" "${namespace}" "${release}" "${bosh_exporter_enabled}" "${pks_monitor_enabled}"
+	helm_install "${cluster}" "${namespace}" "${release}" "${bosh_exporter_enabled}" "${pks_monitor_enabled}" "${istio_enabled}" "${ingress_enabled}"
 
 	remove_dashboards
 }

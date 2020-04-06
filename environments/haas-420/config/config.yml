@@ -11,6 +11,8 @@ clusters:
     is_canary: true
     pks_monitor_enabled: false
     bosh_exporter_enabled: true
+    istio_enabled: true
+    ingress_enabled: false
     alertmanager_url: https://alertmanager.cluster02.((foundation_domain))
     endpoints: ((endpoints))
     gmail_account: ((gmail_account))
@@ -26,6 +28,8 @@ clusters:
     is_canary: true
     pks_monitor_enabled: true
     bosh_exporter_enabled: true
+    istio_enabled: true
+    ingress_enabled: false
     alertmanager_url: https://alertmanager.cluster01.((foundation_domain))
     endpoints: ((endpoints))
     gmail_account: ((gmail_account))
@@ -42,6 +46,8 @@ clusters:
     is_canary: false
     pks_monitor_enabled: false
     bosh_exporter_enabled: true
+    istio_enabled: true
+    ingress_enabled: false
     alertmanager_url: https://alertmanager.cluster03.((foundation_domain))
     endpoints: ((endpoints))
     gmail_account: ((gmail_account))
