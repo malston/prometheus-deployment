@@ -5,6 +5,11 @@ function credhub_login() {
 	local credhub_client="${2}"
 	local credhub_secret="${3}"
 	local credhub_ca_cert="${4}"
+	local credhub_proxy="${5}"
+
+	if [[ -n $credhub_proxy ]]; then
+		export CREDHUB_PROXY="$credhub_proxy"
+	fi
 
 	echo "Logging in to credhub (${credhub_server})..."
 	credhub login \
@@ -17,7 +22,7 @@ function credhub_login() {
 function create_etcd_client_secret() {
 	deployment=${1:?"bosh deployment name for service instance of the cluster"}
 
-	credhub_login "${CREDHUB_SERVER}" "${CREDHUB_CLIENT}" "${CREDHUB_SECRET}" "${CREDHUB_CA_CERT}"
+	credhub_login "${CREDHUB_SERVER}" "${CREDHUB_CLIENT}" "${CREDHUB_SECRET}" "${CREDHUB_CA_CERT}" "${CREDHUB_PROXY}"
 
 	credhub get -n "/p-bosh/${deployment}/tls-etcdctl-2018-2" -k ca > etcd-client-ca.crt
 	credhub get -n "/p-bosh/${deployment}/tls-etcdctl-2018-2" -k certificate > etcd-client.crt
