@@ -7,3 +7,4 @@ harbor_project: prometheus
 docker_registry: harbor.pks.markalston.net
 harbor_registry: ((docker_registry))/((harbor_project))
 gmail_account: marktalston@gmail.com
+datastore: NFS_DATASTORE

@@ -299,8 +299,13 @@ function switch_namespace() {
 }
 
 function create_storage_class() {
+	om interpolate \
+		--config "storage/storage-class.yaml" \
+		--vars-file "environments/${foundation}/vars/vars.yml" \
+		> /tmp/storage-class.yaml
+
 	kubectl delete storageclass thin-disk --ignore-not-found
-	kubectl create -f storage/storage-class.yaml
+	kubectl create -f /tmp/storage-class.yaml
 }
 
 function copy_dashboards() {
