@@ -7,7 +7,7 @@ set -o pipefail
 external_hostname="${1:-${EXTERNAL_HOSTNAME}}"
 
 if [ -z "${external_hostname}" ]; then
-  echo "Enter cluster domain: (e.g., markalston.net)"
+  echo "Enter cluster domain: (e.g., haas-000.pez.pivotal.io)"
   read -r external_hostname
 fi
 
