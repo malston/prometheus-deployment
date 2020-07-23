@@ -1,0 +1,10 @@
+# This file contains foundation params that are the same for all clusters
+# If they vary between clusters they go into config.yml
+# If they are are secrets they go into credhub or kubernetes
+foundation: haas-439
+foundation_domain: haas-439.pez.vmware.com
+harbor_project: prometheus
+docker_registry: harbor.haas-439.pez.vmware.com
+harbor_registry: ((docker_registry))/((harbor_project))
+gmail_account: marktalston@gmail.com
+datastore: LUN01

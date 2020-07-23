@@ -1,0 +1,26 @@
+# This file contains params for running from the command line and the pipeline
+# Params that are global to all clusters are interpolated from vars.yml
+# Some variables that are determined at runtime, like service_instance_id and
+# endpoints, get exported as VARS_ environment variables before interpolation
+
+# Order matters. This is ordered so that the slave prometheuses are installed before its masters
+# so that the prometheus federation doesn't produce down targets for the slaves that have not yet come up
+clusters:
+  - cluster_name: cluster1
+    is_master: true
+    is_canary: true
+    pks_monitor_enabled: true
+    bosh_exporter_enabled: true
+    istio_enabled: false
+    ingress_enabled: true
+    alertmanager_url: https://alertmanager.cluster1.((foundation_domain))
+    endpoints: ((endpoints))
+    gmail_account: ((gmail_account))
+    prometheus_url: https://prometheus.cluster1.((foundation_domain))
+    foundation: ((foundation))
+    foundation_domain: ((foundation_domain))
+    federated_targets: ((federated_targets))
+    service_instance_id: ((service_instance_id))
+    alertmanager_hostname: alertmanager.cluster1.((foundation_domain))
+    grafana_hostname: grafana.cluster1.((foundation_domain))
+    prometheus_hostname: prometheus.cluster1.((foundation_domain))
